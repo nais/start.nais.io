@@ -1,0 +1,9 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+   name: tulleapp
+   namespace: tulleteam
+   labels:
+      team: tulleteam
+spec:
+   image: registry/image:version
