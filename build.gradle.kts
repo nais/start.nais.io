@@ -4,6 +4,7 @@ val logstashEncoderVersion = "6.5"
 val mustacheVersion = "0.9.7"
 val junitJupiterVersion = "5.7.0"
 val kotlinSerializationVersion = "1.0.1"
+val kamlVersion = "0.26.0"
 
 val mainClassName = "io.nais.MainKt"
 
@@ -27,10 +28,11 @@ dependencies {
    implementation(kotlin("stdlib"))
    implementation("io.ktor:ktor-server-core:$ktorVersion")
    implementation("io.ktor:ktor-server-netty:$ktorVersion")
+   implementation("io.ktor:ktor-serialization:$ktorVersion")
    implementation("ch.qos.logback:logback-classic:$logbackVersion")
    implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$kotlinSerializationVersion")
-   implementation("com.charleskorn.kaml:kaml:0.26.0")
+   implementation("com.charleskorn.kaml:kaml:$kamlVersion")
 
    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")

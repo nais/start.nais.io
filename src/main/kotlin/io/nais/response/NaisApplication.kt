@@ -1,4 +1,4 @@
-package io.nais.application
+package io.nais.response
 
 import com.charleskorn.kaml.Yaml
 import io.nais.serialize.URLSerializer
@@ -8,7 +8,7 @@ import java.net.URL
 
 @Serializable
 @ExperimentalSerializationApi
-class NaisApplication(
+data class NaisApplication(
    val apiVersion: String = "nais.io/v1alpha1",
    val kind: String = "Application",
    val metadata: Metadata,
@@ -19,7 +19,7 @@ class NaisApplication(
 fun NaisApplication.asYaml() = Yaml.default.encodeToString(NaisApplication.serializer(), this)
 
 @Serializable
-class Metadata(
+data class Metadata(
    val name: String,
    val namespace: String,
    val labels: Map<String, String> = emptyMap()
@@ -27,7 +27,7 @@ class Metadata(
 
 @Serializable
 @ExperimentalSerializationApi
-class Spec(
+data class Spec(
    val image: String,
    val liveness: StatusEndpoint = StatusEndpoint(path = "/isalive"),
    val readiness: StatusEndpoint = StatusEndpoint(path = "/isready"),
@@ -39,7 +39,7 @@ class Spec(
 )
 
 @Serializable
-class StatusEndpoint(
+data class StatusEndpoint(
    val path: String,
    val port: Int = 80,
    val initialDelay: Int = 20,
@@ -47,20 +47,20 @@ class StatusEndpoint(
 )
 
 @Serializable
-class Replicas(
+data class Replicas(
    val min: Int = 2,
    val max : Int = 2,
    val cpuThresholdPercentage: Int = 50
 )
 
 @Serializable
-class Prometheus(
+data class Prometheus(
    val enabled: Boolean = true,
    val path: String
 )
 
 @Serializable
-class Resources(
+data class Resources(
    val cpu: String = "200m",
    val memory: String = "256Mi"
 )

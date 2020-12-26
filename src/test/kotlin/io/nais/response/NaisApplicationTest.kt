@@ -1,4 +1,4 @@
-package io.nais.application
+package io.nais.response
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import org.junit.jupiter.api.Assertions.assertEquals

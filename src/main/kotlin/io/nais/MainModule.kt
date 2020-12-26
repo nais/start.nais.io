@@ -1,14 +1,47 @@
 package io.nais
 
 import io.ktor.application.*
+import io.ktor.features.*
+import io.ktor.http.*
+import io.ktor.http.ContentType.Application.Zip
+import io.ktor.http.HttpHeaders.ContentDisposition
+import io.ktor.http.HttpStatusCode.Companion.BadRequest
+import io.ktor.http.HttpStatusCode.Companion.OK
+import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import io.ktor.serialization.*
+import io.nais.mapping.naisApplicationFrom
+import io.nais.request.Request
+import io.nais.response.asYaml
+import io.nais.zip.zipTo
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.SerializationException
+import java.nio.file.Paths
 
+@ExperimentalSerializationApi
 @Suppress("unused") // referenced in application.conf
 fun Application.main() {
+
+   install(ContentNegotiation) {
+      json(contentType = ContentType.Application.Json)
+   }
+
+   install(StatusPages) {
+      exception<SerializationException> {
+         call.respond(BadRequest, "Unable to parse JSON")
+      }
+   }
+
    routing {
-      get("/") {
-         call.respond("Hello")
+      post("/app") {
+         val request = call.receive<Request>()
+         call.response.header(ContentDisposition, "attachment; filename=${request.appName}.zip")
+         call.respondOutputStream(Zip, OK) {
+            zipTo(this, mapOf(
+               Paths.get(".nais/nais.yaml") to naisApplicationFrom(request).asYaml()
+            ))
+         }
       }
    }
 }
