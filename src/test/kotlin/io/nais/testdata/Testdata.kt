@@ -78,8 +78,8 @@ jobs:
       env:
         "APIKEY": "${dollar}{{ secrets.NAIS_DEPLOY_APIKEY }}"
         "CLUSTER": "dev-gcp"
-        "RESOURCE": ".nais/nais.yml"
-        "VARS": ".nais/dev.yml"
+        "RESOURCE": ".nais/nais.yaml"
+        "VARS": ".nais/dev.yaml"
   deployToProd:
     name: "Deploy to prod"
     runs-on: "ubuntu-latest"
@@ -90,8 +90,8 @@ jobs:
       env:
         "APIKEY": "${dollar}{{ secrets.NAIS_DEPLOY_APIKEY }}"
         "CLUSTER": "prod-gcp"
-        "RESOURCE": ".nais/nais.yml"
-        "VARS": ".nais/prod.yml"
+        "RESOURCE": ".nais/nais.yaml"
+        "VARS": ".nais/prod.yaml"
 """.trimIndent()
 
 val nodejsWorkflowYaml = """
@@ -128,8 +128,8 @@ jobs:
       env:
         "APIKEY": "${dollar}{{ secrets.NAIS_DEPLOY_APIKEY }}"
         "CLUSTER": "dev-gcp"
-        "RESOURCE": ".nais/nais.yml"
-        "VARS": ".nais/dev.yml"
+        "RESOURCE": ".nais/nais.yaml"
+        "VARS": ".nais/dev.yaml"
   deployToProd:
     name: "Deploy to prod"
     runs-on: "ubuntu-latest"
@@ -140,6 +140,6 @@ jobs:
       env:
         "APIKEY": "${dollar}{{ secrets.NAIS_DEPLOY_APIKEY }}"
         "CLUSTER": "prod-gcp"
-        "RESOURCE": ".nais/nais.yml"
-        "VARS": ".nais/prod.yml"
+        "RESOURCE": ".nais/nais.yaml"
+        "VARS": ".nais/prod.yaml"
 """.trimIndent()

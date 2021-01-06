@@ -1,14 +1,14 @@
 package io.nais.mapping
 
 import io.nais.deploy.*
-import io.nais.naisapp.Metadata
-import io.nais.naisapp.NaisApplication
-import io.nais.naisapp.Spec
+import io.nais.naisapp.*
+import io.nais.naisapp.Environment.DEV
 import io.nais.request.PLATFORM
 import io.nais.request.PLATFORM.JVM
 import io.nais.request.PLATFORM.NODEJS
 import io.nais.request.Request
 import kotlinx.serialization.ExperimentalSerializationApi
+import java.net.URL
 
 @ExperimentalSerializationApi
 fun naisApplicationFrom(req: Request) = NaisApplication(
@@ -18,8 +18,13 @@ fun naisApplicationFrom(req: Request) = NaisApplication(
       labels = mapOf("team" to req.team)
    ),
    spec = Spec(
-      image = req.image
+      image = req.image,
    )
+)
+
+@ExperimentalSerializationApi
+fun appVarsFrom(req: Request, env: Environment) = Vars(
+   ingresses = listOf(URL("https://${req.appName}${if (env == DEV) ".dev" else ""}.intern.nav.no"))
 )
 
 fun gitHubWorkflowFrom(req: Request) = GitHubWorkflow(

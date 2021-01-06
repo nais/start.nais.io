@@ -91,6 +91,6 @@ fun deploySteps(clusterName: String) = listOf(
    BuildStep(name = "Deploy to $clusterName", uses = "nais/deploy/actions/deploy@v1", env = mapOf(
       "APIKEY" to "\${{ secrets.NAIS_DEPLOY_APIKEY }}",
       "CLUSTER" to clusterName,
-      "RESOURCE" to ".nais/nais.yml",
-      "VARS" to ".nais/${if (clusterName.startsWith("dev")) "dev" else "prod"}.yml"))
+      "RESOURCE" to ".nais/nais.yaml",
+      "VARS" to ".nais/${if (clusterName.startsWith("dev")) "dev" else "prod"}.yaml"))
 )
