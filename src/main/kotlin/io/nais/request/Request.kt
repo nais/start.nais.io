@@ -6,5 +6,11 @@ import kotlinx.serialization.Serializable
 class Request (
    val team: String,
    val appName: String,
-   val image: String
+   val image: String,
+   val platform: PLATFORM
 )
+
+enum class PLATFORM {
+   JVM, NODEJS
+}
+

@@ -1,9 +1,13 @@
 package io.nais.mapping
 
+import io.nais.deploy.*
+import io.nais.naisapp.Metadata
+import io.nais.naisapp.NaisApplication
+import io.nais.naisapp.Spec
+import io.nais.request.PLATFORM
+import io.nais.request.PLATFORM.JVM
+import io.nais.request.PLATFORM.NODEJS
 import io.nais.request.Request
-import io.nais.response.Metadata
-import io.nais.response.NaisApplication
-import io.nais.response.Spec
 import kotlinx.serialization.ExperimentalSerializationApi
 
 @ExperimentalSerializationApi
@@ -17,3 +21,24 @@ fun naisApplicationFrom(req: Request) = NaisApplication(
       image = req.image
    )
 )
+
+fun gitHubWorkflowFrom(req: Request) = GitHubWorkflow(
+   name = "Build and deploy ${req.appName}",
+   env = mapOf("IMAGE" to req.image),
+   jobs = Jobs(
+      build = Job(name = "build", runsOn = "ubuntu-latest", steps = listOf(checkoutStep) + buildStepsFor(req.platform)),
+      deployToDev = Job(name = "Deploy to dev", runsOn = "ubuntu-latest", steps = listOf(checkoutStep) + deploySteps("dev-gcp")),
+      deployToProd = Job(name = "Deploy to prod", runsOn = "ubuntu-latest", steps = listOf(checkoutStep) + deploySteps("prod-gcp"))
+   ),
+   on = PushBuildTrigger(
+      push = PushEvent(
+         branches = listOf("main")
+      )
+   )
+)
+
+private fun buildStepsFor(platform: PLATFORM) =
+   when (platform) {
+      JVM -> gradleKotlinBuildSteps
+      NODEJS -> nodejsBuildSteps
+   }

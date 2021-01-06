@@ -11,9 +11,11 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
+import io.nais.deploy.asYaml
+import io.nais.mapping.gitHubWorkflowFrom
 import io.nais.mapping.naisApplicationFrom
 import io.nais.request.Request
-import io.nais.response.asYaml
+import io.nais.naisapp.asYaml
 import io.nais.zip.zipTo
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
@@ -28,8 +30,8 @@ fun Application.main() {
    }
 
    install(StatusPages) {
-      exception<SerializationException> {
-         call.respond(BadRequest, "Unable to parse JSON")
+      exception<SerializationException> { cause ->
+         call.respond(BadRequest, "Unable to parse JSON: ${cause.message}")
       }
    }
 
@@ -39,7 +41,8 @@ fun Application.main() {
          call.response.header(ContentDisposition, "attachment; filename=${request.appName}.zip")
          call.respondOutputStream(Zip, OK) {
             zipTo(this, mapOf(
-               Paths.get(".nais/nais.yaml") to naisApplicationFrom(request).asYaml()
+               Paths.get(".nais/nais.yaml") to naisApplicationFrom(request).asYaml(),
+               Paths.get(".github/workflows/main.yaml") to gitHubWorkflowFrom(request).asYaml(),
             ))
          }
       }

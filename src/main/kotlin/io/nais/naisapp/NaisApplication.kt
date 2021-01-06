@@ -1,4 +1,4 @@
-package io.nais.response
+package io.nais.naisapp
 
 import com.charleskorn.kaml.Yaml
 import io.nais.serialize.URLSerializer
