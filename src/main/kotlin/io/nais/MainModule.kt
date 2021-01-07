@@ -15,11 +15,10 @@ import io.nais.deploy.asYaml
 import io.nais.mapping.appVarsFrom
 import io.nais.mapping.gitHubWorkflowFrom
 import io.nais.mapping.naisApplicationFrom
-import io.nais.naisapp.Environment
 import io.nais.naisapp.Environment.DEV
 import io.nais.naisapp.Environment.PROD
-import io.nais.request.Request
 import io.nais.naisapp.asYaml
+import io.nais.request.Request
 import io.nais.zip.zipTo
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException

@@ -5,6 +5,7 @@ val mustacheVersion = "0.9.7"
 val junitJupiterVersion = "5.7.0"
 val kotlinSerializationVersion = "1.0.1"
 val kamlVersion = "0.26.0"
+val micrometerVersion = "1.6.2"
 
 val mainClassName = "io.nais.MainKt"
 
@@ -33,6 +34,8 @@ dependencies {
    implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$kotlinSerializationVersion")
    implementation("com.charleskorn.kaml:kaml:$kamlVersion")
+   implementation("io.ktor:ktor-metrics-micrometer:$ktorVersion")
+   implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
 
    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
