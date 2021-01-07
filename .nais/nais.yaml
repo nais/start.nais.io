@@ -1,0 +1,41 @@
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+   name: start.nais.io
+   namespace: default
+   labels:
+      team: plattformsikkerhet
+spec:
+   port: 8080
+   ingresses:
+     {{#each ingresses as |url|}}
+        - {{url}}
+     {{/each}}
+   image: {{ image }}
+   replicas:
+      min: 2
+      max: 2
+      cpuThresholdPercentage: 75
+   resources:
+      limits:
+         cpu: 750m
+         memory: 2048Mi
+      requests:
+         cpu: 600m
+         memory: 1024Mi
+   liveness:
+      path: /internal/isalive
+      initialDelay: 20
+      timeout: 1
+      periodSeconds: 5
+      failureThreshold: 3
+   readiness:
+      path: /internal/isready
+      initialDelay: 20
+      timeout: 1
+   prometheus:
+      enabled: true
+      path: /internal/metrics
+
+
+
