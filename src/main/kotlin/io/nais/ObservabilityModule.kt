@@ -39,7 +39,6 @@ fun Application.observability() {
       }
 
       get("/internal/metrics") {
-         val names = call.request.queryParameters.getAll("name[]")?.toSet() ?: emptySet()
          call.respond(collectorRegistry.scrape())
       }
    }
