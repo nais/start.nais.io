@@ -11,7 +11,6 @@ val mainClassName = "io.nais.MainKt"
 
 plugins {
    kotlin("jvm") version "1.4.21"
-   id("com.github.johnrengelman.shadow") version "6.1.0"
    kotlin("plugin.serialization") version "1.4.21"
 }
 
@@ -42,14 +41,22 @@ dependencies {
 }
 
 tasks {
-   withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+   withType<Jar> {
       archiveBaseName.set("app")
+
       manifest {
-         attributes(
-            mapOf(
-               "Main-Class" to mainClassName
-            )
-         )
+         attributes["Main-Class"] = "io.nais.MainKt"
+         attributes["Class-Path"] = configurations.runtimeClasspath.get().joinToString(separator = " ") {
+            it.name
+         }
+      }
+
+      doLast {
+         configurations.runtimeClasspath.get().forEach {
+            val file = File("$buildDir/libs/${it.name}")
+            if (!file.exists())
+               it.copyTo(file)
+         }
       }
    }
 
@@ -67,7 +74,4 @@ tasks {
       gradleVersion = "6.7.1"
    }
 
-   "build" {
-      dependsOn("shadowJar")
-   }
 }
