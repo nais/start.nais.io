@@ -49,7 +49,7 @@ jobs:
    deploy_to_prod:
       name: Deploy to prod
       needs: [ build, deploy_to_dev ]
-      if: github.ref == 'refs/heads/master'
+      if: github.ref == 'refs/heads/main'
       runs-on: ubuntu-latest
       steps:
          -  uses: actions/checkout@v2
