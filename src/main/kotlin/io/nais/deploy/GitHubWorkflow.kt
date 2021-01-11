@@ -58,7 +58,7 @@ private val dockerImageStep = BuildStep(
    run = "docker build --tag \${IMAGE} . && echo \$GITHUB_TOKEN | docker login --username \$GITHUB_REPOSITORY --password-stdin https://docker.pkg.github.com && docker push \${IMAGE}"
 )
 
-val gradleKotlinBuildSteps = listOf(
+val gradleJvmBuildSteps = listOf(
    BuildStep(uses = "gradle/wrapper-validation-action@v1"),
    BuildStep(
       uses = "actions/cache@v1",

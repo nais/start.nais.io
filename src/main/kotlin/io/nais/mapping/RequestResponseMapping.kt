@@ -44,6 +44,6 @@ fun gitHubWorkflowFrom(req: Request) = GitHubWorkflow(
 
 private fun buildStepsFor(platform: PLATFORM) =
    when (platform) {
-      JVM_GRADLE -> gradleKotlinBuildSteps
+      JVM_GRADLE -> gradleJvmBuildSteps
       NODEJS -> nodejsBuildSteps
    }
