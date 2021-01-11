@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="icon" type="image/png" sizes="32x32" href="images/nais-logo.png">
+   <title>NAIS starter</title>
+</head>
+<body>
+<h1>start.nais.io</h1>
+<h3>Generer greier for appen din</h3>
+<form>
+   <label for="app">navn på app</label><input type="text" id="app">
+   <label for="team">navn på team</label><input type="text" id="team">
+   <label for="image">image</label><input type="text" id="image">
+   <label for="platform">plattform</label>
+   <select id="platform">
+      <option value="JVM_GRADLE">JVM/Gradle</option>
+      <option value="NODEJS">NodeJS</option>
+   </select>
+   <button id="send">Generer!</button>
+</form>
+
+<div id="status"></div>
+
+<script src="script.js"></script>
+
+</body>
+</html>

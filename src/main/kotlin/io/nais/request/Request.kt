@@ -11,6 +11,6 @@ class Request (
 )
 
 enum class PLATFORM {
-   JVM, NODEJS
+   JVM_GRADLE, NODEJS
 }
 

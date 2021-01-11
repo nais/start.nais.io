@@ -7,9 +7,11 @@ import io.ktor.http.ContentType.Application.Zip
 import io.ktor.http.HttpHeaders.ContentDisposition
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.OK
+import io.ktor.http.content.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import io.ktor.routing.post
 import io.ktor.serialization.*
 import io.nais.deploy.asYaml
 import io.nais.mapping.appVarsFrom
@@ -39,6 +41,14 @@ fun Application.main() {
    }
 
    routing {
+      static("/") {
+         resources("web")
+      }
+
+      get("/") {
+         call.respondRedirect("/index.html")
+      }
+
       post("/app") {
          val request = call.receive<Request>()
          call.response.header(ContentDisposition, "attachment; filename=${request.appName}.zip")
