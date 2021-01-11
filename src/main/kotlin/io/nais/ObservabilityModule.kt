@@ -13,9 +13,10 @@ import io.micrometer.core.instrument.binder.system.ProcessorMetrics
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 
+private val collectorRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
+
 @Suppress("unused") // referenced in application.conf
 fun Application.observability() {
-   val collectorRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
    install(MicrometerMetrics) {
       registry = collectorRegistry
@@ -28,18 +29,18 @@ fun Application.observability() {
          JvmThreadMetrics()
       )
    }
+}
 
-   routing {
-      get("/internal/isalive") {
-         call.respond(OK)
-      }
+fun Route.observability() {
+   get("/internal/isalive") {
+      call.respond(OK)
+   }
 
-      get("/internal/isready") {
-         call.respond(OK)
-      }
+   get("/internal/isready") {
+      call.respond(OK)
+   }
 
-      get("/internal/metrics") {
-         call.respond(collectorRegistry.scrape())
-      }
+   get("/internal/metrics") {
+      call.respond(collectorRegistry.scrape())
    }
 }
