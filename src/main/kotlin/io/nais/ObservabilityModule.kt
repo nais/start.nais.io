@@ -16,7 +16,7 @@ import io.micrometer.prometheus.PrometheusMeterRegistry
 private val collectorRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
 @Suppress("unused") // referenced in application.conf
-fun Application.observability() {
+fun Application.observabilityModule() {
 
    install(MicrometerMetrics) {
       registry = collectorRegistry
@@ -28,6 +28,10 @@ fun Application.observability() {
          ProcessorMetrics(),
          JvmThreadMetrics()
       )
+   }
+
+   routing {
+      observability()
    }
 }
 

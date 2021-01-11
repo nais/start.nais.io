@@ -13,7 +13,7 @@ import kotlinx.serialization.SerializationException
 
 @ExperimentalSerializationApi
 @Suppress("unused") // referenced in application.conf
-fun Application.main() {
+fun Application.mainModule() {
 
    install(ContentNegotiation) {
       json(contentType = ContentType.Application.Json)
@@ -35,6 +35,5 @@ fun Application.main() {
       }
 
       app()
-      observability()
    }
 }

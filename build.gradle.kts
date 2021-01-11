@@ -37,6 +37,7 @@ dependencies {
    implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
 
    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
+   testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
 }
 
