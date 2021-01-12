@@ -65,8 +65,10 @@ class E2ETest {
       }) {
          val aliveCall = handleRequest(method = Get, uri = "/internal/isalive")
          val readyCall = handleRequest(method = Get, uri = "/internal/isready")
+         val metricsCall = handleRequest(method = Get, uri = "/internal/metrics")
          assertEquals(OK, aliveCall.response.status())
          assertEquals(OK, readyCall.response.status())
+         assertEquals(OK, metricsCall.response.status())
       }
    }
 

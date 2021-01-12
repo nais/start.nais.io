@@ -10,16 +10,13 @@ import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics
-import io.micrometer.prometheus.PrometheusConfig
-import io.micrometer.prometheus.PrometheusMeterRegistry
-
-private val collectorRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
+import io.nais.metrics.Metrics
 
 @Suppress("unused") // referenced in application.conf
 fun Application.observabilityModule() {
 
    install(MicrometerMetrics) {
-      registry = collectorRegistry
+      registry = Metrics.meterRegistry
 
       meterBinders = listOf(
          ClassLoaderMetrics(),
@@ -45,6 +42,6 @@ fun Route.observability() {
    }
 
    get("/internal/metrics") {
-      call.respond(collectorRegistry.scrape())
+      call.respond(Metrics.scrape())
    }
 }

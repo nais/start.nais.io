@@ -9,6 +9,7 @@ import io.nais.deploy.asYaml
 import io.nais.mapping.appVarsFrom
 import io.nais.mapping.gitHubWorkflowFrom
 import io.nais.mapping.naisApplicationFrom
+import io.nais.metrics.Metrics
 import io.nais.naisapp.Environment
 import io.nais.naisapp.asYaml
 import io.nais.request.Request
@@ -20,6 +21,7 @@ import java.nio.file.Paths
 fun Route.app() {
    post("/app") {
       val request = call.receive<Request>()
+      Metrics.countNewDownload(request.team, request.platform)
       call.response.header(HttpHeaders.ContentDisposition, "attachment; filename=${request.appName}.zip")
       call.respondOutputStream(ContentType.Application.Zip, HttpStatusCode.OK) {
          zipTo(this, mapOf(
