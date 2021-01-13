@@ -4,21 +4,31 @@
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <link rel="icon" type="image/png" sizes="32x32" href="images/nais-logo.png">
+   <link rel="stylesheet" type="text/css" href="style.css" />
    <title>NAIS starter</title>
 </head>
 <body>
-<h1>start.nais.io</h1>
-<h3>Generer greier for appen din</h3>
-<form>
-   <label for="app">navn på app</label><input type="text" id="app">
-   <label for="team">navn på team</label><input type="text" id="team">
-   <label for="image">image</label><input type="text" id="image">
-   <label for="platform">plattform</label>
+<img src="images/nais-logo.png" class="center">
+<div class="center heading">Generer <a href="https://doc.nais.io/nais-application/nais.yaml/reference/">NAIS YAML</a> og <a href="https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions">GitHub Workflow</a> med fornuftige defaults for appen din</div>
+<div class="center">
+   <ul>
+      <li>Fyll ut feltene nedenfor og trykk "Generer"</li>
+      <li>Pakk ut zip-fila i prosjektkatalogen din</li>
+      <li>Lag en <a href="https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets">secret</a> kalt NAIS_DEPLOY_APIKEY i repoet ditt som beskrevet <a href="https://doc.nais.io/deployment/">her</a></li>
+      <li>Modifiser de nye filene hvis du trenger tilpasninger</li>
+      <li>Profit!</li>
+   </ul>
+</div>
+<form class="form-style-8">
+   <label for="app">Navn på app</label><input type="text" id="app" name="app" />
+   <label for="team">Navn på team</label><input type="text" id="team" name="team" />
+   <label for="image">Image</label><input type="text" id="image" name="image" />
+   <label for="platform">Plattform</label>
    <select id="platform">
-      <option value="JVM_GRADLE">JVM/Gradle</option>
-      <option value="NODEJS">NodeJS</option>
+      <option value="JVM_GRADLE">JVM app bygget med Gradle</option>
+      <option value="NODEJS">NodeJS app bygget med npm</option>
    </select>
-   <button id="send">Generer!</button>
+   <button id="send">Generer</button>
 </form>
 
 <div id="status"></div>
