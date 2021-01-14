@@ -11,7 +11,7 @@ form {
    box-shadow: 0 0 15px rgba(0, 0, 0, 0.22);
 
 }
-form  h2 {
+form h2 {
    background: #4D4D4D;
    text-transform: uppercase;
    color: #797979;
@@ -44,6 +44,10 @@ form select
    margin-bottom: 10px;
    font: 16px Arial, Helvetica, sans-serif;
    height: 45px;
+}
+
+form input:invalid {
+   border-color: #f7c1c1;
 }
 
 form textarea {
@@ -89,12 +93,18 @@ ul li {
 
 ul li::before {
    content: "📌";
-   display: inline-block;
-   margin-right: 0.2rem;
+   #display: inline-block;
+   margin-right: 1em;
 }
 
 .heading {
    font-size: 18px;
    font-weight: bold;
    margin-top: 1em;
+}
+
+#errmsg {
+   display: block;
+   padding: 1em;
+   color: red;
 }

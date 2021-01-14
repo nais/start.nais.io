@@ -2,7 +2,7 @@ document.getElementById("send").addEventListener("click", event => {
    const form = document.forms[0]
    const missingValues = validateAllValuesPresent(form)
    if (missingValues) {
-      setStatusTxt("Alle verdier må fylles ut")
+      setErrorMsg("Alle verdier må fylles ut")
    } else {
       post(form)
    }
@@ -29,9 +29,9 @@ const post = form => {
    })).then(parsedResponse => {
       const newBlob = new Blob([parsedResponse.blob], { type: parsedResponse.contentType })
       saveBlob(newBlob, parsedResponse.filename)
-      setStatusTxt("")
+      setErrorMsg("")
    }).catch(err => {
-      setStatusTxt(`oh noes: ${err}`)
+      setErrorMsg(`oh noes: ${err}`)
    })
 }
 
@@ -54,4 +54,8 @@ const saveBlob = (blob, fileName) => {
 
 const filenameFrom  = contentDispositionHeader => contentDispositionHeader.split("=")[1]
 
-const setStatusTxt = txt => document.getElementById("status").textContent = txt
+const setErrorMsg = txt => {
+   const element = document.getElementById("errmsg")
+   element.textContent = txt
+   element.style.display = txt.trim().length === 0 ? "none" : "block"
+}
