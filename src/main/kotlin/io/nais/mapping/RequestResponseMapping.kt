@@ -4,8 +4,7 @@ import io.nais.deploy.*
 import io.nais.naisapp.*
 import io.nais.naisapp.Environment.DEV
 import io.nais.request.PLATFORM
-import io.nais.request.PLATFORM.JVM_GRADLE
-import io.nais.request.PLATFORM.NODEJS
+import io.nais.request.PLATFORM.*
 import io.nais.request.Request
 import kotlinx.serialization.ExperimentalSerializationApi
 import java.net.URL
@@ -45,5 +44,6 @@ fun gitHubWorkflowFrom(req: Request) = GitHubWorkflow(
 private fun buildStepsFor(platform: PLATFORM) =
    when (platform) {
       JVM_GRADLE -> gradleJvmBuildSteps
+      JVM_MAVEN -> mavenJvmBuildSteps
       NODEJS -> nodejsBuildSteps
    }

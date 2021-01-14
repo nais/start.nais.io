@@ -52,7 +52,7 @@ jobs:
     steps:
     - uses: "actions/checkout@v2"
     - uses: "gradle/wrapper-validation-action@v1"
-    - uses: "actions/cache@v1"
+    - uses: "actions/cache@v2"
       with:
         "path": "~/.gradle/caches"
         "key": "${dollar}{{ runner.os }}-gradle-${dollar}{{ hashFiles('**/*.gradle.kts') }}"
@@ -67,7 +67,7 @@ jobs:
         \ ${dollar}GITHUB_REPOSITORY --password-stdin https://docker.pkg.github.com && docker\
         \ push ${dollar}{IMAGE}"
       env:
-        "GITHUB_TOKEN": " ${dollar}{{ secrets.GITHUB_TOKEN }}"
+        "GITHUB_TOKEN": "${dollar}{{ secrets.GITHUB_TOKEN }}"
   deployToDev:
     name: "Deploy to dev"
     runs-on: "ubuntu-latest"
@@ -108,7 +108,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
     - uses: "actions/checkout@v2"
-    - uses: "actions/cache@v1"
+    - uses: "actions/cache@v2"
       with:
         "path": "~/.npm"
         "key": "${dollar}{{ runner.os }}-node-${dollar}{{ hashFiles('**/package-lock.json') }}"
@@ -118,6 +118,12 @@ jobs:
       run: "npm install"
     - name: "compile and run tests"
       run: "npm run build"
+    - name: "Build and publish Docker image"
+      run: "docker build --tag ${dollar}{IMAGE} . && echo ${dollar}GITHUB_TOKEN | docker login --username\
+        \ ${dollar}GITHUB_REPOSITORY --password-stdin https://docker.pkg.github.com && docker\
+        \ push ${dollar}{IMAGE}"
+      env:
+        "GITHUB_TOKEN": "${dollar}{{ secrets.GITHUB_TOKEN }}"
   deployToDev:
     name: "Deploy to dev"
     runs-on: "ubuntu-latest"
@@ -142,4 +148,60 @@ jobs:
         "CLUSTER": "prod-gcp"
         "RESOURCE": ".nais/nais.yaml"
         "VARS": ".nais/prod.yaml"
+""".trimIndent()
+
+val mavenJvmWorkflowYaml = """
+   name: "tulleflow"
+   on:
+     push:
+       branches:
+       - "main"
+   env:
+     "IMAGE": "docker.pkg.github.com/org/app:version"
+   jobs:
+     build:
+       name: "build"
+       runs-on: "ubuntu-latest"
+       steps:
+       - uses: "actions/checkout@v2"
+       - uses: "actions/cache@v2"
+         with:
+           "path": "~/.m2/repository"
+           "key": "${dollar}{{ runner.os }}-maven-${dollar}{{ hashFiles('**/pom.xml') }}"
+           "restore-keys": "${dollar}{{ runner.os }}-maven-"
+       - uses: "actions/setup-java@v1"
+         with:
+           "java-version": "15"
+       - name: "compile and run tests"
+         run: "mvn --settings .m2/settings.xml --quiet install"
+       - name: "Build and publish Docker image"
+         run: "docker build --tag ${dollar}{IMAGE} . && echo ${dollar}GITHUB_TOKEN | docker login --username\
+           \ ${dollar}GITHUB_REPOSITORY --password-stdin https://docker.pkg.github.com && docker\
+           \ push ${dollar}{IMAGE}"
+         env:
+           "GITHUB_TOKEN": "${dollar}{{ secrets.GITHUB_TOKEN }}"
+     deployToDev:
+       name: "Deploy to dev"
+       runs-on: "ubuntu-latest"
+       steps:
+       - uses: "actions/checkout@v2"
+       - name: "Deploy to dev-gcp"
+         uses: "nais/deploy/actions/deploy@v1"
+         env:
+           "APIKEY": "${dollar}{{ secrets.NAIS_DEPLOY_APIKEY }}"
+           "CLUSTER": "dev-gcp"
+           "RESOURCE": ".nais/nais.yaml"
+           "VARS": ".nais/dev.yaml"
+     deployToProd:
+       name: "Deploy to prod"
+       runs-on: "ubuntu-latest"
+       steps:
+       - uses: "actions/checkout@v2"
+       - name: "Deploy to prod-gcp"
+         uses: "nais/deploy/actions/deploy@v1"
+         env:
+           "APIKEY": "${dollar}{{ secrets.NAIS_DEPLOY_APIKEY }}"
+           "CLUSTER": "prod-gcp"
+           "RESOURCE": ".nais/nais.yaml"
+           "VARS": ".nais/prod.yaml"
 """.trimIndent()

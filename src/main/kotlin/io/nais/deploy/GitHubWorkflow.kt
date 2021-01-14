@@ -54,14 +54,14 @@ data class BuildStep(
 
 private val dockerImageStep = BuildStep(
    name = "Build and publish Docker image",
-   env = mapOf("GITHUB_TOKEN" to " \${{ secrets.GITHUB_TOKEN }}"),
+   env = mapOf("GITHUB_TOKEN" to "\${{ secrets.GITHUB_TOKEN }}"),
    run = "docker build --tag \${IMAGE} . && echo \$GITHUB_TOKEN | docker login --username \$GITHUB_REPOSITORY --password-stdin https://docker.pkg.github.com && docker push \${IMAGE}"
 )
 
 val gradleJvmBuildSteps = listOf(
    BuildStep(uses = "gradle/wrapper-validation-action@v1"),
    BuildStep(
-      uses = "actions/cache@v1",
+      uses = "actions/cache@v2",
       with = mapOf(
          "path" to "~/.gradle/caches",
          "key" to "\${{ runner.os }}-gradle-\${{ hashFiles('**/*.gradle.kts') }}",
@@ -72,9 +72,22 @@ val gradleJvmBuildSteps = listOf(
    dockerImageStep
 )
 
+val mavenJvmBuildSteps = listOf(
+   BuildStep(
+      uses = "actions/cache@v2",
+      with = mapOf(
+         "path" to "~/.m2/repository",
+         "key" to "\${{ runner.os }}-maven-\${{ hashFiles('**/pom.xml') }}",
+         "restore-keys" to "\${{ runner.os }}-maven-",
+      )),
+   BuildStep(uses = "actions/setup-java@v1", with = mapOf("java-version" to "15")),
+   BuildStep(name = "compile and run tests", run = "mvn --settings .m2/settings.xml --quiet install"),
+   dockerImageStep
+)
+
 val nodejsBuildSteps = listOf(
    BuildStep(
-      uses = "actions/cache@v1",
+      uses = "actions/cache@v2",
       with = mapOf(
          "path" to "~/.npm",
          "key" to "\${{ runner.os }}-node-\${{ hashFiles('**/package-lock.json') }}",
@@ -83,6 +96,7 @@ val nodejsBuildSteps = listOf(
    BuildStep(uses = "actions/setup-node@v1"),
    BuildStep(name = "install dependencies", run = "npm install"),
    BuildStep(name = "compile and run tests", run = "npm run build"),
+   dockerImageStep
 )
 
 val checkoutStep = BuildStep(uses = "actions/checkout@v2")
