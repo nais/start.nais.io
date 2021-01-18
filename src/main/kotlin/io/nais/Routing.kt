@@ -5,7 +5,7 @@ import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import io.nais.deploy.asYaml
+import io.nais.deploy.serialize
 import io.nais.mapping.appVarsFrom
 import io.nais.mapping.gitHubWorkflowFrom
 import io.nais.mapping.naisApplicationFrom
@@ -28,7 +28,7 @@ fun Route.app() {
             Paths.get(".nais/nais.yaml") to naisApplicationFrom(request).serialize(),
             Paths.get(".nais/dev.yaml") to appVarsFrom(request, Environment.DEV).serialize(),
             Paths.get(".nais/prod.yaml") to appVarsFrom(request, Environment.PROD).serialize(),
-            Paths.get(".github/workflows/main.yaml") to gitHubWorkflowFrom(request).asYaml(),
+            Paths.get(".github/workflows/main.yaml") to gitHubWorkflowFrom(request).serialize(),
          ))
       }
    }

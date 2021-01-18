@@ -24,7 +24,7 @@ class GitHubWorkflowTest {
             )
          )
       )
-      assertEquals(gradleJvmWorkflowYaml, actual.asYaml())
+      assertEquals(gradleJvmWorkflowYaml, actual.serialize())
    }
 
    @Test
@@ -43,7 +43,7 @@ class GitHubWorkflowTest {
             )
          )
       )
-      assertEquals(mavenJvmWorkflowYaml, actual.asYaml())
+      assertEquals(mavenJvmWorkflowYaml, actual.serialize())
    }
 
    @Test
@@ -62,7 +62,7 @@ class GitHubWorkflowTest {
             )
          )
       )
-      assertEquals(nodejsWorkflowYaml, actual.asYaml())
+      assertEquals(nodejsWorkflowYaml, actual.serialize())
    }
 
 }

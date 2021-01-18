@@ -13,7 +13,7 @@ data class GitHubWorkflow(
    val jobs: Jobs
 )
 
-fun GitHubWorkflow.asYaml() = Yaml(configuration = YamlConfiguration(encodeDefaults = false))
+fun GitHubWorkflow.serialize() = Yaml(configuration = YamlConfiguration(encodeDefaults = false))
    .encodeToString(GitHubWorkflow.serializer(), this)
 
 @Serializable
