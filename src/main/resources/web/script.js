@@ -13,7 +13,6 @@ const post = form => {
    const formData = {
       appName: form['app'].value,
       team: form['team'].value,
-      image: form['image'].value,
       platform: form['platform'].value
    }
    fetch("/app", {
