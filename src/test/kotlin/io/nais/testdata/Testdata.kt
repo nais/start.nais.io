@@ -1,43 +1,41 @@
 package io.nais.testdata
 
-val basicNaisYaml = """
-      apiVersion: "nais.io/v1alpha1"
-      kind: "Application"
-      metadata:
-        name: "mycoolapp"
-        namespace: "myteam"
-        labels:
-          "team": "myteam"
-      spec:
-        image: "something/whatever:1"
-        liveness:
-          path: "/isalive"
-          port: 80
-          initialDelay: 20
-          timeout: 1
-        readiness:
-          path: "/isready"
-          port: 80
-          initialDelay: 20
-          timeout: 1
-        replicas:
-          min: 2
-          max: 2
-          cpuThresholdPercentage: 50
-        prometheus:
-          enabled: true
-          path: "/metrics"
-        limits:
-          cpu: "200m"
-          memory: "256Mi"
-        requests:
-          cpu: "200m"
-          memory: "256Mi"
-        ingresses:
-          {{#each ingresses as |url|}}
-            - {{url}}
-          {{/each}}
-         """.trimIndent()
+val basicNaisYaml = """apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: "mycoolapp"
+  namespace: "myteam"
+  labels:
+    "team": "myteam"
+spec:
+  image: "something/whatever:1"
+  liveness:
+    path: "/isalive"
+    port: 80
+    initialDelay: 20
+    timeout: 1
+  readiness:
+    path: "/isready"
+    port: 80
+    initialDelay: 20
+    timeout: 1
+  replicas:
+    min: 2
+    max: 2
+    cpuThresholdPercentage: 50
+  prometheus:
+    enabled: true
+    path: "/metrics"
+  limits:
+    cpu: "200m"
+    memory: "256Mi"
+  requests:
+    cpu: "200m"
+    memory: "256Mi"
+  ingresses:${' '}
+    {{#each ingresses as |url|}}
+      - {{url}}
+    {{/each}}"""
 
 private val dollar = '$' // workaround, escaping doesn't work in multiline strings (https://youtrack.jetbrains.com/issue/KT-2425)
 val gradleJvmWorkflowYaml = """
