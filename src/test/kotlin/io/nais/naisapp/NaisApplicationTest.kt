@@ -20,7 +20,7 @@ class NaisApplicationTest {
             image = "something/whatever:1"
          )
       )
-      assertEquals(basicNaisYaml, app.asYaml())
+      assertEquals(basicNaisYaml, app.serialize())
    }
 
 }

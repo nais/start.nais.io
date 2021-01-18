@@ -11,7 +11,7 @@ import io.nais.mapping.gitHubWorkflowFrom
 import io.nais.mapping.naisApplicationFrom
 import io.nais.metrics.Metrics
 import io.nais.naisapp.Environment
-import io.nais.naisapp.asYaml
+import io.nais.naisapp.serialize
 import io.nais.request.Request
 import io.nais.zip.zipTo
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -25,9 +25,9 @@ fun Route.app() {
       call.response.header(HttpHeaders.ContentDisposition, "attachment; filename=${request.appName}.zip")
       call.respondOutputStream(ContentType.Application.Zip, HttpStatusCode.OK) {
          zipTo(this, mapOf(
-            Paths.get(".nais/nais.yaml") to naisApplicationFrom(request).asYaml(),
-            Paths.get(".nais/dev.yaml") to appVarsFrom(request, Environment.DEV).asYaml(),
-            Paths.get(".nais/prod.yaml") to appVarsFrom(request, Environment.PROD).asYaml(),
+            Paths.get(".nais/nais.yaml") to naisApplicationFrom(request).serialize(),
+            Paths.get(".nais/dev.yaml") to appVarsFrom(request, Environment.DEV).serialize(),
+            Paths.get(".nais/prod.yaml") to appVarsFrom(request, Environment.PROD).serialize(),
             Paths.get(".github/workflows/main.yaml") to gitHubWorkflowFrom(request).asYaml(),
          ))
       }

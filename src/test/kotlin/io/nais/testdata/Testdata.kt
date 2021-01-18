@@ -33,7 +33,10 @@ val basicNaisYaml = """
         requests:
           cpu: "200m"
           memory: "256Mi"
-        ingresses: []
+        ingresses:
+          {{#each ingresses as |url|}}
+            - {{url}}
+          {{/each}}
          """.trimIndent()
 
 private val dollar = '$' // workaround, escaping doesn't work in multiline strings (https://youtrack.jetbrains.com/issue/KT-2425)

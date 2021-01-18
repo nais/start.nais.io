@@ -15,7 +15,7 @@ class VarsTest {
          ingresses:
          - "http://localhost"
       """.trimIndent()
-      assertEquals(expected, vars.asYaml())
+      assertEquals(expected, vars.serialize())
    }
 
 }

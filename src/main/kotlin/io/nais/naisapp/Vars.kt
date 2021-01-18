@@ -13,7 +13,7 @@ data class Vars(
 )
 
 @ExperimentalSerializationApi
-fun Vars.asYaml() = Yaml.default.encodeToString(Vars.serializer(), this)
+fun Vars.serialize() = Yaml.default.encodeToString(Vars.serializer(), this)
 
 enum class Environment {
    DEV, PROD

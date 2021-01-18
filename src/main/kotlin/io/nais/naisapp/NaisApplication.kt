@@ -1,10 +1,8 @@
 package io.nais.naisapp
 
 import com.charleskorn.kaml.Yaml
-import io.nais.serialize.URLSerializer
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import java.net.URL
 
 @Serializable
 @ExperimentalSerializationApi
@@ -16,7 +14,14 @@ data class NaisApplication(
 )
 
 @ExperimentalSerializationApi
-fun NaisApplication.asYaml() = Yaml.default.encodeToString(NaisApplication.serializer(), this)
+fun NaisApplication.serialize() =
+   Yaml.default.encodeToString(NaisApplication.serializer(), this)
+      .let {
+         it.replace(""""##REPLACE_INGRESS##"""", """
+    {{#each ingresses as |url|}}
+      - {{url}}
+    {{/each}}""")
+      }
 
 @Serializable
 data class Metadata(
@@ -35,7 +40,7 @@ data class Spec(
    val prometheus: Prometheus = Prometheus(path = "/metrics"),
    val limits: Resources = Resources(),
    val requests: Resources = Resources(),
-   val ingresses: List<@Serializable(with = URLSerializer::class) URL> = emptyList()
+   val ingresses: String = "##REPLACE_INGRESS##"
 )
 
 @Serializable
