@@ -8,7 +8,7 @@ metadata:
   labels:
     "team": "myteam"
 spec:
-  image: "something/whatever:1"
+  image: {{image}}
   liveness:
     path: "/isalive"
     port: 80

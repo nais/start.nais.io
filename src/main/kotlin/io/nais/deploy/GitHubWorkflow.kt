@@ -9,7 +9,7 @@ import kotlinx.serialization.Serializable
 data class GitHubWorkflow(
    val name: String = "Build and deploy the main branch",
    val on: PushBuildTrigger,
-   val env: Map<String, String>,
+   val env: Map<String, String> = mapOf("image" to "{{image}}"),
    val jobs: Jobs
 )
 

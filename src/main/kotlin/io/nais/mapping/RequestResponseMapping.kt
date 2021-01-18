@@ -16,9 +16,7 @@ fun naisApplicationFrom(req: Request) = NaisApplication(
       namespace = req.team,
       labels = mapOf("team" to req.team)
    ),
-   spec = Spec(
-      image = req.image,
-   )
+   spec = Spec()
 )
 
 @ExperimentalSerializationApi
@@ -28,7 +26,6 @@ fun appVarsFrom(req: Request, env: Environment) = Vars(
 
 fun gitHubWorkflowFrom(req: Request) = GitHubWorkflow(
    name = "Build and deploy ${req.appName}",
-   env = mapOf("IMAGE" to req.image),
    jobs = Jobs(
       build = Job(name = "build", runsOn = "ubuntu-latest", steps = listOf(checkoutStep) + buildStepsFor(req.platform)),
       deployToDev = Job(name = "Deploy to dev", runsOn = "ubuntu-latest", steps = listOf(checkoutStep) + deploySteps("dev-gcp")),

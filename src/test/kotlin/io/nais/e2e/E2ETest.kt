@@ -39,7 +39,7 @@ class E2ETest {
       withTestApplication({ mainModule() }) {
          val call = handleRequest(method = Post, uri = "/app") {
             addHeader("Content-Type", "application/json")
-            setBody("""{"appName": "myeapp", "team": "myteam", "image": "img", "platform": "JVM_GRADLE"}""")
+            setBody("""{"appName": "myeapp", "team": "myteam", "platform": "JVM_GRADLE"}""")
          }
          assertEquals(OK, call.response.status())
          assertTrue(call.response.headers["Content-Type"] == "application/zip")
@@ -51,7 +51,7 @@ class E2ETest {
       withTestApplication({ mainModule() }) {
          val call = handleRequest(method = Post, uri = "/app") {
             addHeader("Content-Type", "application/json")
-            setBody("""{"team": "myteam", "image": "img", "platform": "JVM_GRADLE"}""")
+            setBody("""{"team": "myteam", "platform": "JVM_GRADLE"}""")
          }
          assertEquals(BadRequest, call.response.status())
          assertTrue(call.response.content?.contains("'appName' is required") ?: false)

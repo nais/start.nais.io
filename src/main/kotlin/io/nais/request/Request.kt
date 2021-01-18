@@ -6,7 +6,6 @@ import kotlinx.serialization.Serializable
 class Request (
    val team: String,
    val appName: String,
-   val image: String,
    val platform: PLATFORM
 )
 

@@ -21,6 +21,8 @@ fun NaisApplication.serialize() =
     {{#each ingresses as |url|}}
       - {{url}}
     {{/each}}""")
+      }.let {
+         it.replace(""""##REPLACE_IMAGE##"""", "{{image}}")
       }
 
 @Serializable
@@ -33,7 +35,7 @@ data class Metadata(
 @Serializable
 @ExperimentalSerializationApi
 data class Spec(
-   val image: String,
+   val image: String = "##REPLACE_IMAGE##",
    val liveness: StatusEndpoint = StatusEndpoint(path = "/isalive"),
    val readiness: StatusEndpoint = StatusEndpoint(path = "/isready"),
    val replicas: Replicas = Replicas(),
