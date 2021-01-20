@@ -1,38 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <link rel="icon" type="image/png" sizes="32x32" href="images/nais-logo.png">
-   <link rel="stylesheet" type="text/css" href="style.css" />
-   <title>NAIS starter</title>
+   <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <title>NAIS app starter</title>
+   <link rel="stylesheet" href="style.css" />
+   <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="images/nais-logo2.png"
+   />
 </head>
 <body>
-<img src="images/nais-logo.png" class="center">
-<div class="center heading">Generer <a href="https://doc.nais.io/nais-application/nais.yaml/reference/">NAIS YAML</a> og <a href="https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions">GitHub Workflow</a> med fornuftige defaults for appen din</div>
-<div class="center">
-   <ul>
-      <li>Fyll ut feltene nedenfor og trykk "Generer"</li>
-      <li>Pakk ut zip-fila i prosjektkatalogen din</li>
-      <li>Lag en <a href="https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets">secret</a> kalt NAIS_DEPLOY_APIKEY i repoet ditt som beskrevet <a href="https://doc.nais.io/deployment/#set-it-up">her</a></li>
-      <li>Modifiser de nye filene hvis du trenger tilpasninger</li>
-      <li>Profit!</li>
-   </ul>
-</div>
-<div id="errmsg" class="center"></div>
-<form class="form-style-8">
-   <label for="app">Navn på app</label><input type="text" id="app" name="app" required />
-   <label for="team">Navn på team</label><input type="text" id="team" name="team" required />
-   <label for="platform">Plattform</label>
-   <select id="platform">
-      <option value="JVM_GRADLE">JVM app bygget med Gradle</option>
-      <option value="JVM_MAVEN">JVM app bygget med Maven</option>
-      <option value="NODEJS">NodeJS app bygget med npm</option>
-   </select>
-   <button id="send">Generer</button>
-</form>
+<main>
+   <section class="container">
+      <div class="left">
+         <img src="images/nais-logo2.png" class="logo" alt="nais logo" />
+         <h3>App starter</h3>
+      </div>
+      <div class="right">
+         <form>
+            <input type="text" name="app" id="app" placeholder="Navn på app" required />
+            <input type="text" name="team" id="team" placeholder="Navn på team" required />
 
-<script src="script.js"></script>
-
+            <div class="radio-row">
+               <label for="jvm_gradle" class="btn-radio">
+                  <input type="radio" id="jvm_gradle" name="platform" value="JVM_GRADLE" checked />
+                  <svg width="20px" height="20px" viewBox="0 0 20 20">
+                     <circle cx="10" cy="10" r="9"></circle>
+                     <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path>
+                     <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path>
+                  </svg>
+                  <span>Gradle</span>
+               </label>
+               <label for="jvm_maven" class="btn-radio">
+                  <input type="radio" id="jvm_maven" name="platform" value="JVM_MAVEN" />
+                  <svg width="20px" height="20px" viewBox="0 0 20 20">
+                     <circle cx="10" cy="10" r="9"></circle>
+                     <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path>
+                     <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path>
+                  </svg>
+                  <span>Maven</span>
+               </label>
+               <label for="nodejs" class="btn-radio">
+                  <input type="radio" id="nodejs" name="platform" value="NODEJS" />
+                  <svg width="20px" height="20px" viewBox="0 0 20 20">
+                     <circle cx="10" cy="10" r="9"></circle>
+                     <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path>
+                     <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path>
+                  </svg>
+                  <span>Node.js/NPM</span>
+               </label>
+            </div>
+            <div class="btn-right"><button id="send" disabled>Generer</button></div>
+            <div id="errmsg"></div>
+         </form>
+      </div>
+   </section>
+</main>
+<script type="application/javascript" src="script.js"></script>
 </body>
 </html>

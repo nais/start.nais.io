@@ -1,112 +1,142 @@
-/* #005b82 */
-
-body {
+* {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
    font-family: 'Open Sans Condensed', arial, sans, sans-serif;
 }
 
-form {
-   text-align: left;
-   width: 70%;
-   padding: 30px;
-   background: #FFFFFF;
-   margin: 0.5em auto;
-   box-shadow: 0 0 15px rgba(0, 0, 0, 0.22);
-
-}
-form h2 {
-   background: #4D4D4D;
-   text-transform: uppercase;
-   color: #797979;
-   font-size: 18px;
-   font-weight: 100;
-   padding: 20px;
-   margin: -30px -30px 30px -30px;
-}
-
-form input[type="text"],
-form input[type="date"],
-form input[type="datetime"],
-form input[type="email"],
-form input[type="number"],
-form input[type="search"],
-form input[type="time"],
-form input[type="url"],
-form input[type="password"],
-form textarea,
-form select
-{
-   box-sizing: border-box;
-   outline: none;
-   display: block;
-   width: 100%;
-   padding: 7px;
-   border: none;
-   border-bottom: 1px solid #ddd;
-   background: transparent;
-   margin-bottom: 10px;
-   font: 16px Arial, Helvetica, sans-serif;
-   height: 45px;
-}
-
-form input:invalid {
-   border-color: #f7c1c1;
-}
-
-form textarea {
-   resize:none;
-   overflow: hidden;
-}
-
-form button {
-   box-shadow: inset 0 1px 0 0 #45D6D6;
-   background-color: #2CBBBB;
-   border: 1px solid #27A0A0;
-   display: inline-block;
-   cursor: pointer;
-   color: #FFFFFF;
-   font-family: 'Open Sans Condensed', sans-serif;
-   font-size: 14px;
-   padding: 8px 18px;
-   text-decoration: none;
-   text-transform: uppercase;
-}
-
-form button:hover {
-   background:linear-gradient(to bottom, #34CACA 5%, #30C9C9 100%);
-   background-color:#34CACA;
-}
-
-.center {
-   text-align: center;
-   display: block;
-   margin-left: auto;
-   margin-right: auto;
-}
-
-ul {
-   list-style: none;
-   display: inline-block;
-   text-align: left;
-}
-
-ul li {
-   margin: 0.5em;
-}
-
-ul li::before {
-   content: "📌";
-   #display: inline-block;
-   margin-right: 1em;
-}
-
-.heading {
-   font-size: 18px;
-   font-weight: bold;
-   margin-top: 1em;
+main {
+   min-height: 100vh;
+   background: linear-gradient(to right top, white, #235aa0);
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
 }
 
 #errmsg {
-   display: block;
-   padding: 1em;
+   display: none;
    color: red;
+}
+
+.container {
+   display: flex;
+   flex-direction: row;
+   width: 70%;
+   height: 80vh;
+}
+
+.left {
+   width: 30%;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   padding: 5px;
+   color: white;
+   background: #235a80;
+}
+
+.right {
+   width: 70%;
+   padding: 5px;
+   background: white;
+   display: flex;
+   justify-content: center;
+}
+
+input[type="text"],
+textarea {
+   display: block;
+   width: 100%;
+   padding-top: 1em;
+   padding-bottom: 1em;
+   margin-top: 1em;
+   margin-bottom: 1em;
+   font-size: large;
+   border: 1px solid #235a80;
+   box-shadow: 1px 1px 1px #235a80;
+}
+
+form {
+   width: 70%;
+}
+
+.radio-row {
+   margin-top: 2em;
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+}
+
+button {
+   background: orange;
+   width: 7em;
+   height: 30px;
+   font-size: 20px;
+   margin-top: 2em;
+}
+
+.btn-right {
+   display: flex;
+   justify-content: right;
+}
+
+.btn-radio {
+   cursor: pointer;
+   display: inline-block;
+   float: left;
+   -webkit-user-select: none;
+   user-select: none;
+}
+.btn-radio:not(:first-child) {
+   margin-left: 20px;
+}
+@media screen and (max-width: 480px) {
+   .btn-radio {
+      display: block;
+      float: none;
+   }
+   .btn-radio:not(:first-child) {
+      margin-left: 0;
+      margin-top: 15px;
+   }
+}
+.btn-radio svg {
+   fill: none;
+   vertical-align: middle;
+}
+.btn-radio svg circle {
+   stroke-width: 2;
+   stroke: #C8CCD4;
+}
+.btn-radio svg path {
+   stroke: #008FFF;
+}
+.btn-radio svg path.inner {
+   stroke-width: 6;
+   stroke-dasharray: 19;
+   stroke-dashoffset: 19;
+}
+.btn-radio svg path.outer {
+   stroke-width: 2;
+   stroke-dasharray: 57;
+   stroke-dashoffset: 57;
+}
+.btn-radio input {
+   display: none;
+}
+.btn-radio input:checked + svg path {
+   transition: all 0.4s ease;
+}
+.btn-radio input:checked + svg path.inner {
+   stroke-dashoffset: 38;
+   transition-delay: 0.3s;
+}
+.btn-radio input:checked + svg path.outer {
+   stroke-dashoffset: 0;
+}
+.btn-radio span {
+   display: inline-block;
+   vertical-align: middle;
 }

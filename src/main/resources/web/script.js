@@ -1,12 +1,16 @@
-document.getElementById("send").addEventListener("click", event => {
-   const form = document.forms[0]
-   const missingValues = validateAllValuesPresent(form)
-   if (missingValues) {
-      setErrorMsg("Alle verdier må fylles ut")
-   } else {
-      post(form)
-   }
+const sendBtn = document.getElementById("send")
+const form = document.forms[0]
+
+sendBtn.addEventListener("click", event => {
    event.preventDefault()
+   post(form)
+})
+
+document.querySelectorAll('input[type=text]').forEach(txtField => {
+   txtField.addEventListener('keyup', event => {
+      event.preventDefault()
+      sendBtn.disabled = !form.checkValidity()
+   })
 })
 
 const post = form => {
@@ -33,11 +37,6 @@ const post = form => {
       setErrorMsg(`oh noes: ${err}`)
    })
 }
-
-const validateAllValuesPresent = form =>
-   Array.from(form.elements)
-      .filter(element => element.id !== "send")
-      .some(element => !element.value || element.value.trim().length === 0)
 
 const saveBlob = (blob, fileName) => {
    const a = document.createElement("a")
