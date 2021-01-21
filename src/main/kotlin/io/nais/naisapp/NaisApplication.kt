@@ -48,7 +48,7 @@ data class Spec(
 @Serializable
 data class StatusEndpoint(
    val path: String,
-   val port: Int = 80,
+   val port: Int = 8080,
    val initialDelay: Int = 20,
    val timeout: Int = 1
 )
