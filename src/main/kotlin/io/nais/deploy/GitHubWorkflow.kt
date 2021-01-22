@@ -102,7 +102,11 @@ val nodejsBuildSteps = listOf(
 val checkoutStep = BuildStep(uses = "actions/checkout@v2")
 
 fun deploySteps(clusterName: String) = listOf(
-   BuildStep(name = "Deploy to $clusterName", uses = "nais/deploy/actions/deploy@v1", env = mapOf(
+   BuildStep(
+      name = "Deploy to $clusterName",
+      uses = "nais/deploy/actions/deploy@v1",
+      needs = "build",
+      env = mapOf(
       "APIKEY" to "\${{ secrets.NAIS_DEPLOY_APIKEY }}",
       "CLUSTER" to clusterName,
       "RESOURCE" to ".nais/nais.yaml",

@@ -76,6 +76,7 @@ jobs:
     - uses: "actions/checkout@v2"
     - name: "Deploy to dev-gcp"
       uses: "nais/deploy/actions/deploy@v1"
+      needs: "build"
       env:
         "APIKEY": "${dollar}{{ secrets.NAIS_DEPLOY_APIKEY }}"
         "CLUSTER": "dev-gcp"
@@ -88,6 +89,7 @@ jobs:
     - uses: "actions/checkout@v2"
     - name: "Deploy to prod-gcp"
       uses: "nais/deploy/actions/deploy@v1"
+      needs: "build"
       env:
         "APIKEY": "${dollar}{{ secrets.NAIS_DEPLOY_APIKEY }}"
         "CLUSTER": "prod-gcp"
@@ -132,6 +134,7 @@ jobs:
     - uses: "actions/checkout@v2"
     - name: "Deploy to dev-gcp"
       uses: "nais/deploy/actions/deploy@v1"
+      needs: "build"
       env:
         "APIKEY": "${dollar}{{ secrets.NAIS_DEPLOY_APIKEY }}"
         "CLUSTER": "dev-gcp"
@@ -144,6 +147,7 @@ jobs:
     - uses: "actions/checkout@v2"
     - name: "Deploy to prod-gcp"
       uses: "nais/deploy/actions/deploy@v1"
+      needs: "build"
       env:
         "APIKEY": "${dollar}{{ secrets.NAIS_DEPLOY_APIKEY }}"
         "CLUSTER": "prod-gcp"
@@ -188,6 +192,7 @@ val mavenJvmWorkflowYaml = """
        - uses: "actions/checkout@v2"
        - name: "Deploy to dev-gcp"
          uses: "nais/deploy/actions/deploy@v1"
+         needs: "build"
          env:
            "APIKEY": "${dollar}{{ secrets.NAIS_DEPLOY_APIKEY }}"
            "CLUSTER": "dev-gcp"
@@ -200,6 +205,7 @@ val mavenJvmWorkflowYaml = """
        - uses: "actions/checkout@v2"
        - name: "Deploy to prod-gcp"
          uses: "nais/deploy/actions/deploy@v1"
+         needs: "build"
          env:
            "APIKEY": "${dollar}{{ secrets.NAIS_DEPLOY_APIKEY }}"
            "CLUSTER": "prod-gcp"
