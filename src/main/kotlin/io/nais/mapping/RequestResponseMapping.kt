@@ -9,6 +9,8 @@ import io.nais.request.Request
 import kotlinx.serialization.ExperimentalSerializationApi
 import java.net.URL
 
+private val dollar = '$' // workaround, escaping doesn't work in multiline strings (https://youtrack.jetbrains.com/issue/KT-2425)
+
 @ExperimentalSerializationApi
 fun naisApplicationFrom(req: Request) = NaisApplication(
    metadata = Metadata(
@@ -35,7 +37,8 @@ fun gitHubWorkflowFrom(req: Request) = GitHubWorkflow(
       push = PushEvent(
          branches = listOf("main")
       )
-   )
+   ),
+   env = mapOf("IMAGE" to "docker.pkg.github.com/${dollar}{{ github.repository }}/${req.appName}:${dollar}{{ github.sha }}")
 )
 
 private fun buildStepsFor(platform: PLATFORM) =
