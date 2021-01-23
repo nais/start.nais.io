@@ -39,7 +39,7 @@ class E2ETest {
       withTestApplication({ mainModule() }) {
          val call = handleRequest(method = Post, uri = "/app") {
             addHeader("Content-Type", "application/json")
-            setBody("""{"appName": "myeapp", "team": "myteam", "platform": "JVM_GRADLE"}""")
+            setBody("""{"appName": "myeapp", "team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
          }
          assertEquals(OK, call.response.status())
          assertTrue(call.response.headers["Content-Type"] == "application/zip")
@@ -51,7 +51,7 @@ class E2ETest {
       withTestApplication({ mainModule() }) {
          val call = handleRequest(method = Post, uri = "/app") {
             addHeader("Content-Type", "application/json")
-            setBody("""{"team": "myteam", "platform": "JVM_GRADLE"}""")
+            setBody("""{"team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
          }
          assertEquals(BadRequest, call.response.status())
          assertTrue(call.response.content?.contains("'appName' is required") ?: false)
@@ -63,12 +63,13 @@ class E2ETest {
       withTestApplication({
          observabilityModule()
       }) {
-         val aliveCall = handleRequest(method = Get, uri = "/internal/isalive")
-         val readyCall = handleRequest(method = Get, uri = "/internal/isready")
-         val metricsCall = handleRequest(method = Get, uri = "/internal/metrics")
-         assertEquals(OK, aliveCall.response.status())
-         assertEquals(OK, readyCall.response.status())
-         assertEquals(OK, metricsCall.response.status())
+         listOf(
+            handleRequest(method = Get, uri = "/internal/isalive"),
+            handleRequest(method = Get, uri = "/internal/isready"),
+            handleRequest(method = Get, uri = "/internal/metrics")
+         ).forEach { call ->
+            assertEquals(OK, call.response.status())
+         }
       }
    }
 

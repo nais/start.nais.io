@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+
 val ktorVersion = "1.4.2"
 val logbackVersion = "1.2.3"
 val logstashEncoderVersion = "6.5"
@@ -69,6 +71,10 @@ tasks {
 
    withType<Test> {
       useJUnitPlatform()
+      testLogging {
+         events("passed", "skipped", "failed")
+         exceptionFormat = FULL
+      }
    }
 
    withType<Wrapper> {

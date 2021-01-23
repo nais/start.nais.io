@@ -3,10 +3,11 @@ package io.nais.request
 import kotlinx.serialization.Serializable
 
 @Serializable
-class Request (
+data class Request (
    val team: String,
    val appName: String,
-   val platform: PLATFORM
+   val platform: PLATFORM,
+   val extras: List<String>
 )
 
 enum class PLATFORM {

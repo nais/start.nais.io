@@ -11,14 +11,14 @@ spec:
   image: {{image}}
   liveness:
     path: "/isalive"
-    port: 80
+    port: 8080
     initialDelay: 20
-    timeout: 1
+    timeout: 60
   readiness:
     path: "/isready"
-    port: 80
+    port: 8080
     initialDelay: 20
-    timeout: 1
+    timeout: 60
   replicas:
     min: 2
     max: 2
@@ -39,13 +39,14 @@ spec:
 
 private val dollar = '$' // workaround, escaping doesn't work in multiline strings (https://youtrack.jetbrains.com/issue/KT-2425)
 val gradleJvmWorkflowYaml = """
-name: "tulleflow"
+name: "Build and deploy mycoolapp"
 on:
   push:
     branches:
     - "main"
 env:
-  "IMAGE": "docker.pkg.github.com/org/app:version"
+  "IMAGE": "docker.pkg.github.com/${dollar}{{ github.repository }}/mycoolapp:${dollar}{{ github.sha\
+    \ }}"
 jobs:
   build:
     name: "build"
@@ -98,13 +99,14 @@ jobs:
 """.trimIndent()
 
 val nodejsWorkflowYaml = """
-name: "tulleflow"
+name: "Build and deploy mycoolapp"
 on:
   push:
     branches:
     - "main"
 env:
-  "IMAGE": "docker.pkg.github.com/org/app:version"
+  "IMAGE": "docker.pkg.github.com/${dollar}{{ github.repository }}/mycoolapp:${dollar}{{ github.sha\
+    \ }}"
 jobs:
   build:
     name: "build"
@@ -156,13 +158,14 @@ jobs:
 """.trimIndent()
 
 val mavenJvmWorkflowYaml = """
-   name: "tulleflow"
+   name: "Build and deploy mycoolapp"
    on:
      push:
        branches:
        - "main"
    env:
-     "IMAGE": "docker.pkg.github.com/org/app:version"
+     "IMAGE": "docker.pkg.github.com/${dollar}{{ github.repository }}/mycoolapp:${dollar}{{ github.sha\
+       \ }}"
    jobs:
      build:
        name: "build"

@@ -1,21 +1,23 @@
 package io.nais.naisapp
 
 import com.charleskorn.kaml.Yaml
+import com.charleskorn.kaml.YamlConfiguration
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 
 @Serializable
 @ExperimentalSerializationApi
 data class NaisApplication(
-   val apiVersion: String = "nais.io/v1alpha1",
-   val kind: String = "Application",
+   val apiVersion: String,
+   val kind: String,
    val metadata: Metadata,
    val spec: Spec
 )
 
 @ExperimentalSerializationApi
 fun NaisApplication.serialize() =
-   Yaml.default.encodeToString(NaisApplication.serializer(), this)
+   Yaml(configuration = YamlConfiguration(encodeDefaults = false))
+      .encodeToString(NaisApplication.serializer(), this)
       .let {
          it.replace(""""##REPLACE_INGRESS##"""", """
     {{#each ingresses as |url|}}
@@ -29,45 +31,80 @@ fun NaisApplication.serialize() =
 data class Metadata(
    val name: String,
    val namespace: String,
-   val labels: Map<String, String> = emptyMap()
+   val labels: Map<String, String>
 )
 
 @Serializable
 @ExperimentalSerializationApi
 data class Spec(
-   val image: String = "##REPLACE_IMAGE##",
-   val liveness: StatusEndpoint = StatusEndpoint(path = "/isalive"),
-   val readiness: StatusEndpoint = StatusEndpoint(path = "/isready"),
-   val replicas: Replicas = Replicas(),
-   val prometheus: Prometheus = Prometheus(path = "/metrics"),
-   val limits: Resources = Resources(),
-   val requests: Resources = Resources(),
-   val ingresses: String = "##REPLACE_INGRESS##"
+   val image: String,
+   val liveness: StatusEndpoint,
+   val readiness: StatusEndpoint,
+   val replicas: Replicas,
+   val prometheus: Prometheus,
+   val limits: Resources,
+   val requests: Resources,
+   val ingresses: String,
+   var azure: Azure? = null,
+   var idPorten: IdPorten? = null,
+   var gcp: GCP? = null
 )
 
 @Serializable
 data class StatusEndpoint(
    val path: String,
-   val port: Int = 80,
-   val initialDelay: Int = 20,
-   val timeout: Int = 1
+   val port: Int,
+   val initialDelay: Int,
+   val timeout: Int
 )
 
 @Serializable
 data class Replicas(
-   val min: Int = 2,
-   val max : Int = 2,
-   val cpuThresholdPercentage: Int = 50
+   val min: Int,
+   val max : Int,
+   val cpuThresholdPercentage: Int
 )
 
 @Serializable
 data class Prometheus(
-   val enabled: Boolean = true,
+   val enabled: Boolean,
    val path: String
 )
 
 @Serializable
 data class Resources(
-   val cpu: String = "200m",
-   val memory: String = "256Mi"
+   val cpu: String,
+   val memory: String
 )
+
+@Serializable
+data class IdPorten(
+   val enabled: Boolean
+)
+
+@Serializable
+data class Azure(
+   val application: AzureApplication
+)
+
+@Serializable
+data class AzureApplication(
+   val enabled: Boolean
+)
+
+@Serializable
+data class GCP(
+   val sqlInstances: List<SQLInstance>
+)
+
+@Serializable
+data class SQLInstance(
+   val type: DatabaseType,
+   val databases: Map<String, String>
+)
+
+enum class DatabaseType {
+   POSTGRES_13
+}
+
+

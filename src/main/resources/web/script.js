@@ -17,7 +17,8 @@ const post = form => {
    const formData = {
       appName: form['app'].value,
       team: form['team'].value,
-      platform: form['platform'].value
+      platform: form['platform'].value,
+      extras: Array.from(form.extras).filter(element => element.checked).map(element => element.value)
    }
    fetch("/app", {
       method: "post",

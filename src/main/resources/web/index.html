@@ -21,38 +21,50 @@
       </div>
       <div class="right">
          <form>
-            <input type="text" name="app" id="app" placeholder="Navn på app" required />
-            <input type="text" name="team" id="team" placeholder="Navn på team" required />
+            <input type="text" name="app" id="app" placeholder="App name" required />
+            <input type="text" name="team" id="team" placeholder="Team name" required />
 
-            <div class="radio-row">
-               <label for="jvm_gradle" class="btn-radio">
-                  <input type="radio" id="jvm_gradle" name="platform" value="JVM_GRADLE" checked />
-                  <svg width="20px" height="20px" viewBox="0 0 20 20">
-                     <circle cx="10" cy="10" r="9"></circle>
-                     <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path>
-                     <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path>
-                  </svg>
-                  <span>Gradle</span>
-               </label>
-               <label for="jvm_maven" class="btn-radio">
-                  <input type="radio" id="jvm_maven" name="platform" value="JVM_MAVEN" />
-                  <svg width="20px" height="20px" viewBox="0 0 20 20">
-                     <circle cx="10" cy="10" r="9"></circle>
-                     <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path>
-                     <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path>
-                  </svg>
-                  <span>Maven</span>
-               </label>
-               <label for="nodejs" class="btn-radio">
-                  <input type="radio" id="nodejs" name="platform" value="NODEJS" />
-                  <svg width="20px" height="20px" viewBox="0 0 20 20">
-                     <circle cx="10" cy="10" r="9"></circle>
-                     <path d="M10,7 C8.34314575,7 7,8.34314575 7,10 C7,11.6568542 8.34314575,13 10,13 C11.6568542,13 13,11.6568542 13,10 C13,8.34314575 11.6568542,7 10,7 Z" class="inner"></path>
-                     <path d="M10,1 L10,1 L10,1 C14.9705627,1 19,5.02943725 19,10 L19,10 L19,10 C19,14.9705627 14.9705627,19 10,19 L10,19 L10,19 C5.02943725,19 1,14.9705627 1,10 L1,10 L1,10 C1,5.02943725 5.02943725,1 10,1 L10,1 Z" class="outer"></path>
-                  </svg>
-                  <span>Node.js/NPM</span>
-               </label>
+            <div class="row row-border">
+
+               <div class="card">
+                  <h3>Build tool</h3>
+                  <div class="card-item">
+                     <label for="jvm_gradle">
+                        <input type="radio" id="jvm_gradle" name="platform" value="JVM_GRADLE" checked />
+                        <span>Gradle</span>
+                     </label>
+                  </div>
+                  <div class="card-item">
+                     <label for="jvm_maven">
+                        <input type="radio" id="jvm_maven" name="platform" value="JVM_MAVEN" />
+                        <span>Maven</span>
+                     </label>
+                  </div>
+                  <div class="card-item">
+                     <label for="nodejs">
+                        <input type="radio" id="nodejs" name="platform" value="NODEJS" />
+                        <span>NodsJS/NPM</span>
+                     </label>
+                  </div>
+               </div>
+
+               <div class="card">
+                  <h3>Extras</h3>
+                  <div class="card-item">
+                     <input type="checkbox" id="postgres" class="apple-switch" name="extras" value="postgres" />
+                     <label for="postgres" class="switch-label">Postgres</label>
+                  </div>
+                  <div class="card-item">
+                     <input type="checkbox" id="idporten" class="apple-switch" name="extras" value="idporten" />
+                     <label for="idporten" class="switch-label">ID-porten</label>
+                  </div>
+                  <div class="card-item">
+                     <input type="checkbox" id="aad" class="apple-switch" name="extras" value="aad" />
+                     <label for="aad" class="switch-label">Azure AD</label>
+                  </div>
+               </div>
             </div>
+
             <div class="btn-right"><button id="send" disabled>Generer</button></div>
             <div id="errmsg"></div>
          </form>
