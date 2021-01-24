@@ -3,7 +3,6 @@ package io.nais.e2e
 import io.ktor.http.HttpMethod.Companion.Get
 import io.ktor.http.HttpMethod.Companion.Post
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
-import io.ktor.http.HttpStatusCode.Companion.Found
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.testing.*
 import io.nais.mainModule
@@ -17,20 +16,24 @@ import org.junit.jupiter.api.Test
 class E2ETest {
 
    @Test
-   fun `root redirects to index`() {
+   fun `root serves index html file`() {
       withTestApplication({ mainModule() }) {
          val call = handleRequest(method = Get, uri = "/")
-         assertEquals(Found, call.response.status())
-         assertEquals("/index.html", call.response.headers["Location"])
+         assertEquals(OK, call.response.status())
+         assertTrue(call.response.content?.contains("<html") ?: false)
       }
    }
 
    @Test
-   fun `index is served from static resources`() {
+   fun `static files are served`() {
       withTestApplication({ mainModule() }) {
-         val call = handleRequest(method = Get, uri = "/index.html")
-         assertEquals(OK, call.response.status())
-         assertTrue(call.response.content?.contains("<html") ?: false)
+         listOf(
+            handleRequest(method = Get, uri = "/index.html"),
+            handleRequest(method = Get, uri = "/style.css"),
+            handleRequest(method = Get, uri = "/script.js")
+         ).forEach {
+            assertEquals(OK, it.response.status())
+         }
       }
    }
 

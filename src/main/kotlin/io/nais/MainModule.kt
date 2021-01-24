@@ -38,12 +38,9 @@ fun Application.mainModule() {
    }
 
    routing {
-      get("/") {
-         call.respondRedirect("/index.html")
-      }
-
       static("/") {
          resources("web")
+         defaultResource("index.html", "web")
       }
 
       app()
