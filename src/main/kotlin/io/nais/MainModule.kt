@@ -3,6 +3,7 @@ package io.nais
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
+import io.ktor.http.ContentType.Application.Zip
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.content.*
@@ -21,6 +22,7 @@ import io.nais.request.Request
 import io.nais.zip.zipTo
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
+import java.io.OutputStream
 import java.nio.file.Paths
 
 @ExperimentalSerializationApi
@@ -52,15 +54,33 @@ fun Route.app() {
    post("/app") {
       val request = call.receive<Request>()
       Metrics.countNewDownload(request.team, request.platform)
-      call.response.header(HttpHeaders.ContentDisposition, "attachment; filename=${request.appName}.zip")
-      call.respondOutputStream(ContentType.Application.Zip, OK) {
-         zipTo(this, mapOf(
-            Paths.get(".nais/nais.yaml") to naisApplicationFrom(request).serialize(),
-            Paths.get(".nais/dev.yaml") to appVarsFrom(request, Environment.DEV).serialize(),
-            Paths.get(".nais/prod.yaml") to appVarsFrom(request, Environment.PROD).serialize(),
-            Paths.get(".github/workflows/main.yaml") to gitHubWorkflowFrom(request).serialize(),
-         ))
+      if (call.request.accept() ?: "" == Zip.toString()) {
+         call.response.header(HttpHeaders.ContentDisposition, "attachment; filename=${request.appName}.zip")
+         call.respondOutputStream(Zip, OK) { zipIt(request, this) }
+      } else {
+         println(toText(request))
+         call.respondText(toText(request))
       }
    }
 }
+
+
+@ExperimentalSerializationApi
+private fun toText(request: Request) = """${naisApplicationFrom(request).serialize()}{
+---
+${appVarsFrom(request, Environment.DEV).serialize()}
+---
+${appVarsFrom(request, Environment.PROD).serialize()}
+---
+${gitHubWorkflowFrom(request).serialize()}
+"""
+
+@ExperimentalSerializationApi
+private fun zipIt(request: Request, outputStream: OutputStream) =
+   zipTo(outputStream, mapOf(
+      Paths.get(".nais/nais.yaml") to naisApplicationFrom(request).serialize(),
+      Paths.get(".nais/dev.yaml") to appVarsFrom(request, Environment.DEV).serialize(),
+      Paths.get(".nais/prod.yaml") to appVarsFrom(request, Environment.PROD).serialize(),
+      Paths.get(".github/workflows/main.yaml") to gitHubWorkflowFrom(request).serialize(),
+   ))
 

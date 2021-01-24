@@ -37,8 +37,11 @@ fun naisApplicationFrom(req: Request) = NaisApplication(
             "idporten" -> idPorten = IdPorten(true)
             "aad" -> azure = Azure(application = AzureApplication(enabled = true))
             "postgres" -> gcp = GCP(
-               sqlInstances = listOf(SQLInstance(type = POSTGRES_13,
-                  mapOf("name" to "${req.appName}-db"))))
+               sqlInstances = listOf(
+                  SQLInstance(type = POSTGRES_13,
+                     mapOf("name" to "${req.appName}-db"))
+               )
+            )
             else -> throw SerializationException("dont't know anything about $feature")
          }
       }

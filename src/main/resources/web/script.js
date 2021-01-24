@@ -14,41 +14,51 @@ document.querySelectorAll('input[type=text]').forEach(txtField => {
 })
 
 const post = form => {
-   const formData = {
-      appName: form['app'].value,
-      team: form['team'].value,
-      platform: form['platform'].value,
-      extras: Array.from(form.extras).filter(element => element.checked).map(element => element.value)
-   }
-   fetch("/app", {
-      method: "post",
-      headers: {
-         "Content-Type": "application/json"
-      },
-      body: JSON.stringify(formData)
-   }).then(async response => ({
-      blob: await response.blob(),
-      filename: filenameFrom(response.headers.get("Content-Disposition")),
-      contentType: response.headers.get("Content-Type")
-   })).then(parsedResponse => {
-      const newBlob = new Blob([parsedResponse.blob], { type: parsedResponse.contentType })
-      saveBlob(newBlob, parsedResponse.filename)
-      setErrorMsg("")
-   }).catch(err => {
+   const formAsJson = convertToJson(form)
+   makeRequest(formAsJson, "application/zip")
+      .then(response => parse(response))
+      .then(parsedResponse => {
+         saveBlob(parsedResponse)
+         setErrorMsg("")
+      }).catch(err => {
       setErrorMsg(`oh noes: ${err}`)
    })
 }
 
-const saveBlob = (blob, fileName) => {
-   const a = document.createElement("a")
-   document.body.appendChild(a)
-   a.style.cssText = "display: none"
+const convertToJson = (form) => ({
+   appName: form['app'].value,
+   team: form['team'].value,
+   platform: form['platform'].value,
+   extras: Array.from(form.extras).filter(element => element.checked).map(element => element.value)
+})
+
+const makeRequest = (form, contentType) =>
+   fetch("/app", {
+      method: "post",
+      headers: {
+         "Content-Type": "application/json",
+         "Accept": contentType
+      },
+      body: JSON.stringify(form)
+   })
+
+const parse = async (response) => ({
+   blob: await response.blob(),
+   filename: filenameFrom(response.headers.get("Content-Disposition")),
+   contentType: response.headers.get("Content-Type")
+})
+
+const saveBlob = (parsedResponse) => {
+   const blob = new Blob([parsedResponse.blob], { type: parsedResponse.contentType })
+   const anchor = document.createElement("a")
+   document.body.appendChild(anchor)
+   anchor.style.cssText = "display: none"
    const url = window.URL.createObjectURL(blob)
-   a.href = url
-   a.download = fileName
-   a.click();
+   anchor.href = url
+   anchor.download = parsedResponse.filename
+   anchor.click();
    window.URL.revokeObjectURL(url);
-   document.body.removeChild(a)
+   document.body.removeChild(anchor)
 };
 
 const filenameFrom  = contentDispositionHeader => contentDispositionHeader.split("=")[1]

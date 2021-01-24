@@ -1,5 +1,9 @@
 package io.nais.e2e
 
+import io.ktor.http.*
+import io.ktor.http.ContentType.*
+import io.ktor.http.HttpHeaders.Accept
+import io.ktor.http.HttpHeaders.ContentType
 import io.ktor.http.HttpMethod.Companion.Get
 import io.ktor.http.HttpMethod.Companion.Post
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
@@ -38,14 +42,31 @@ class E2ETest {
    }
 
    @Test
-   fun `posting a valid request yields a zipped response`() {
+   fun `asking for zip yields a zipped response`() {
       withTestApplication({ mainModule() }) {
          val call = handleRequest(method = Post, uri = "/app") {
-            addHeader("Content-Type", "application/json")
+            addHeader(ContentType, Application.Json.toString())
+            addHeader(Accept, Application.Zip.toString())
             setBody("""{"appName": "myeapp", "team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
          }
          assertEquals(OK, call.response.status())
-         assertTrue(call.response.headers["Content-Type"] == "application/zip")
+         assertTrue(call.response.headers["Content-Type"] == Application.Zip.toString())
+      }
+   }
+
+   @Test
+   fun `asking for text yields a text response`() {
+      withTestApplication({ mainModule() }) {
+         val call = handleRequest(method = Post, uri = "/app") {
+            addHeader(ContentType, "application/json")
+            addHeader(Accept, Text.Plain.toString())
+            addHeader(Accept, Text.Plain.toString())
+            setBody("""{"appName": "myeapp", "team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
+         }
+         assertEquals(OK, call.response.status())
+         assertTrue(call.response.headers["Content-Type"]?.contains(
+            Text.Plain.toString()) ?: false
+         )
       }
    }
 
@@ -53,7 +74,7 @@ class E2ETest {
    fun `posting an invalid request yields a 400 with an explanation`() {
       withTestApplication({ mainModule() }) {
          val call = handleRequest(method = Post, uri = "/app") {
-            addHeader("Content-Type", "application/json")
+            addHeader(ContentType, "application/json")
             setBody("""{"team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
          }
          assertEquals(BadRequest, call.response.status())
