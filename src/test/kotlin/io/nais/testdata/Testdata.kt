@@ -1,6 +1,6 @@
 package io.nais.testdata
 
-val basicNaisYaml = """apiVersion: "nais.io/v1alpha1"
+const val basicNaisYaml = """apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: "mycoolapp"
@@ -37,7 +37,7 @@ spec:
       - {{url}}
     {{/each}}"""
 
-private val dollar = '$' // workaround, escaping doesn't work in multiline strings (https://youtrack.jetbrains.com/issue/KT-2425)
+private val dollar = '$' // workaround, escaping doesn't work in multiline strings
 val gradleJvmWorkflowYaml = """
 name: "Build and deploy mycoolapp"
 on:
