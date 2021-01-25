@@ -1,5 +1,7 @@
 const sendBtns = document.querySelectorAll("button")
 const form = document.forms[0]
+const modal = document.getElementById("myModal");
+const closer = document.getElementsByClassName("close")[0]
 
 sendBtns.forEach(btn => {
   btn.addEventListener("click", event => {
@@ -25,8 +27,9 @@ const post = (form, acceptedContentType) => {
          if (parsedResponse.contentType === "application/zip") {
             saveBlob(parsedResponse)
          } else {
-            txt = await parsedResponse.blob.text()
-            alert(txt)
+            const txt = await parsedResponse.blob.text()
+            document.getElementById("modaltxt").textContent = txt
+            modal.style.display = "block"
          }
          setErrorMsg("")
       }).catch(err => {
@@ -78,3 +81,14 @@ const setErrorMsg = txt => {
    element.textContent = txt
    element.style.display = txt.trim().length === 0 ? "none" : "block"
 }
+
+closer.onclick = () => {
+   modal.style.display = "none"
+}
+
+window.onclick = (event) => {
+   if (event.target === modal) {
+      modal.style.display = "none";
+   }
+}
+
