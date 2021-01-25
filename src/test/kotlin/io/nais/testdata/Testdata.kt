@@ -37,7 +37,7 @@ spec:
       - {{url}}
     {{/each}}"""
 
-private val dollar = '$' // workaround, escaping doesn't work in multiline strings
+private const val dollar = '$' // workaround, escaping doesn't work in multiline strings
 val gradleJvmWorkflowYaml = """
 name: "Build and deploy mycoolapp"
 on:

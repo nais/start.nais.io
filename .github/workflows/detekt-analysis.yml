@@ -55,7 +55,9 @@ jobs:
     - name: Run Detekt
       continue-on-error: true
       run: |
-        detekt --input ${{ github.workspace }} --report sarif:${{ github.workspace }}/detekt.sarif.json
+        detekt --input ${{ github.workspace }} --report sarif:${{ github.workspace }}/detekt.sarif.json \
+         --build-upon-default-config \
+         --config detekt-config.yaml
 
     - name: Make artifact location URIs relative
       continue-on-error: true
