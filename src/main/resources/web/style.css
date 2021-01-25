@@ -89,9 +89,10 @@ button:disabled {
    color: #235a80;
 }
 
-.btn-right {
+.buttons {
    display: flex;
-   justify-content: right;
+   justify-content: center;
+   gap: 1em;
 }
 
 input.apple-switch {

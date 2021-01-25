@@ -58,7 +58,6 @@ fun Route.app() {
          call.response.header(HttpHeaders.ContentDisposition, "attachment; filename=${request.appName}.zip")
          call.respondOutputStream(Zip, OK) { zipIt(request, this) }
       } else {
-         println(toText(request))
          call.respondText(toText(request))
       }
    }

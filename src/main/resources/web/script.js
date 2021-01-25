@@ -1,24 +1,33 @@
-const sendBtn = document.getElementById("send")
+const sendBtns = document.querySelectorAll("button")
 const form = document.forms[0]
 
-sendBtn.addEventListener("click", event => {
-   event.preventDefault()
-   post(form)
+sendBtns.forEach(btn => {
+  btn.addEventListener("click", event => {
+     event.preventDefault()
+     const acceptedContentType = event.target.id === "btnZip" ? "application/zip" : "text/plain"
+     post(form, acceptedContentType)
+  })
 })
 
 document.querySelectorAll('input[type=text]').forEach(txtField => {
    txtField.addEventListener('keyup', event => {
       event.preventDefault()
-      sendBtn.disabled = !form.checkValidity()
+      const formIsValid = form.checkValidity()
+      sendBtns.forEach(btn => btn.disabled = !formIsValid)
    })
 })
 
-const post = form => {
+const post = (form, acceptedContentType) => {
    const formAsJson = convertToJson(form)
-   makeRequest(formAsJson, "application/zip")
+   makeRequest(formAsJson, acceptedContentType)
       .then(response => parse(response))
-      .then(parsedResponse => {
-         saveBlob(parsedResponse)
+      .then(async parsedResponse => {
+         if (parsedResponse.contentType === "application/zip") {
+            saveBlob(parsedResponse)
+         } else {
+            txt = await parsedResponse.blob.text()
+            alert(txt)
+         }
          setErrorMsg("")
       }).catch(err => {
       setErrorMsg(`oh noes: ${err}`)
@@ -44,7 +53,8 @@ const makeRequest = (form, contentType) =>
 
 const parse = async (response) => ({
    blob: await response.blob(),
-   filename: filenameFrom(response.headers.get("Content-Disposition")),
+   filename: response.headers.get("Content-Disposition") &&
+      filenameFrom(response.headers.get("Content-Disposition")),
    contentType: response.headers.get("Content-Type")
 })
 

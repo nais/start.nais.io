@@ -42,7 +42,7 @@ fun naisApplicationFrom(req: Request) = NaisApplication(
                      mapOf("name" to "${req.appName}-db"))
                )
             )
-            else -> throw SerializationException("dont't know anything about $feature")
+            else -> throw SerializationException("dont't know anything about '$feature'")
          }
       }
    }
