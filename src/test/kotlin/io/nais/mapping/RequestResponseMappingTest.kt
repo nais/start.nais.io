@@ -46,4 +46,25 @@ class RequestResponseMappingTest {
       assertFalse(yaml.contains("gradle"))
    }
 
+   @Test
+   fun `idporten is added upon request`() {
+      val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS, listOf("idporten"))
+      val yaml = naisApplicationFrom(request).serialize()
+      assertTrue(yaml.contains("idPorten"))
+   }
+
+   @Test
+   fun `azure ad is added upon request`() {
+      val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS, listOf("aad"))
+      val yaml = naisApplicationFrom(request).serialize()
+      assertTrue(yaml.contains("azure"))
+   }
+
+   @Test
+   fun `postgres db is added upon request`() {
+      val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS, listOf("postgres"))
+      val yaml = naisApplicationFrom(request).serialize()
+      assertTrue(yaml.contains("sqlInstances"))
+   }
+
 }

@@ -1,6 +1,5 @@
 package io.nais.e2e
 
-import io.ktor.http.*
 import io.ktor.http.ContentType.*
 import io.ktor.http.HttpHeaders.Accept
 import io.ktor.http.HttpHeaders.ContentType
