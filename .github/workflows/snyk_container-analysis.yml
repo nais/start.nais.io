@@ -1,12 +1,17 @@
-name: Snyk Container
-on: push
+name: Snyk Container Scan
+on:
+   push:
+      branches:
+         - main
 jobs:
   snyk:
     runs-on: ubuntu-latest
+    needs: [ build ]
     steps:
     - uses: actions/checkout@v2
     - name: Build a Docker image
       run: docker build -t tulleimage .
+
     - name: Run Snyk to check Docker image for vulnerabilities
       continue-on-error: true
       uses: snyk/actions/docker@master
