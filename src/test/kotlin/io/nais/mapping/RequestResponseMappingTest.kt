@@ -5,11 +5,8 @@ import io.nais.naisapp.serialize
 import io.nais.request.PLATFORM.*
 import io.nais.request.Request
 import io.nais.testdata.basicNaisYaml
-import io.nais.testdata.gradleJvmWorkflowYaml
-import io.nais.testdata.mavenJvmWorkflowYaml
-import io.nais.testdata.nodejsWorkflowYaml
 import kotlinx.serialization.ExperimentalSerializationApi
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 @ExperimentalSerializationApi
@@ -25,22 +22,28 @@ class RequestResponseMappingTest {
    @Test
    fun `workflow for gradle jvm app`() {
       val request = Request(team = "myteam", appName = "mycoolapp", platform = JVM_GRADLE, emptyList())
-      val workflow = gitHubWorkflowFrom(request)
-      assertEquals(gradleJvmWorkflowYaml, workflow.serialize())
+      val yaml = gitHubWorkflowFrom(request).serialize()
+      assertTrue(yaml.contains("gradle"))
+      assertFalse(yaml.contains("mvn"))
+      assertFalse(yaml.contains("npm"))
    }
 
    @Test
    fun `workflow for maven jvm app`() {
       val request = Request(team = "myteam", appName = "mycoolapp", platform = JVM_MAVEN, emptyList())
-      val workflow = gitHubWorkflowFrom(request)
-      assertEquals(mavenJvmWorkflowYaml, workflow.serialize())
+      val yaml = gitHubWorkflowFrom(request).serialize()
+      assertTrue(yaml.contains("mvn"))
+      assertFalse(yaml.contains("gradle"))
+      assertFalse(yaml.contains("npm"))
    }
 
    @Test
    fun `workflow for nodejs app`() {
       val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS, emptyList())
-      val workflow = gitHubWorkflowFrom(request)
-      assertEquals(nodejsWorkflowYaml, workflow.serialize())
+      val yaml = gitHubWorkflowFrom(request).serialize()
+      assertTrue(yaml.contains("npm"))
+      assertFalse(yaml.contains("mvn"))
+      assertFalse(yaml.contains("gradle"))
    }
 
 }

@@ -63,7 +63,7 @@ data class BuildStep(
 private val dockerImageStep = BuildStep(
    name = "Build and publish Docker image",
    env = mapOf("GITHUB_TOKEN" to "\${{ secrets.GITHUB_TOKEN }}"),
-   run = "docker build --tag \${IMAGE} . && echo \$GITHUB_TOKEN | docker login --username \$GITHUB_REPOSITORY --password-stdin https://docker.pkg.github.com && docker push \${IMAGE}"
+   run = "docker build --pull --tag \${IMAGE} . && echo \$GITHUB_TOKEN | docker login --username \$GITHUB_REPOSITORY --password-stdin https://docker.pkg.github.com && docker push \${IMAGE}"
 )
 
 val gradleJvmBuildSteps = listOf(
