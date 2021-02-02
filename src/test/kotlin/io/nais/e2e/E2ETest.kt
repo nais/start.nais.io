@@ -70,6 +70,26 @@ class E2ETest {
    }
 
    @Test
+   fun `files in text response are separated with name`() {
+      withTestApplication({ mainModule() }) {
+         val call = handleRequest(method = Post, uri = "/app") {
+            addHeader(ContentType, "application/json")
+            addHeader(Accept, Text.Plain.toString())
+            setBody("""{"appName": "myeapp", "team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
+         }
+         listOf("nais.yaml", "dev.yaml", "prod.yaml", "main-workflow.yaml").forEach { filename ->
+            assertTrue(call.response.content?.contains(
+               """
+               # $filename
+               ---
+               """.trimIndent()
+            ) ?: false)
+         }
+         assertTrue(call.response.content?.contains("# nais.yaml") ?: false)
+      }
+   }
+
+   @Test
    fun `posting an invalid request yields a 400 with an explanation`() {
       withTestApplication({ mainModule() }) {
          val call = handleRequest(method = Post, uri = "/app") {

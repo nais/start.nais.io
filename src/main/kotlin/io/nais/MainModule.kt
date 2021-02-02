@@ -65,11 +65,20 @@ fun Route.app() {
 
 
 @ExperimentalSerializationApi
-private fun toText(request: Request) = """${naisApplicationFrom(request).serialize()}{
+private fun toText(request: Request) = """
+# nais.yaml
+---
+${naisApplicationFrom(request).serialize()}
+
+# dev.yaml
 ---
 ${appVarsFrom(request, Environment.DEV).serialize()}
+
+# prod.yaml
 ---
 ${appVarsFrom(request, Environment.PROD).serialize()}
+
+# main-workflow.yaml
 ---
 ${gitHubWorkflowFrom(request).serialize()}
 """
