@@ -213,3 +213,25 @@ label > input[type="radio"]:checked + * {
    cursor: pointer;
 }
 
+.tooltip {
+   position: relative;
+   display: inline-block;
+   border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+   visibility: hidden;
+   width: 120px;
+   background-color: #235a80;
+   color: #fff;
+   border: 1px solid white;
+   text-align: center;
+   padding: 5px 0;
+   position: absolute;
+   z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+   visibility: visible;
+}
+
