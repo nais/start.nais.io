@@ -44,6 +44,7 @@ data class Jobs(
 @Serializable
 data class Job(
    val name: String,
+   val needs: String? = null,
    @SerialName("runs-on")
    val runsOn: String,
    val steps: List<BuildStep>
@@ -53,7 +54,6 @@ data class Job(
 data class BuildStep(
    val name: String? = null,
    val uses: String? = null,
-   val needs: String? = null,
    val run: String? = null,
    val args: Map<String, String>? = null,
    val env: Map<String, String>? = null,
@@ -113,7 +113,6 @@ fun deploySteps(clusterName: String) = listOf(
    BuildStep(
       name = "Deploy to $clusterName",
       uses = "nais/deploy/actions/deploy@v1",
-      needs = "build",
       env = mapOf(
       "APIKEY" to "\${{ secrets.NAIS_DEPLOY_APIKEY }}",
       "CLUSTER" to clusterName,

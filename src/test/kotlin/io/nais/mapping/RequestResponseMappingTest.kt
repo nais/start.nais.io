@@ -20,6 +20,20 @@ class RequestResponseMappingTest {
    }
 
    @Test
+   fun `deploy to dev job depends on build`() {
+      val request = Request(team = "myteam", appName = "mycoolapp", platform = JVM_GRADLE, emptyList())
+      val yaml = gitHubWorkflowFrom(request).serialize()
+      assertTrue(yaml.contains("""needs: "build"""))
+   }
+
+   @Test
+   fun `deploy to prod job depends on deploy to dev`() {
+      val request = Request(team = "myteam", appName = "mycoolapp", platform = JVM_GRADLE, emptyList())
+      val yaml = gitHubWorkflowFrom(request).serialize()
+      assertTrue(yaml.contains("""needs: "deployToDev"""))
+   }
+
+   @Test
    fun `workflow for gradle jvm app`() {
       val request = Request(team = "myteam", appName = "mycoolapp", platform = JVM_GRADLE, emptyList())
       val yaml = gitHubWorkflowFrom(request).serialize()

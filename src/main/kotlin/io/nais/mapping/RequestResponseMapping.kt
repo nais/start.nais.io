@@ -57,8 +57,8 @@ fun gitHubWorkflowFrom(req: Request) = GitHubWorkflow(
    name = "Build and deploy ${req.appName}",
    jobs = Jobs(
       build = Job(name = "build", runsOn = "ubuntu-latest", steps = listOf(checkoutStep) + buildStepsFor(req.platform)),
-      deployToDev = Job(name = "Deploy to dev", runsOn = "ubuntu-latest", steps = listOf(checkoutStep) + deploySteps("dev-gcp")),
-      deployToProd = Job(name = "Deploy to prod", runsOn = "ubuntu-latest", steps = listOf(checkoutStep) + deploySteps("prod-gcp"))
+      deployToDev = Job(name = "Deploy to dev", needs = "build", runsOn = "ubuntu-latest", steps = listOf(checkoutStep) + deploySteps("dev-gcp")),
+      deployToProd = Job(name = "Deploy to prod", needs = "deployToDev", runsOn = "ubuntu-latest", steps = listOf(checkoutStep) + deploySteps("prod-gcp"))
    ),
    on = PushBuildTrigger(
       push = PushEvent(
