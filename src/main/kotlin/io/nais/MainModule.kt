@@ -1,8 +1,10 @@
 package io.nais
 
 import io.ktor.application.*
+import io.ktor.application.Application
 import io.ktor.features.*
 import io.ktor.http.*
+import io.ktor.http.ContentType.*
 import io.ktor.http.ContentType.Application.Zip
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.OK
@@ -53,8 +55,9 @@ fun Application.mainModule() {
 fun Route.app() {
    post("/app") {
       val request = call.receive<Request>()
-      Metrics.countNewDownload(request.team, request.platform)
-      if (call.request.accept() ?: "" == Zip.toString()) {
+      val requestedFormat = call.request.accept() ?: Text.Plain.toString()
+      Metrics.countNewDownload(request.team, request.platform, requestedFormat)
+      if (requestedFormat == Zip.toString()) {
          call.response.header(HttpHeaders.ContentDisposition, "attachment; filename=${request.appName}.zip")
          call.respondOutputStream(Zip, OK) { zipIt(request, this) }
       } else {

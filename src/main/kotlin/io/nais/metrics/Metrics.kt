@@ -11,14 +11,13 @@ object Metrics {
 
    private val downloadsCounter = Counter.build()
       .name("apps")
-      .labelNames("team", "platform")
-      .help("Nr of generated zip files")
+      .labelNames("team", "platform", "format")
+      .help("Nr of generated responses")
       .register(meterRegistry.prometheusRegistry)
 
    fun scrape(): String = meterRegistry.scrape()
 
-   fun countNewDownload(team: String, platform: PLATFORM) {
-      downloadsCounter.labels(team, platform.toString()).inc()
-   }
+   fun countNewDownload(team: String, platform: PLATFORM, format: String) =
+      downloadsCounter.labels(team, platform.toString(), format).inc()
 
 }
