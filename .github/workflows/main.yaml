@@ -31,7 +31,7 @@ jobs:
                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             run: |
                docker build --pull --tag ${IMAGE} .
-               echo "$GITHUB_TOKEN" | docker login --username "$GITHUB_REPOSITORY" --password-stdin https://ghcr.io
+               echo "$NAIS_ORG_GHCR_TOKEN" | docker login --username "$NAIS_ORG_GHCR_USERNAME" --password-stdin https://ghcr.io
                docker push ${IMAGE}
 
    deploy_to_dev:
