@@ -6,7 +6,7 @@ on:
          - main
 
 env:
-   IMAGE: docker.pkg.github.com/${{ github.repository }}/start.nais.io:${{ github.sha }}
+   IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
 
 jobs:
    build:
@@ -31,7 +31,7 @@ jobs:
                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             run: |
                docker build --pull --tag ${IMAGE} .
-               echo "$GITHUB_TOKEN" | docker login --username "$GITHUB_REPOSITORY" --password-stdin https://docker.pkg.github.com
+               echo "$GITHUB_TOKEN" | docker login --username "$GITHUB_REPOSITORY" --password-stdin https://ghcr.io
                docker push ${IMAGE}
 
    deploy_to_dev:
