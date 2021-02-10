@@ -2,9 +2,9 @@ apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
    name: start-nais-io
-   namespace: plattformsikkerhet
+   namespace: aura
    labels:
-      team: plattformsikkerhet
+      team: aura
 spec:
    port: 8080
    ingresses:
