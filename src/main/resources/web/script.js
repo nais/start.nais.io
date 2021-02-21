@@ -6,7 +6,7 @@ const closer = document.getElementsByClassName("close")[0]
 sendBtns.forEach(btn => {
   btn.addEventListener("click", event => {
      event.preventDefault()
-     const acceptedContentType = event.target.id === "btnZip" ? "application/zip" : "text/plain"
+     const acceptedContentType = event.target.id === "btnZip" ? "application/zip" : "application/json"
      post(form, acceptedContentType)
   })
 })
@@ -27,8 +27,8 @@ const post = (form, acceptedContentType) => {
          if (parsedResponse.contentType === "application/zip") {
             saveBlob(parsedResponse)
          } else {
-            const txt = await parsedResponse.blob.text()
-            document.getElementById("modaltxt").textContent = txt
+            document.getElementById("modaltxt").textContent =
+               await formatForDisplay(parsedResponse)
             modal.style.display = "block"
          }
          setErrorMsg("")
@@ -80,6 +80,12 @@ const setErrorMsg = txt => {
    const element = document.getElementById("errmsg")
    element.textContent = txt
    element.style.display = txt.trim().length === 0 ? "none" : "block"
+}
+
+const formatForDisplay = async (response) => {
+   const json = JSON.parse(await response.blob.text())
+   return Object.keys(json).map((key) =>
+      `${key}:\n-------------------------\n${atob(json[key])}`).join("\n\n")
 }
 
 closer.onclick = () => {

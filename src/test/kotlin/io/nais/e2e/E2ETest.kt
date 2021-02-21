@@ -54,38 +54,31 @@ class E2ETest {
    }
 
    @Test
-   fun `asking for text yields a text response`() {
+   fun `not providing an accept header yields a json response`() {
       withTestApplication({ mainModule() }) {
          val call = handleRequest(method = Post, uri = "/app") {
             addHeader(ContentType, "application/json")
-            addHeader(Accept, Text.Plain.toString())
-            addHeader(Accept, Text.Plain.toString())
-            setBody("""{"appName": "myeapp", "team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
+            setBody("""{"appName": "myapp", "team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
          }
          assertEquals(OK, call.response.status())
          assertTrue(call.response.headers["Content-Type"]?.contains(
-            Text.Plain.toString()) ?: false
+            Application.Json.toString()) ?: false
          )
       }
    }
 
    @Test
-   fun `files in text response are separated with name`() {
+   fun `asking for json yields a json response`() {
       withTestApplication({ mainModule() }) {
          val call = handleRequest(method = Post, uri = "/app") {
-            addHeader(ContentType, "application/json")
-            addHeader(Accept, Text.Plain.toString())
-            setBody("""{"appName": "myeapp", "team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
+            addHeader(ContentType, Application.Json.toString())
+            addHeader(Accept, Application.Json.toString())
+            setBody("""{"appName": "myapp", "team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
          }
-         listOf("nais.yaml", "dev.yaml", "prod.yaml", "main-workflow.yaml").forEach { filename ->
-            assertTrue(call.response.content?.contains(
-               """
-               # $filename
-               ---
-               """.trimIndent()
-            ) ?: false)
-         }
-         assertTrue(call.response.content?.contains("# nais.yaml") ?: false)
+         assertEquals(OK, call.response.status())
+         assertTrue(call.response.headers["Content-Type"]?.contains(
+            Application.Json.toString()) ?: false
+         )
       }
    }
 

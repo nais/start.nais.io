@@ -7,9 +7,13 @@ import io.nais.naisapp.Environment.DEV
 import io.nais.request.PLATFORM
 import io.nais.request.PLATFORM.*
 import io.nais.request.Request
+import io.nais.zip.zipTo
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
+import java.io.OutputStream
 import java.net.URL
+import java.nio.file.Paths
+import java.util.*
 
 private const val dollar = '$' // workaround, escaping doesn't work in multiline strings (https://youtrack.jetbrains.com/issue/KT-2425)
 
@@ -67,6 +71,25 @@ fun gitHubWorkflowFrom(req: Request) = GitHubWorkflow(
    ),
    env = mapOf("IMAGE" to "docker.pkg.github.com/${dollar}{{ github.repository }}/${req.appName}:${dollar}{{ github.sha }}")
 )
+
+@ExperimentalSerializationApi
+fun jsonResponseFrom(request: Request) = mapOf(
+   ".nais/nais.yaml" to naisApplicationFrom(request).serialize().toBase64(),
+   ".nais/dev.yaml" to appVarsFrom(request, Environment.DEV).serialize().toBase64(),
+   ".nais/prod.yaml" to appVarsFrom(request, Environment.PROD).serialize().toBase64(),
+   ".github/workflows/main.yaml" to gitHubWorkflowFrom(request).serialize().toBase64()
+)
+
+@ExperimentalSerializationApi
+fun zipIt(request: Request, outputStream: OutputStream) =
+   zipTo(outputStream, mapOf(
+      Paths.get(".nais/nais.yaml") to naisApplicationFrom(request).serialize(),
+      Paths.get(".nais/dev.yaml") to appVarsFrom(request, DEV).serialize(),
+      Paths.get(".nais/prod.yaml") to appVarsFrom(request, Environment.PROD).serialize(),
+      Paths.get(".github/workflows/main.yaml") to gitHubWorkflowFrom(request).serialize(),
+   ))
+
+private fun String.toBase64() = Base64.getEncoder().encodeToString(this.encodeToByteArray())
 
 private fun buildStepsFor(platform: PLATFORM) =
    when (platform) {

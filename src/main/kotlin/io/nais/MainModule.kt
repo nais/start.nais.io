@@ -13,26 +13,19 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
-import io.nais.deploy.serialize
-import io.nais.mapping.appVarsFrom
-import io.nais.mapping.gitHubWorkflowFrom
-import io.nais.mapping.naisApplicationFrom
+import io.nais.mapping.jsonResponseFrom
+import io.nais.mapping.zipIt
 import io.nais.metrics.Metrics
-import io.nais.naisapp.Environment
-import io.nais.naisapp.serialize
 import io.nais.request.Request
-import io.nais.zip.zipTo
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
-import java.io.OutputStream
-import java.nio.file.Paths
 
 @ExperimentalSerializationApi
 @Suppress("unused") // referenced in application.conf
 fun Application.mainModule() {
 
    install(ContentNegotiation) {
-      json(contentType = ContentType.Application.Json)
+      json()
    }
 
    install(StatusPages) {
@@ -61,37 +54,9 @@ fun Route.app() {
          call.response.header(HttpHeaders.ContentDisposition, "attachment; filename=${request.appName}.zip")
          call.respondOutputStream(Zip, OK) { zipIt(request, this) }
       } else {
-         call.respondText(toText(request))
+         call.respond(jsonResponseFrom(request))
       }
    }
 }
 
-
-@ExperimentalSerializationApi
-private fun toText(request: Request) = """
-# nais.yaml
----
-${naisApplicationFrom(request).serialize()}
-
-# dev.yaml
----
-${appVarsFrom(request, Environment.DEV).serialize()}
-
-# prod.yaml
----
-${appVarsFrom(request, Environment.PROD).serialize()}
-
-# main-workflow.yaml
----
-${gitHubWorkflowFrom(request).serialize()}
-"""
-
-@ExperimentalSerializationApi
-private fun zipIt(request: Request, outputStream: OutputStream) =
-   zipTo(outputStream, mapOf(
-      Paths.get(".nais/nais.yaml") to naisApplicationFrom(request).serialize(),
-      Paths.get(".nais/dev.yaml") to appVarsFrom(request, Environment.DEV).serialize(),
-      Paths.get(".nais/prod.yaml") to appVarsFrom(request, Environment.PROD).serialize(),
-      Paths.get(".github/workflows/main.yaml") to gitHubWorkflowFrom(request).serialize(),
-   ))
 
