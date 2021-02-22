@@ -102,8 +102,9 @@ val nodejsBuildSteps = listOf(
          "restore-keys" to "\${{ runner.os }}-node-",
       )),
    BuildStep(uses = "actions/setup-node@v1"),
-   BuildStep(name = "install dependencies", run = "npm install"),
-   BuildStep(name = "compile and run tests", run = "npm run build"),
+   BuildStep(name = "install dependencies", run = "npm ci"),
+   BuildStep(name = "run tests", run = "npm test"),
+   BuildStep(name = "build", run = "npm run build"),
    dockerImageStep
 )
 
