@@ -89,7 +89,7 @@ val mavenJvmBuildSteps = listOf(
          "restore-keys" to "\${{ runner.os }}-maven-",
       )),
    BuildStep(uses = "actions/setup-java@v1", with = mapOf("java-version" to "15")),
-   BuildStep(name = "compile and run tests", run = "mvn --settings .m2/settings.xml --quiet install"),
+   BuildStep(name = "compile and run tests", run = "mvn install"),
    dockerImageStep
 )
 
