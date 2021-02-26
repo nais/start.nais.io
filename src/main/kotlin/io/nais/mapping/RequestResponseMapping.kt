@@ -60,9 +60,9 @@ fun appVarsFrom(req: Request, env: Environment) = Vars(
 fun gitHubWorkflowFrom(req: Request) = GitHubWorkflow(
    name = "Build and deploy ${req.appName}",
    jobs = Jobs(
-      build = Job(name = "build", runsOn = "ubuntu-latest", steps = listOf(checkoutStep) + buildStepsFor(req.platform)),
-      deployToDev = Job(name = "Deploy to dev", needs = "build", runsOn = "ubuntu-latest", steps = listOf(checkoutStep) + deploySteps("dev-gcp")),
-      deployToProd = Job(name = "Deploy to prod", needs = "deployToDev", runsOn = "ubuntu-latest", steps = listOf(checkoutStep) + deploySteps("prod-gcp"))
+      build = Job(name = "build", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep) + buildStepsFor(req.platform)),
+      deployToDev = Job(name = "Deploy to dev", needs = "build", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep) + deploySteps("dev-gcp")),
+      deployToProd = Job(name = "Deploy to prod", needs = "deployToDev", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep) + deploySteps("prod-gcp"))
    ),
    on = PushBuildTrigger(
       push = PushEvent(
