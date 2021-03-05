@@ -96,5 +96,6 @@ private fun buildStepsFor(platform: PLATFORM) =
       JVM_GRADLE -> gradleJvmBuildSteps
       JVM_MAVEN -> mavenJvmBuildSteps
       NODEJS -> nodejsBuildSteps
+      GO_MAKE -> goMakeBuildSteps
    }
 

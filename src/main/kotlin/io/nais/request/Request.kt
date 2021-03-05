@@ -11,6 +11,6 @@ data class Request (
 )
 
 enum class PLATFORM {
-   JVM_GRADLE, JVM_MAVEN, NODEJS
+   JVM_GRADLE, JVM_MAVEN, NODEJS, GO_MAKE
 }
 

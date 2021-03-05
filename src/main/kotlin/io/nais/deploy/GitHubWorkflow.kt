@@ -94,17 +94,15 @@ val mavenJvmBuildSteps = listOf(
 )
 
 val nodejsBuildSteps = listOf(
-   BuildStep(
-      uses = "actions/cache@v2",
-      with = mapOf(
-         "path" to "~/.npm",
-         "key" to "\${{ runner.os }}-node-\${{ hashFiles('**/package-lock.json') }}",
-         "restore-keys" to "\${{ runner.os }}-node-",
-      )),
    BuildStep(uses = "actions/setup-node@v1"),
    BuildStep(name = "install dependencies", run = "npm ci"),
    BuildStep(name = "run tests", run = "npm test"),
-   BuildStep(name = "build", run = "npm run build"),
+   dockerImageStep
+)
+
+val goMakeBuildSteps = listOf(
+   BuildStep(uses = "actions/setup-go@v2", with = mapOf("go-version" to "1.16")),
+   BuildStep(name = "perform build", run = "make mytarget"),
    dockerImageStep
 )
 
