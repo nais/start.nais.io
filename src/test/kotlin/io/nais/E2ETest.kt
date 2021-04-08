@@ -1,4 +1,4 @@
-package io.nais.e2e
+package io.nais
 
 import io.ktor.http.ContentType.*
 import io.ktor.http.HttpHeaders.Accept
@@ -8,8 +8,6 @@ import io.ktor.http.HttpMethod.Companion.Post
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.testing.*
-import io.nais.mainModule
-import io.nais.observabilityModule
 import kotlinx.serialization.ExperimentalSerializationApi
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue

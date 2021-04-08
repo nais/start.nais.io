@@ -1,8 +1,7 @@
-package io.nais.metrics
+package io.nais
 
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
-import io.nais.request.PLATFORM
 import io.prometheus.client.Counter
 
 object Metrics {

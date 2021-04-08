@@ -1,9 +1,8 @@
-package io.nais.deploy
+package io.nais
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
-import io.nais.naisapp.Environment
-import io.nais.naisapp.Environment.PROD
+import io.nais.Environment.PROD
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

@@ -1,8 +1,7 @@
-package io.nais.naisapp
+package io.nais
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
-import io.nais.serialize.URLSerializer
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import java.net.URL

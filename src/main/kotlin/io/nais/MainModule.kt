@@ -14,8 +14,6 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
 import io.nais.mapping.*
-import io.nais.metrics.Metrics
-import io.nais.request.Request
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 

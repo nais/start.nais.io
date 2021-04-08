@@ -1,4 +1,4 @@
-package io.nais.zip
+package io.nais
 
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

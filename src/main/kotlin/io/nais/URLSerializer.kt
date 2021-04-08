@@ -1,4 +1,4 @@
-package io.nais.serialize
+package io.nais
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer

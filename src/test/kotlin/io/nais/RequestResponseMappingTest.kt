@@ -1,11 +1,8 @@
-package io.nais.mapping
+package io.nais
 
-import io.nais.deploy.serialize
-import io.nais.naisapp.Environment.DEV
-import io.nais.naisapp.Environment.PROD
-import io.nais.naisapp.serialize
-import io.nais.request.PLATFORM.*
-import io.nais.request.Request
+import io.nais.Environment.DEV
+import io.nais.Environment.PROD
+import io.nais.PLATFORM.*
 import io.nais.testdata.basicNaisYaml
 import kotlinx.serialization.ExperimentalSerializationApi
 import org.junit.jupiter.api.Assertions.*

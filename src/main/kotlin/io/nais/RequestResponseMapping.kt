@@ -1,13 +1,9 @@
-package io.nais.mapping
+package io.nais
 
-import io.nais.deploy.*
-import io.nais.naisapp.*
-import io.nais.naisapp.DatabaseType.POSTGRES_13
-import io.nais.naisapp.Environment.*
-import io.nais.request.PLATFORM
-import io.nais.request.PLATFORM.*
-import io.nais.request.Request
-import io.nais.zip.zipTo
+import io.nais.DatabaseType.POSTGRES_13
+import io.nais.Environment.DEV
+import io.nais.Environment.PROD
+import io.nais.PLATFORM.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 import java.io.OutputStream

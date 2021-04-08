@@ -1,6 +1,7 @@
-package io.nais.serialize
+package io.nais
 
 import com.charleskorn.kaml.Yaml
+import io.nais.URLSerializer
 import kotlinx.serialization.ExperimentalSerializationApi
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

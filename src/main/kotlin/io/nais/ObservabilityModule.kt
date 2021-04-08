@@ -10,7 +10,6 @@ import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics
-import io.nais.metrics.Metrics
 
 @Suppress("unused") // referenced in application.conf
 fun Application.observabilityModule() {

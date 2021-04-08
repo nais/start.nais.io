@@ -1,4 +1,4 @@
-package io.nais.deploy
+package io.nais
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration

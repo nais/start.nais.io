@@ -1,4 +1,4 @@
-package io.nais.request
+package io.nais
 
 import kotlinx.serialization.Serializable
 
