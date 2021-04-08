@@ -17,14 +17,11 @@ data class GitHubWorkflow(
 
 fun GitHubWorkflow.serialize() = Yaml(configuration = YamlConfiguration(encodeDefaults = false))
    .encodeToString(GitHubWorkflow.serializer(), this)
-   .let {
-      it.replace(""""##REPLACE_INGRESS##"""", """
+   .replace(""""##REPLACE_INGRESS##"""", """
     {{#each ingresses as |url|}}
       - {{url}}
     {{/each}}""")
-   }.let {
-      it.replace(""""##REPLACE_IMAGE##"""", "{{image}}")
-   }
+   .replace(""""##REPLACE_IMAGE##"""", "{{image}}")
 
 @Serializable
 data class PushBuildTrigger(
