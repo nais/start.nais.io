@@ -2,6 +2,8 @@ package io.nais.deploy
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlConfiguration
+import io.nais.naisapp.Environment
+import io.nais.naisapp.Environment.PROD
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -10,7 +12,7 @@ data class GitHubWorkflow(
    val name: String = "Build and deploy the main branch",
    val on: PushBuildTrigger,
    val env: Map<String, String> = mapOf("image" to "{{image}}"),
-   val jobs: Jobs
+   val jobs: Map<String, Job>
 )
 
 fun GitHubWorkflow.serialize() = Yaml(configuration = YamlConfiguration(encodeDefaults = false))
@@ -32,13 +34,6 @@ data class PushBuildTrigger(
 @Serializable
 data class PushEvent(
    val branches: List<String>
-)
-
-@Serializable
-data class Jobs(
-   val build: Job,
-   val deployToDev: Job,
-   val deployToProd: Job,
 )
 
 @Serializable
@@ -108,13 +103,27 @@ val goMakeBuildSteps = listOf(
 
 val checkoutStep = BuildStep(uses = "actions/checkout@v2")
 
-fun deploySteps(clusterName: String) = listOf(
+fun appDeployStep(environment: Environment) =
    BuildStep(
-      name = "Deploy to $clusterName",
+      name = "Deploy to $environment",
       uses = "nais/deploy/actions/deploy@v1",
       env = mapOf(
       "APIKEY" to "\${{ secrets.NAIS_DEPLOY_APIKEY }}",
-      "CLUSTER" to clusterName,
+      "CLUSTER" to "${if (environment == PROD) "prod" else "dev"}-gcp",
       "RESOURCE" to ".nais/nais.yaml",
-      "VARS" to ".nais/${if (clusterName.startsWith("dev")) "dev" else "prod"}.yaml"))
-)
+      "VARS" to ".nais/${if (environment == PROD) "prod" else "dev"}.yaml"
+      )
+   )
+
+fun topicDeployStep(topicName: String, environment: Environment) =
+   BuildStep(
+      name = "Deploy Kafka topic $topicName to $environment",
+      uses = "nais/deploy/actions/deploy@v1",
+      env = mapOf(
+         "APIKEY" to "\${{ secrets.NAIS_DEPLOY_APIKEY }}",
+         "CLUSTER" to "${if (environment == PROD) "prod" else "dev"}-gcp",
+         "RESOURCE" to ".nais/topic-$topicName.yaml",
+         "VARS" to ".nais/${if (environment == PROD) "prod" else "dev"}.yaml"
+      )
+   )
+

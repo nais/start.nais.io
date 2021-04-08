@@ -10,8 +10,8 @@ import kotlinx.serialization.Serializable
 data class NaisApplication(
    val apiVersion: String,
    val kind: String,
-   val metadata: Metadata,
-   val spec: Spec
+   val metadata: AppMetadata,
+   val spec: AppSpec
 )
 
 @ExperimentalSerializationApi
@@ -28,7 +28,7 @@ fun NaisApplication.serialize() =
       }
 
 @Serializable
-data class Metadata(
+data class AppMetadata(
    val name: String,
    val namespace: String,
    val labels: Map<String, String>
@@ -36,7 +36,7 @@ data class Metadata(
 
 @Serializable
 @ExperimentalSerializationApi
-data class Spec(
+data class AppSpec(
    val image: String,
    val liveness: StatusEndpoint,
    val readiness: StatusEndpoint,

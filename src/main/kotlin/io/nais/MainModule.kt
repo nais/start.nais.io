@@ -13,8 +13,7 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
-import io.nais.mapping.jsonResponseFrom
-import io.nais.mapping.zipIt
+import io.nais.mapping.*
 import io.nais.metrics.Metrics
 import io.nais.request.Request
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -48,13 +47,14 @@ fun Application.mainModule() {
 fun Route.app() {
    post("/app") {
       val request = call.receive<Request>()
+      val yamlFiles = yamlFilesFrom(request)
       val requestedFormat = call.request.accept() ?: Text.Plain.toString()
       Metrics.countNewDownload(request.team, request.platform, requestedFormat)
       if (requestedFormat == Zip.toString()) {
          call.response.header(HttpHeaders.ContentDisposition, "attachment; filename=${request.appName}.zip")
-         call.respondOutputStream(Zip, OK) { zipIt(request, this) }
+         call.respondOutputStream(Zip, OK) { yamlFiles.asZipStream(this) }
       } else {
-         call.respond(jsonResponseFrom(request))
+         call.respond(yamlFiles.asJson())
       }
    }
 }

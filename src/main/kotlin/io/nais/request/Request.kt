@@ -7,7 +7,8 @@ data class Request (
    val team: String,
    val appName: String,
    val platform: PLATFORM,
-   val extras: List<String>
+   val extras: List<String> = emptyList(),
+   val kafkaTopics: List<String> = emptyList()
 )
 
 enum class PLATFORM {
