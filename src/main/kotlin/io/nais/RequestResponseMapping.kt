@@ -59,7 +59,7 @@ fun gitHubWorkflowFrom(req: Request) = GitHubWorkflow(
    jobs = mapOf(
       "build" to Job(name = "build", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep) + buildStepsFor(req.platform)),
       "deployAppToDev" to Job(name = "Deploy to dev", needs = "build", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep, appDeployStep(DEV))),
-      "deployAppToProd" to Job(name = "Deploy to prod", needs = "deployToDev", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep, appDeployStep(PROD)))
+      "deployAppToProd" to Job(name = "Deploy to prod", needs = "deployAppToDev", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep, appDeployStep(PROD)))
    ) + req.kafkaTopics.flatMap { topicName ->
       listOf(
          "deployTopic${topicName.capitalize()}Dev" to Job(name = "Deploy Kafka topic $topicName to dev", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep, topicDeployStep(topicName, DEV))),

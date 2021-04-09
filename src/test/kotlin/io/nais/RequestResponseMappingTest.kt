@@ -3,7 +3,6 @@ package io.nais
 import io.nais.Environment.DEV
 import io.nais.Environment.PROD
 import io.nais.PLATFORM.*
-import io.nais.testdata.basicNaisYaml
 import kotlinx.serialization.ExperimentalSerializationApi
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -12,79 +11,77 @@ import org.junit.jupiter.api.Test
 class RequestResponseMappingTest {
 
    @Test
-   fun `nais yaml for app with no extras`() {
+   fun `basic nais app is generated from request`() {
       val request = Request(team = "myteam", appName = "mycoolapp", platform = JVM_MAVEN)
-      val app = naisApplicationFrom(request)
-      assertEquals(basicNaisYaml, app.serialize())
+      val naisApp = naisApplicationFrom(request)
+      assertEquals(request.appName, naisApp.metadata.name)
+      assertEquals(request.team, naisApp.metadata.namespace)
    }
 
    @Test
    fun `deploy to dev job depends on build`() {
       val request = Request(team = "myteam", appName = "mycoolapp", platform = JVM_GRADLE)
-      val yaml = gitHubWorkflowFrom(request).serialize()
-      assertTrue(yaml.contains("""needs: "build"""))
+      val workflow = gitHubWorkflowFrom(request)
+      assertTrue(workflow.jobs["deployAppToDev"]?.needs?.contains("build") ?: false)
    }
 
    @Test
    fun `deploy to prod job depends on deploy to dev`() {
       val request = Request(team = "myteam", appName = "mycoolapp", platform = JVM_GRADLE)
-      val yaml = gitHubWorkflowFrom(request).serialize()
-      assertTrue(yaml.contains("""needs: "deployToDev"""))
+      val workflow = gitHubWorkflowFrom(request)
+      assertTrue(workflow.jobs["deployAppToProd"]?.needs?.contains("deployAppToDev") ?: false)
    }
 
    @Test
    fun `workflow for gradle jvm app`() {
       val request = Request(team = "myteam", appName = "mycoolapp", platform = JVM_GRADLE)
-      val yaml = gitHubWorkflowFrom(request).serialize()
-      assertTrue(yaml.contains("gradle"))
-      assertFalse(yaml.contains("mvn"))
-      assertFalse(yaml.contains("npm"))
+      val workflow = gitHubWorkflowFrom(request)
+      val gradleBuildStep = workflow.jobs["build"]?.steps?.firstOrNull { it.run?.contains("gradle") ?: false }
+      assertNotNull(gradleBuildStep)
    }
 
    @Test
    fun `workflow for maven jvm app`() {
       val request = Request(team = "myteam", appName = "mycoolapp", platform = JVM_MAVEN)
-      val yaml = gitHubWorkflowFrom(request).serialize()
-      assertTrue(yaml.contains("mvn"))
-      assertFalse(yaml.contains("gradle"))
-      assertFalse(yaml.contains("npm"))
+      val workflow = gitHubWorkflowFrom(request)
+      val mavenBuildStep = workflow.jobs["build"]?.steps?.firstOrNull { it.run?.contains("mvn") ?: false }
+      assertNotNull(mavenBuildStep)
    }
 
    @Test
    fun `workflow for nodejs app`() {
       val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS)
-      val yaml = gitHubWorkflowFrom(request).serialize()
-      assertTrue(yaml.contains("npm"))
-      assertFalse(yaml.contains("mvn"))
-      assertFalse(yaml.contains("gradle"))
+      val workflow = gitHubWorkflowFrom(request)
+      val nodeBuildStep = workflow.jobs["build"]?.steps?.firstOrNull { it.run?.contains("npm") ?: false }
+      assertNotNull(nodeBuildStep)
    }
 
    @Test
    fun `idporten is added upon request`() {
       val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS, extras = listOf("idporten"))
-      val yaml = naisApplicationFrom(request).serialize()
-      assertTrue(yaml.contains("idPorten"))
+      val naisApp = naisApplicationFrom(request)
+      assertNotNull(naisApp.spec.idPorten)
    }
 
    @Test
    fun `azure ad is added upon request`() {
       val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS, extras = listOf("aad"))
-      val yaml = naisApplicationFrom(request).serialize()
-      assertTrue(yaml.contains("azure"))
+      val naisApp = naisApplicationFrom(request)
+      assertNotNull(naisApp.spec.azure)
    }
 
    @Test
    fun `postgres db is added upon request`() {
       val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS, extras = listOf("postgres"))
-      val yaml = naisApplicationFrom(request).serialize()
-      assertTrue(yaml.contains("sqlInstances"))
+      val naisApp = naisApplicationFrom(request)
+      assertEquals(1, naisApp.spec.gcp?.sqlInstances?.size)
    }
 
    @Test
    fun `kafka topics are created upon request`() {
       val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS, kafkaTopics = listOf("mytopic"))
-      val yaml = kafkaTopicsFrom(request).map { it.serialize() }
-      assertTrue(yaml[0].contains("kafka.nais.io"))
+      val topics = kafkaTopicsFrom(request)
+      assertEquals(1, topics.size)
    }
 
    @Test

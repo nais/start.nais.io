@@ -1,5 +1,6 @@
 package io.nais
 
+import com.charleskorn.kaml.Yaml
 import io.ktor.http.ContentType.*
 import io.ktor.http.HttpHeaders.Accept
 import io.ktor.http.HttpHeaders.ContentType
@@ -9,9 +10,11 @@ import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.server.testing.*
 import kotlinx.serialization.ExperimentalSerializationApi
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import java.util.*
 
 @ExperimentalSerializationApi
 class E2ETest {
@@ -81,6 +84,21 @@ class E2ETest {
    }
 
    @Test
+   fun `json values contain yaml and are b64 encoded to avoid messed up chars`() {
+      withTestApplication({ mainModule() }) {
+         val call = handleRequest(method = Post, uri = "/app") {
+            addHeader(ContentType, Application.Json.toString())
+            addHeader(Accept, Application.Json.toString())
+            setBody("""{"appName": "myapp", "team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
+         }
+         val responseJson = Json.decodeFromString(JsonObject.serializer(), call.response.content ?: "")
+         val ghWorkflow = decode(responseJson[".github/workflows/main.yaml"].toString())
+         val yaml = Yaml.default.decodeFromString(GitHubWorkflow.serializer(), ghWorkflow)
+         assertNotNull(yaml)
+      }
+   }
+
+   @Test
    fun `posting an invalid request yields a 400 with an explanation`() {
       withTestApplication({ mainModule() }) {
          val call = handleRequest(method = Post, uri = "/app") {
@@ -106,5 +124,8 @@ class E2ETest {
          }
       }
    }
+
+   private fun decode(encoded: String) =
+      String(Base64.getDecoder().decode(encoded.replace("\"", "")))
 
 }
