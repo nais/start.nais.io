@@ -41,7 +41,8 @@ const convertToJson = (form) => ({
    appName: form['app'].value,
    team: form['team'].value,
    platform: form['platform'].value,
-   extras: Array.from(form.extras).filter(element => element.checked).map(element => element.value)
+   extras: Array.from(form.extras).filter(element => element.checked).map(element => element.value),
+   kafkaTopics: csvToArray(form['kafkaTopics'].value)
 })
 
 const makeRequest = (form, contentType) =>
@@ -87,6 +88,9 @@ const formatForDisplay = async (response) => {
    return Object.keys(json).map((key) =>
       `${key}:\n-------------------------\n${atob(json[key])}`).join("\n\n")
 }
+
+const csvToArray = (str) => str && str.trim().length !== 0 ?
+   str.split(',').map((element) => element.trim())  : []
 
 closer.onclick = () => {
    modal.style.display = "none"
