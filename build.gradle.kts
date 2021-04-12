@@ -12,13 +12,13 @@ val micrometerVersion = "1.6.2"
 val mainClassName = "io.nais.MainKt"
 
 plugins {
-   kotlin("jvm") version "1.4.30"
-   kotlin("plugin.serialization") version "1.4.30"
+   kotlin("jvm") version "1.4.32"
+   kotlin("plugin.serialization") version "1.4.32"
 }
 
 java {
-   sourceCompatibility = JavaVersion.VERSION_15
-   targetCompatibility = JavaVersion.VERSION_15
+   sourceCompatibility = JavaVersion.VERSION_16
+   targetCompatibility = JavaVersion.VERSION_16
 }
 
 repositories {
@@ -78,7 +78,7 @@ tasks {
    }
 
    withType<Wrapper> {
-      gradleVersion = "6.7.1"
+      gradleVersion = "7.0"
    }
 
 }
