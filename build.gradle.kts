@@ -1,19 +1,22 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+import se.patrikerdes.UseLatestVersionsTask
 
-val ktorVersion = "1.5.0"
-val logbackVersion = "1.2.3"
-val logstashEncoderVersion = "6.5"
+val ktorVersion = "1.5.3"
+val logbackVersion = "1.3.0-alpha5"
+val logstashEncoderVersion = "6.6"
 val mustacheVersion = "0.9.7"
-val junitJupiterVersion = "5.7.0"
-val kotlinSerializationVersion = "1.0.1"
-val kamlVersion = "0.26.0"
-val micrometerVersion = "1.6.2"
+val junitJupiterVersion = "5.8.0-M1"
+val kotlinSerializationVersion = "1.1.0"
+val kamlVersion = "0.30.0"
+val micrometerVersion = "1.6.6"
 
 val mainClassName = "io.nais.MainKt"
 
 plugins {
    kotlin("jvm") version "1.4.32"
    kotlin("plugin.serialization") version "1.4.32"
+   id("se.patrikerdes.use-latest-versions") version "0.2.16"
+   id("com.github.ben-manes.versions") version "0.38.0"
 }
 
 java {
@@ -23,7 +26,6 @@ java {
 
 repositories {
    mavenCentral()
-   jcenter()
 }
 
 dependencies {
@@ -81,4 +83,14 @@ tasks {
       gradleVersion = "7.0"
    }
 
+   named("useLatestVersions", UseLatestVersionsTask::class.java).configure {
+      updateBlacklist = emptyList()
+   }
+
+}
+
+fun isNonStable(version: String): Boolean {
+   val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.toUpperCase().contains(it) }
+   val regex = "^[0-9,.v-]+(-r)?$".toRegex()
+   return (stableKeyword || regex.matches(version)).not()
 }
