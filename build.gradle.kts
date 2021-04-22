@@ -1,7 +1,7 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import se.patrikerdes.UseLatestVersionsTask
 
-val ktorVersion = "1.5.0"
+val ktorVersion = "1.5.3"
 val logbackVersion = "1.3.0-alpha5"
 val logstashEncoderVersion = "6.6"
 val mustacheVersion = "0.9.7"
