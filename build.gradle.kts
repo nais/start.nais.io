@@ -1,13 +1,13 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import se.patrikerdes.UseLatestVersionsTask
 
-val ktorVersion = "1.5.3"
+val ktorVersion = "1.5.4"
 val logbackVersion = "1.3.0-alpha5"
 val logstashEncoderVersion = "6.6"
 val mustacheVersion = "0.9.7"
 val junitJupiterVersion = "5.8.0-M1"
-val kotlinSerializationVersion = "1.1.0"
-val kamlVersion = "0.30.0"
+val kotlinSerializationVersion = "1.2.0"
+val kamlVersion = "0.31.0"
 val micrometerVersion = "1.6.6"
 
 val mainClassName = "io.nais.MainKt"
