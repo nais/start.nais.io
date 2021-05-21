@@ -51,7 +51,7 @@ jobs:
                VARS: .nais/dev.yaml
    deploy_to_prod:
       name: Deploy to prod-gcp
-      needs: [ build, deploy_to_dev ]
+      needs: deploy_to_dev
       if: github.ref == 'refs/heads/main'
       runs-on: ubuntu-18.04
       steps:
