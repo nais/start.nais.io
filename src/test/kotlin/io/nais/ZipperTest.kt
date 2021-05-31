@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test
 import java.io.File
 import java.io.FileOutputStream
 import java.nio.file.Files
-import java.nio.file.Paths
 import java.util.zip.ZipFile
 
 class ZipperTest {
@@ -26,7 +25,7 @@ class ZipperTest {
    }
 
    private val filesToZip = mapOf(
-      Paths.get("relative", "path", "file1.txt") to "file1 contents",
-      Paths.get("relative", "path", "file2.txt") to "file2 contents"
+      "relative/path/file1.txt" to "file1 contents",
+      "relative/path/file2.txt" to "file2 contents"
    )
 }

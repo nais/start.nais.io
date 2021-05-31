@@ -12,7 +12,7 @@ class URLSerializerTest {
 
    @Test
    fun serialize() {
-      val url = URL("http://example.com")
+      val url = URL("https://example.com")
       val expected = """"$url""""
       val actual = Yaml.default.encodeToString(URLSerializer, url)
       assertEquals(expected, actual)
@@ -20,8 +20,8 @@ class URLSerializerTest {
 
    @Test
    fun deserialize() {
-      val expected = URL("http://example.com")
-      val actual = Yaml.default.decodeFromString(URLSerializer, """"http://example.com"""")
+      val expected = URL("https://example.com")
+      val actual = Yaml.default.decodeFromString(URLSerializer, """"https://example.com"""")
       assertEquals(expected, actual)
    }
 
