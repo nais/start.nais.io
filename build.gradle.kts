@@ -1,22 +1,22 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import se.patrikerdes.UseLatestVersionsTask
 
-val ktorVersion = "1.5.4"
+val ktorVersion = "1.6.0"
 val logbackVersion = "1.3.0-alpha5"
 val logstashEncoderVersion = "6.6"
 val mustacheVersion = "0.9.7"
 val junitJupiterVersion = "5.8.0-M1"
-val kotlinSerializationVersion = "1.2.0"
-val kamlVersion = "0.31.0"
-val micrometerVersion = "1.6.6"
+val kotlinSerializationVersion = "1.2.1"
+val kamlVersion = "0.34.0"
+val micrometerVersion = "1.7.0"
 
 val mainClassName = "io.nais.MainKt"
 
 plugins {
-   kotlin("jvm") version "1.4.32"
-   kotlin("plugin.serialization") version "1.4.32"
-   id("se.patrikerdes.use-latest-versions") version "0.2.16"
-   id("com.github.ben-manes.versions") version "0.38.0"
+   kotlin("jvm") version "1.5.10"
+   kotlin("plugin.serialization") version "1.5.10"
+   id("se.patrikerdes.use-latest-versions") version "0.2.17"
+   id("com.github.ben-manes.versions") version "0.39.0"
 }
 
 java {
@@ -80,7 +80,7 @@ tasks {
    }
 
    withType<Wrapper> {
-      gradleVersion = "7.0"
+      gradleVersion = "7.0.2"
    }
 
    named("useLatestVersions", UseLatestVersionsTask::class.java).configure {

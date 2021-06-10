@@ -51,7 +51,7 @@ fun naisApplicationFrom(req: Request) = NaisApplication(
 @ExperimentalSerializationApi
 fun appVarsFrom(req: Request, env: Environment) = Vars(
    ingresses = listOf(URL("https://${req.appName}${if (env == DEV) ".dev" else ""}.intern.nav.no")),
-   kafkaPool = if (req.kafkaTopics.isNotEmpty()) "nais-${env.name.toLowerCase()}" else null
+   kafkaPool = if (req.kafkaTopics.isNotEmpty()) "nais-${env.name.lowercase()}" else null
 )
 
 fun gitHubWorkflowFrom(req: Request) = GitHubWorkflow(
@@ -62,8 +62,8 @@ fun gitHubWorkflowFrom(req: Request) = GitHubWorkflow(
       "deployAppToProd" to Job(name = "Deploy to prod", needs = "deployAppToDev", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep, appDeployStep(PROD)))
    ) + req.kafkaTopics.flatMap { topicName ->
       listOf(
-         "deployTopic${topicName.capitalize()}Dev" to Job(name = "Deploy Kafka topic $topicName to dev", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep, topicDeployStep(topicName, DEV))),
-         "deployTopic${topicName.capitalize()}Prod" to Job(name = "Deploy Kafka topic $topicName to prod", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep, topicDeployStep(topicName, PROD)))
+         "deployTopic${topicName.replaceFirstChar { it.titlecase() }}Dev" to Job(name = "Deploy Kafka topic $topicName to dev", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep, topicDeployStep(topicName, DEV))),
+         "deployTopic${topicName.replaceFirstChar { it.titlecase() }}Prod" to Job(name = "Deploy Kafka topic $topicName to prod", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep, topicDeployStep(topicName, PROD)))
       )
    },
    on = PushBuildTrigger(
