@@ -64,6 +64,13 @@ class RequestResponseMappingTest {
    }
 
    @Test
+   fun `elastic is added upon request`() {
+      val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS, extras = listOf("elastic"))
+      val naisApp = naisApplicationFrom(request)
+      assertNotNull(naisApp.spec.elastic)
+   }
+
+   @Test
    fun `azure ad is added upon request`() {
       val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS, extras = listOf("aad"))
       val naisApp = naisApplicationFrom(request)

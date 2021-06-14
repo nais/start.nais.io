@@ -47,6 +47,7 @@ data class AppSpec(
    val ingresses: String,
    var azure: Azure? = null,
    var idPorten: IdPorten? = null,
+   var elastic: Elastic? = null,
    var gcp: GCP? = null
 )
 
@@ -80,6 +81,11 @@ data class Resources(
 @Serializable
 data class IdPorten(
    val enabled: Boolean
+)
+
+@Serializable
+data class Elastic(
+   val instance: String
 )
 
 @Serializable

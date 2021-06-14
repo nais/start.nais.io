@@ -35,6 +35,7 @@ fun naisApplicationFrom(req: Request) = NaisApplication(
       req.extras.forEach { feature ->
          when (feature) {
             "idporten" -> idPorten = IdPorten(true)
+            "elastic" -> elastic = Elastic(instance = req.appName)
             "aad" -> azure = Azure(application = AzureApplication(enabled = true))
             "postgres" -> gcp = GCP(
                sqlInstances = listOf(
