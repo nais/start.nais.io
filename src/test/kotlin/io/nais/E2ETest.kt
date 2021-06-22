@@ -8,6 +8,7 @@ import io.ktor.http.HttpMethod.Companion.Get
 import io.ktor.http.HttpMethod.Companion.Post
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.OK
+import io.ktor.http.HttpStatusCode.Companion.UnsupportedMediaType
 import io.ktor.server.testing.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -55,20 +56,6 @@ class E2ETest {
    }
 
    @Test
-   fun `not providing an accept header yields a json response`() {
-      withTestApplication({ mainModule() }) {
-         val call = handleRequest(method = Post, uri = "/app") {
-            addHeader(ContentType, "application/json")
-            setBody("""{"appName": "myapp", "team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
-         }
-         assertEquals(OK, call.response.status())
-         assertTrue(call.response.headers["Content-Type"]?.contains(
-            Application.Json.toString()) ?: false
-         )
-      }
-   }
-
-   @Test
    fun `asking for json yields a json response`() {
       withTestApplication({ mainModule() }) {
          val call = handleRequest(method = Post, uri = "/app") {
@@ -80,6 +67,17 @@ class E2ETest {
          assertTrue(call.response.headers["Content-Type"]?.contains(
             Application.Json.toString()) ?: false
          )
+      }
+   }
+
+   @Test
+   fun `asking for other content types yields a 415`() {
+      withTestApplication({ mainModule() }) {
+         val call = handleRequest(method = Post, uri = "/app") {
+            addHeader(ContentType, "image/png")
+            setBody("""{"appName": "myapp", "team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
+         }
+         assertEquals(UnsupportedMediaType, call.response.status())
       }
    }
 

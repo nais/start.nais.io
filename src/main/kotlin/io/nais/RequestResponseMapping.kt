@@ -6,15 +6,30 @@ import io.nais.Environment.PROD
 import io.nais.PLATFORM.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
-import java.io.OutputStream
 import java.net.URL
-import java.nio.file.Paths
 import java.util.*
 
 private const val dollar = '$' // workaround, escaping doesn't work in multiline strings (https://youtrack.jetbrains.com/issue/KT-2425)
 
+typealias RequestHandler = (Request) -> Map<String, String>
+
 @ExperimentalSerializationApi
-fun naisApplicationFrom(req: Request) = NaisApplication(
+val serve: RequestHandler = { request ->
+   mapOf(
+      ".nais/nais.yaml" to naisApplicationFrom(request).serialize(),
+      ".nais/dev.yaml" to appVarsFrom(request, DEV).serialize(),
+      ".nais/prod.yaml" to appVarsFrom(request, PROD).serialize(),
+      ".github/workflows/main.yaml" to gitHubWorkflowFrom(request).serialize()
+   ) + kafkaTopicsFrom(request).map { topic ->
+      ".nais/topic-${topic.metadata.name}.yaml" to topic.serialize()
+   }
+}
+
+@ExperimentalSerializationApi
+fun Map<String, String>.asJson() = mapValues { it.value.base64Encode() }
+
+@ExperimentalSerializationApi
+internal fun naisApplicationFrom(req: Request) = NaisApplication(
    apiVersion = "nais.io/v1alpha1",
    kind = "Application",
    metadata = AppMetadata(
@@ -50,12 +65,12 @@ fun naisApplicationFrom(req: Request) = NaisApplication(
 )
 
 @ExperimentalSerializationApi
-fun appVarsFrom(req: Request, env: Environment) = Vars(
+internal fun appVarsFrom(req: Request, env: Environment) = Vars(
    ingresses = listOf(URL("https://${req.appName}${if (env == DEV) ".dev" else ""}.intern.nav.no")),
    kafkaPool = if (req.kafkaTopics.isNotEmpty()) "nais-${env.name.lowercase()}" else null
 )
 
-fun gitHubWorkflowFrom(req: Request) = GitHubWorkflow(
+internal fun gitHubWorkflowFrom(req: Request) = GitHubWorkflow(
    name = "Build and deploy ${req.appName}",
    jobs = mapOf(
       "build" to Job(name = "build", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep) + buildStepsFor(req.platform)),
@@ -75,7 +90,7 @@ fun gitHubWorkflowFrom(req: Request) = GitHubWorkflow(
    env = mapOf("IMAGE" to "docker.pkg.github.com/${dollar}{{ github.repository }}/${req.appName}:${dollar}{{ github.sha }}")
 )
 
-fun kafkaTopicsFrom(req: Request) = req.kafkaTopics.map { topicName ->
+internal fun kafkaTopicsFrom(req: Request) = req.kafkaTopics.map { topicName ->
    KafkaTopic(
       apiVersion = "kafka.nais.io/v1",
       kind = "Topic",
@@ -102,25 +117,6 @@ fun kafkaTopicsFrom(req: Request) = req.kafkaTopics.map { topicName ->
    )
 }
 
-@ExperimentalSerializationApi
-fun yamlFilesFrom(request: Request) = mapOf(
-   ".nais/nais.yaml" to naisApplicationFrom(request).serialize(),
-   ".nais/dev.yaml" to appVarsFrom(request, DEV).serialize(),
-   ".nais/prod.yaml" to appVarsFrom(request, PROD).serialize(),
-   ".github/workflows/main.yaml" to gitHubWorkflowFrom(request).serialize()
-) + kafkaTopicsFrom(request).map { topic ->
-   ".nais/topic-${topic.metadata.name}.yaml" to topic.serialize()
-}
-
-@ExperimentalSerializationApi
-fun Map<String, String>.asJson() = mapValues { it.value.toBase64() }
-
-@ExperimentalSerializationApi
-fun Map<String, String>.asZipStream(outputStream: OutputStream) =
-   zipTo(outputStream, mapKeys { Paths.get(it.key) })
-
-private fun String.toBase64() = Base64.getEncoder().encodeToString(this.encodeToByteArray())
-
 private fun buildStepsFor(platform: PLATFORM) =
    when (platform) {
       JVM_GRADLE -> gradleJvmBuildSteps
@@ -128,4 +124,6 @@ private fun buildStepsFor(platform: PLATFORM) =
       NODEJS -> nodejsBuildSteps
       GO_MAKE -> goMakeBuildSteps
    }
+
+private fun String.base64Encode() = Base64.getEncoder().encodeToString(this.encodeToByteArray())
 

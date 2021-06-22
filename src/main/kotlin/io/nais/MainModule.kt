@@ -1,13 +1,13 @@
 package io.nais
 
 import io.ktor.application.*
-import io.ktor.application.Application
 import io.ktor.features.*
 import io.ktor.http.*
-import io.ktor.http.ContentType.*
+import io.ktor.http.ContentType.Application.Json
 import io.ktor.http.ContentType.Application.Zip
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.OK
+import io.ktor.http.HttpStatusCode.Companion.UnsupportedMediaType
 import io.ktor.http.content.*
 import io.ktor.request.*
 import io.ktor.response.*
@@ -28,6 +28,10 @@ fun Application.mainModule() {
       exception<SerializationException> { cause ->
          call.respond(BadRequest, "Unable to parse JSON: ${cause.message}")
       }
+
+      exception<BadContentTypeFormatException> { cause ->
+         call.respond(UnsupportedMediaType, cause.message ?: "Don't know how to serve this weird Content-Type")
+      }
    }
 
    routing {
@@ -44,15 +48,14 @@ fun Application.mainModule() {
 fun Route.app() {
    post("/app") {
       val request = call.receive<Request>()
-      val yamlFiles = yamlFilesFrom(request)
-      val requestedFormat = call.request.accept() ?: Text.Plain.toString()
-      Metrics.countNewDownload(request.team, request.platform, requestedFormat)
-      if (requestedFormat == Zip.toString()) {
-         call.response.header(HttpHeaders.ContentDisposition, "attachment; filename=${request.appName}.zip")
-         call.respondOutputStream(Zip, OK) { yamlFiles.asZipStream(this) }
-      } else {
-         call.respond(yamlFiles.asJson())
+      val response = serve(request)
+      val requestedFormat = ContentType.parse(call.request.accept() ?: "application/json")
+      when (requestedFormat) {
+         Zip -> call.respondOutputStream(Zip, OK) { response.zipToStream(this) }
+         Json -> call.respond(response.asJson())
+         else -> call.respond(UnsupportedMediaType)
       }
+      Metrics.countNewDownload(request.team, request.platform, requestedFormat.toString())
    }
 }
 
