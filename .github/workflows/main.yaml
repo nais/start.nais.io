@@ -27,7 +27,7 @@ jobs:
                artifact_path: ./
          -  uses: actions/setup-java@v1
             with:
-               java-version: '15.x'
+               java-version: '16.x'
          -  name: Test and build the code
             run: ./gradlew test build
          -  name: Login to GitHub Docker Registry
