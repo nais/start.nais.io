@@ -24,7 +24,7 @@ jobs:
          -  name: Generate SLSA provenance
             uses: slsa-framework/github-actions-demo@v0.1
             with:
-               artifact_path: slsa.json
+               output_path: slsa.provenance
          -  uses: actions/setup-java@v1
             with:
                java-version: '15.x'
