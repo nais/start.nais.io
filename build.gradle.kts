@@ -8,13 +8,13 @@ val mustacheVersion = "0.9.7"
 val junitJupiterVersion = "5.8.0-M1"
 val kotlinSerializationVersion = "1.2.1"
 val kamlVersion = "0.34.0"
-val micrometerVersion = "1.7.0"
+val micrometerVersion = "1.7.1"
 
 val mainClassName = "io.nais.MainKt"
 
 plugins {
-   kotlin("jvm") version "1.5.10"
-   kotlin("plugin.serialization") version "1.5.10"
+   kotlin("jvm") version "1.5.20"
+   kotlin("plugin.serialization") version "1.5.20"
    id("se.patrikerdes.use-latest-versions") version "0.2.17"
    id("com.github.ben-manes.versions") version "0.39.0"
 }
@@ -67,7 +67,7 @@ tasks {
 
    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
       kotlinOptions {
-         jvmTarget = "15"
+         jvmTarget = "16"
       }
    }
 
@@ -80,7 +80,7 @@ tasks {
    }
 
    withType<Wrapper> {
-      gradleVersion = "7.0.2"
+      gradleVersion = "7.1"
    }
 
    named("useLatestVersions", UseLatestVersionsTask::class.java).configure {
