@@ -17,15 +17,13 @@ data class NaisApplication(
 @ExperimentalSerializationApi
 fun NaisApplication.serialize() =
    Yaml(configuration = YamlConfiguration(encodeDefaults = false))
-      .encodeToString(NaisApplication.serializer(), this)
-      .let {
-         it.replace(""""##REPLACE_INGRESS##"""", """
-    {{#each ingresses as |url|}}
-      - {{url}}
-    {{/each}}""")
-      }.let {
-         it.replace(""""##REPLACE_IMAGE##"""", "{{image}}")
-      }
+.encodeToString(NaisApplication.serializer(), this)
+.let {
+   it.replace(""""##REPLACE_INGRESS##"""", """
+{{#each ingresses as |url|}}
+- {{url}}
+{{/each}}""")
+}.replace(""""##REPLACE_IMAGE##"""", "{{image}}")
 
 @Serializable
 data class AppMetadata(
