@@ -18,12 +18,11 @@ data class NaisApplication(
 fun NaisApplication.serialize() =
    Yaml(configuration = YamlConfiguration(encodeDefaults = false))
 .encodeToString(NaisApplication.serializer(), this)
-.let {
-   it.replace(""""##REPLACE_INGRESS##"""", """
+      .replace(""""##REPLACE_INGRESS##"""", """
 {{#each ingresses as |url|}}
 - {{url}}
 {{/each}}""")
-}.replace(""""##REPLACE_IMAGE##"""", "{{image}}")
+      .replace(""""##REPLACE_IMAGE##"""", "{{image}}")
 
 @Serializable
 data class AppMetadata(
