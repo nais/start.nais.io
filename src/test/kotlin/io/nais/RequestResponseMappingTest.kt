@@ -19,6 +19,17 @@ class RequestResponseMappingTest {
    }
 
    @Test
+   fun `alerts are generated from request`() {
+      val request = Request(team = "myteam", appName = "mycoolapp", platform = JVM_MAVEN)
+      Environment.values().forEach { env ->
+         val alerts = alertsFrom(request, env)
+         assertEquals(request.appName, alerts.metadata.name)
+         assertEquals(request.team, alerts.metadata.namespace)
+         assertTrue(alerts.spec.receivers.slack.channel.contains(env.toString().lowercase()))
+      }
+   }
+
+   @Test
    fun `deploy to dev job depends on build`() {
       val request = Request(team = "myteam", appName = "mycoolapp", platform = JVM_GRADLE)
       val workflow = gitHubWorkflowFrom(request)
@@ -106,6 +117,14 @@ class RequestResponseMappingTest {
       val workflow = gitHubWorkflowFrom(request)
       assertTrue(workflow.jobs.containsKey("deployTopicMytopicDev"))
       assertTrue(workflow.jobs.containsKey("deployTopicMytopicProd"))
+   }
+
+   @Test
+   fun `deployment of alerts is added to workflow`() {
+      val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS, kafkaTopics = listOf("mytopic"))
+      val workflow = gitHubWorkflowFrom(request)
+      assertTrue(workflow.jobs.containsKey("deployAlertsToDev"))
+      assertTrue(workflow.jobs.containsKey("deployAlertsToProd"))
    }
 
 }

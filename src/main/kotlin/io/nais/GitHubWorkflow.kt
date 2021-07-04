@@ -111,6 +111,18 @@ fun appDeployStep(environment: Environment) =
       )
    )
 
+fun alertDeployStep(environment: Environment) =
+   BuildStep(
+      name = "Deploy alerts to $environment",
+      uses = "nais/deploy/actions/deploy@v1",
+      env = mapOf(
+         "APIKEY" to "\${{ secrets.NAIS_DEPLOY_APIKEY }}",
+         "CLUSTER" to "${if (environment == PROD) "prod" else "dev"}-gcp",
+         "RESOURCE" to ".nais/alerts-${if (environment == PROD) "prod" else "dev"}.yaml",
+         "VARS" to ".nais/${if (environment == PROD) "prod" else "dev"}.yaml"
+      )
+   )
+
 fun topicDeployStep(topicName: String, environment: Environment) =
    BuildStep(
       name = "Deploy Kafka topic $topicName to $environment",
