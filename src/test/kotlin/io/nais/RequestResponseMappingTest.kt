@@ -96,6 +96,21 @@ class RequestResponseMappingTest {
    }
 
    @Test
+   fun `bigquery dataset is added upon request`() {
+      val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS, extras = listOf("bigquery"))
+      val naisApp = naisApplicationFrom(request)
+      assertEquals(1, naisApp.spec.gcp?.bigQueryDatasets?.size)
+   }
+
+   @Test
+   fun `postgres and bigquery can be added simultaneously`() {
+      val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS, extras = listOf("bigquery", "postgres"))
+      val naisApp = naisApplicationFrom(request)
+      assertEquals(1, naisApp.spec.gcp?.bigQueryDatasets?.size)
+      assertEquals(1, naisApp.spec.gcp?.sqlInstances?.size)
+   }
+
+   @Test
    fun `kafka topics are created upon request`() {
       val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS, kafkaTopics = listOf("mytopic"))
       val topics = kafkaTopicsFrom(request)

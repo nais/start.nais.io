@@ -1,11 +1,11 @@
 package io.nais
 
+import io.nais.BigQueryDatasetPermission.READWRITE
 import io.nais.DatabaseType.POSTGRES_13
 import io.nais.Environment.DEV
 import io.nais.Environment.PROD
 import io.nais.PLATFORM.*
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.SerializationException
 import java.net.URL
 import java.util.*
 
@@ -54,15 +54,9 @@ internal fun naisApplicationFrom(req: Request) = NaisApplication(
             "idporten" -> idPorten = IdPorten(true)
             "elastic" -> elastic = Elastic(instance = req.appName)
             "aad" -> azure = Azure(application = AzureApplication(enabled = true))
-            "postgres" -> gcp = GCP(
-               sqlInstances = listOf(
-                  SQLInstance(type = POSTGRES_13,
-                     mapOf("name" to "${req.appName}-db"))
-               )
-            )
-            else -> throw SerializationException("dont't know anything about '$feature'")
          }
       }
+      if (req.containsGcpSpecificThings()) gcp = gcpStuffFrom(req)
    }
 )
 
@@ -158,6 +152,19 @@ internal fun alertsFrom(req: Request, environment: Environment) = Alerts(
       )
    )
 )
+
+private fun gcpStuffFrom(req: Request): GCP {
+   val sqlInstances = if ((req.extras.contains("postgres")))
+      listOf(SQLInstance(type = POSTGRES_13, mapOf("name" to "${req.appName}-db")))
+   else emptyList()
+
+   val bigQueryDatasets = if ((req.extras.contains("bigquery")))
+      listOf(BigQueryDataset(name = "${req.appName}-dataset", permission = READWRITE))
+   else emptyList()
+
+   return GCP(sqlInstances, bigQueryDatasets)
+}
+
 
 private fun buildStepsFor(platform: PLATFORM) =
    when (platform) {

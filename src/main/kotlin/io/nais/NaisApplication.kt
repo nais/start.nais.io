@@ -97,7 +97,8 @@ data class AzureApplication(
 
 @Serializable
 data class GCP(
-   val sqlInstances: List<SQLInstance>
+   val sqlInstances: List<SQLInstance> = emptyList(),
+   val bigQueryDatasets: List<BigQueryDataset> = emptyList()
 )
 
 @Serializable
@@ -106,8 +107,18 @@ data class SQLInstance(
    val databases: Map<String, String>
 )
 
+@Serializable
+data class BigQueryDataset(
+   val permission: BigQueryDatasetPermission,
+   val name: String
+)
+
 enum class DatabaseType {
    POSTGRES_13
+}
+
+enum class BigQueryDatasetPermission {
+   READWRITE
 }
 
 

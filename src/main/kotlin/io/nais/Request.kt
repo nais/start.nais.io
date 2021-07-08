@@ -2,6 +2,8 @@ package io.nais
 
 import kotlinx.serialization.Serializable
 
+private val gcpOnlyFeatures = listOf("postgres", "bigquery")
+
 @Serializable
 data class Request (
    val team: String,
@@ -9,7 +11,10 @@ data class Request (
    val platform: PLATFORM,
    val extras: List<String> = emptyList(),
    val kafkaTopics: List<String> = emptyList()
-)
+) {
+   fun containsGcpSpecificThings(): Boolean =
+      extras.intersect(gcpOnlyFeatures).isNotEmpty()
+}
 
 enum class PLATFORM {
    JVM_GRADLE, JVM_MAVEN, NODEJS, GO_MAKE
