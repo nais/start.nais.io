@@ -159,7 +159,7 @@ private fun gcpStuffFrom(req: Request): GCP {
    else emptyList()
 
    val bigQueryDatasets = if ((req.extras.contains("bigquery")))
-      listOf(BigQueryDataset(name = "${req.appName}-dataset", permission = READWRITE))
+      listOf(BigQueryDataset(name = "${req.appName}-dataset", permission = READWRITE, cascadingDelete = false))
    else emptyList()
 
    return GCP(sqlInstances, bigQueryDatasets)

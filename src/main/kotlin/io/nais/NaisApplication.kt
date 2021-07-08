@@ -110,7 +110,8 @@ data class SQLInstance(
 @Serializable
 data class BigQueryDataset(
    val permission: BigQueryDatasetPermission,
-   val name: String
+   val name: String,
+   val cascadingDelete: Boolean
 )
 
 enum class DatabaseType {
