@@ -52,7 +52,7 @@ fun Route.app() {
       val requestedFormat = ContentType.parse(call.request.accept() ?: "application/json")
       when (requestedFormat) {
          Zip -> call.respondOutputStream(Zip, OK) { response.zipToStream(this) }
-         Json -> call.respond(response.asJson())
+         Json -> call.respond(response.b64EncodeValues())
          else -> call.respond(UnsupportedMediaType)
       }
       Metrics.countNewDownload(request.team, request.platform, requestedFormat.toString())

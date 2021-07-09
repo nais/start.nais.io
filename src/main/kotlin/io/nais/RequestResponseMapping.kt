@@ -28,7 +28,7 @@ val serve: RequestHandler = { request ->
 }
 
 @ExperimentalSerializationApi
-fun Map<String, String>.asJson() = mapValues { it.value.base64Encode() }
+fun Map<String, String>.b64EncodeValues() = mapValues { it.value.base64Encode() }
 
 @ExperimentalSerializationApi
 internal fun naisApplicationFrom(req: Request) = NaisApplication(
