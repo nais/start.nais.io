@@ -51,10 +51,19 @@ data class BuildStep(
    val with: Map<String, String>? = null
 )
 
-private val dockerImageStep = BuildStep(
-   name = "Build and publish Docker image",
-   env = mapOf("GITHUB_TOKEN" to "\${{ secrets.GITHUB_TOKEN }}"),
-   run = "docker build --pull --tag \${IMAGE} . && echo \$GITHUB_TOKEN | docker login --username \$GITHUB_REPOSITORY --password-stdin https://docker.pkg.github.com && docker push \${IMAGE}"
+private val dockerLoginStep = BuildStep(
+   name = "Login to GitHub Docker Registry",
+   uses = "docker/login-action@v1",
+   with = mapOf(
+      "registry" to "ghcr.io",
+      "username" to "\${{ github.actor }}",
+      "password" to "\${{ secrets.GITHUB_TOKEN }}"
+   )
+)
+
+private val dockerBuildAndPushStep = BuildStep(
+   name = "Build and push the Docker image",
+   run = "docker build --pull --tag \${IMAGE} . && docker push \${IMAGE}"
 )
 
 val gradleJvmBuildSteps = listOf(
@@ -68,7 +77,8 @@ val gradleJvmBuildSteps = listOf(
       )),
    BuildStep(uses = "actions/setup-java@v1", with = mapOf("java-version" to "15")),
    BuildStep(name = "compile and run tests", run = "./gradlew build"),
-   dockerImageStep
+   dockerLoginStep,
+   dockerBuildAndPushStep
 )
 
 val mavenJvmBuildSteps = listOf(
@@ -81,20 +91,23 @@ val mavenJvmBuildSteps = listOf(
       )),
    BuildStep(uses = "actions/setup-java@v1", with = mapOf("java-version" to "15")),
    BuildStep(name = "compile and run tests", run = "mvn install"),
-   dockerImageStep
+   dockerLoginStep,
+   dockerBuildAndPushStep
 )
 
 val nodejsBuildSteps = listOf(
    BuildStep(uses = "actions/setup-node@v1"),
    BuildStep(name = "install dependencies", run = "npm ci"),
    BuildStep(name = "run tests", run = "npm test"),
-   dockerImageStep
+   dockerLoginStep,
+   dockerBuildAndPushStep
 )
 
 val goMakeBuildSteps = listOf(
    BuildStep(uses = "actions/setup-go@v2", with = mapOf("go-version" to "1.16")),
    BuildStep(name = "perform build", run = "make mytarget"),
-   dockerImageStep
+   dockerLoginStep,
+   dockerBuildAndPushStep
 )
 
 val checkoutStep = BuildStep(uses = "actions/checkout@v2")
