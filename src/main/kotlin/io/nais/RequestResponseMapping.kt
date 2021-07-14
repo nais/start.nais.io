@@ -85,7 +85,7 @@ internal fun gitHubWorkflowFrom(req: Request) = GitHubWorkflow(
          branches = listOf("main")
       )
    ),
-   env = mapOf("IMAGE" to "docker.pkg.github.com/${dollar}{{ github.repository }}/${req.appName}:${dollar}{{ github.sha }}")
+   env = mapOf("IMAGE" to "ghcr.io/${dollar}{{ github.repository }}:${dollar}{{ github.sha }}")
 )
 
 internal fun kafkaTopicsFrom(req: Request) = req.kafkaTopics.map { topicName ->
