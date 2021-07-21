@@ -40,6 +40,8 @@ internal fun naisApplicationFrom(req: Request) = NaisApplication(
       namespace = req.team,
       labels = mapOf(
          "team" to req.team,
+         "created-by" to "start.nais.io",
+
          // TODO(x10an14): Ideally replace with git commit sha:
          "start.nais.io/creationTimestamp" to LocalDateTime.now().toString(),
       )
