@@ -39,8 +39,7 @@ data class AppSpec(
    val readiness: StatusEndpoint,
    val replicas: Replicas,
    val prometheus: Prometheus,
-   val limits: Resources,
-   val requests: Resources,
+   val resources: Resources,
    val ingresses: String,
    var azure: Azure? = null,
    var idPorten: IdPorten? = null,
@@ -71,8 +70,20 @@ data class Prometheus(
 
 @Serializable
 data class Resources(
+   val limits: Limits,
+   val requests: Requests,
+)
+
+@Serializable
+data class Requests(
    val cpu: String,
-   val memory: String
+   val memory: String,
+)
+
+@Serializable
+data class Limits(
+   val cpu: String,
+   val memory: String,
 )
 
 @Serializable

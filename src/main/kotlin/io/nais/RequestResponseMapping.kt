@@ -45,8 +45,10 @@ internal fun naisApplicationFrom(req: Request) = NaisApplication(
       readiness = StatusEndpoint(path = "/isready", port = 8080, initialDelay = 20, timeout = 60),
       replicas = Replicas(min = 2, max = 2, cpuThresholdPercentage = 50),
       prometheus = Prometheus(enabled = true, path = "/metrics"),
-      limits = Resources(cpu = "200m", memory = "256Mi"),
-      requests = Resources(cpu = "200m", memory = "256Mi"),
+      resources = Resources(
+         limits = Limits(cpu = "200m", memory = "256Mi"),
+         requests = Requests(cpu = "200", memory = "256Mi"),
+      ),
       ingresses = "##REPLACE_INGRESS##"
    ).apply {
       req.extras.forEach { feature ->
