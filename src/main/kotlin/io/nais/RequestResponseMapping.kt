@@ -7,6 +7,7 @@ import io.nais.Environment.PROD
 import io.nais.PLATFORM.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import java.net.URL
+import java.time.LocalDateTime
 import java.util.*
 
 private const val dollar = '$' // workaround, escaping doesn't work in multiline strings (https://youtrack.jetbrains.com/issue/KT-2425)
@@ -37,7 +38,11 @@ internal fun naisApplicationFrom(req: Request) = NaisApplication(
    metadata = AppMetadata(
       name = req.appName,
       namespace = req.team,
-      labels = mapOf("team" to req.team)
+      labels = mapOf(
+         "team" to req.team,
+         // TODO(x10an14): Ideally replace with git commit sha:
+         "start.nais.io/creationTimestamp" to LocalDateTime.now().toString(),
+      )
    ),
    spec = AppSpec(
       image = "##REPLACE_IMAGE##",
