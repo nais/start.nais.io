@@ -19,9 +19,9 @@ fun NaisApplication.serialize() =
    Yaml(configuration = YamlConfiguration(encodeDefaults = false))
 .encodeToString(NaisApplication.serializer(), this)
       .replace(""""##REPLACE_INGRESS##"""", """
-{{#each ingresses as |url|}}
-- {{url}}
-{{/each}}""")
+  {{#each ingresses as |url|}}
+    - {{url}}
+  {{/each}}""")
       .replace(""""##REPLACE_IMAGE##"""", "{{image}}")
 
 @Serializable
