@@ -70,18 +70,12 @@ data class Prometheus(
 
 @Serializable
 data class Resources(
-   val limits: Limits,
-   val requests: Requests,
+   val limits: ResourceMetrics,
+   val requests: ResourceMetrics,
 )
 
 @Serializable
-data class Requests(
-   val cpu: String,
-   val memory: String,
-)
-
-@Serializable
-data class Limits(
+data class ResourceMetrics(
    val cpu: String,
    val memory: String,
 )

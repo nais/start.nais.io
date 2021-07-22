@@ -65,8 +65,8 @@ internal fun naisApplicationFrom(req: Request) = NaisApplication(
       replicas = Replicas(min = 2, max = 2, cpuThresholdPercentage = 50),
       prometheus = Prometheus(enabled = true, path = "/metrics"),
       resources = Resources(
-         limits = Limits(cpu = "200m", memory = "256Mi"),
-         requests = Requests(cpu = "200", memory = "256Mi"),
+         limits = ResourceMetrics(cpu = "200m", memory = "256Mi"),
+         requests = ResourceMetrics(cpu = "200", memory = "256Mi"),
       ),
       ingresses = "##REPLACE_INGRESS##"
    ).apply {
