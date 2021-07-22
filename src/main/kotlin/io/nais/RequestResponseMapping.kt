@@ -7,6 +7,7 @@ import io.nais.Environment.PROD
 import io.nais.PLATFORM.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import java.net.URL
+import java.time.LocalDateTime
 import java.util.*
 
 private const val dollar = '$' // workaround, escaping doesn't work in multiline strings (https://youtrack.jetbrains.com/issue/KT-2425)
@@ -30,6 +31,24 @@ val serve: RequestHandler = { request ->
 @ExperimentalSerializationApi
 fun Map<String, String>.b64EncodeValues() = mapValues { it.value.base64Encode() }
 
+/**
+ * Stolen from: https://stackoverflow.com/a/63013893/1503549
+ *
+ * Creates a new read-only map by replacing or adding entries to this map from another [map].
+ *
+ * The returned map preserves the entry iteration order of the original map.
+ * Those entries of another [map] that are missing in this map are iterated in the end in the order of that [map].
+ */
+public operator fun <K, V> Map<out K, V>.plus(map: Map<out K, V>): Map<K, V> =
+   LinkedHashMap(this).apply { putAll(map) }
+
+private val generationLabels = mapOf(
+   "created-by" to "start.nais.io",
+
+   // TODO(x10an14): Ideally replace with git commit sha:
+   "start.nais.io/creationTimestamp" to LocalDateTime.now().toString(),
+)
+
 @ExperimentalSerializationApi
 internal fun naisApplicationFrom(req: Request) = NaisApplication(
    apiVersion = "nais.io/v1alpha1",
@@ -37,7 +56,7 @@ internal fun naisApplicationFrom(req: Request) = NaisApplication(
    metadata = AppMetadata(
       name = req.appName,
       namespace = req.team,
-      labels = mapOf("team" to req.team)
+      labels = mapOf("team" to req.team) + generationLabels
    ),
    spec = AppSpec(
       image = "##REPLACE_IMAGE##",
@@ -97,7 +116,7 @@ internal fun kafkaTopicsFrom(req: Request) = req.kafkaTopics.map { topicName ->
       metadata = KafkaMetadata(
          name = topicName,
          namespace = req.team,
-         labels = mapOf("team" to req.team)
+         labels = mapOf("team" to req.team) + generationLabels
       ),
       spec = KafkaSpec(
          pool = "${dollar}{{kafkaPool}}",
@@ -123,7 +142,7 @@ internal fun alertsFrom(req: Request, environment: Environment) = Alerts(
    metadata = AlertMetadata(
       name = req.appName,
       namespace = req.team,
-      labels = mapOf("team" to req.team)
+      labels = mapOf("team" to req.team) + generationLabels
    ),
    spec = AlertSpec(
       receivers = AlertReceivers(
