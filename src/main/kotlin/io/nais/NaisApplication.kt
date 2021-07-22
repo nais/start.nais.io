@@ -19,9 +19,9 @@ fun NaisApplication.serialize() =
    Yaml(configuration = YamlConfiguration(encodeDefaults = false))
 .encodeToString(NaisApplication.serializer(), this)
       .replace(""""##REPLACE_INGRESS##"""", """
-{{#each ingresses as |url|}}
-- {{url}}
-{{/each}}""")
+  {{#each ingresses as |url|}}
+    - {{url}}
+  {{/each}}""")
       .replace(""""##REPLACE_IMAGE##"""", "{{image}}")
 
 @Serializable
@@ -39,8 +39,7 @@ data class AppSpec(
    val readiness: StatusEndpoint,
    val replicas: Replicas,
    val prometheus: Prometheus,
-   val limits: Resources,
-   val requests: Resources,
+   val resources: Resources,
    val ingresses: String,
    var azure: Azure? = null,
    var idPorten: IdPorten? = null,
@@ -71,8 +70,14 @@ data class Prometheus(
 
 @Serializable
 data class Resources(
+   val limits: ResourceMetrics,
+   val requests: ResourceMetrics,
+)
+
+@Serializable
+data class ResourceMetrics(
    val cpu: String,
-   val memory: String
+   val memory: String,
 )
 
 @Serializable
