@@ -43,7 +43,7 @@ public operator fun <K, V> Map<out K, V>.plus(map: Map<out K, V>): Map<K, V> =
    LinkedHashMap(this).apply { putAll(map) }
 
 private val generationLabels = mapOf(
-   "created-by" to "start.nais.io",
+   "start.nais.io/created-by" to "me",
 
    // TODO(x10an14): Ideally replace with git commit sha:
    "start.nais.io/creationTimestamp" to LocalDateTime.now().toString(),
