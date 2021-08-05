@@ -41,7 +41,7 @@ jobs:
          -  name: Build an push the Docker image
             run: |
                docker build --pull --tag ${{ steps.dockertag.outputs.docker_img }} .
-               docker push ${IMAGE}
+               docker push ${{ steps.dockertag.outputs.docker_img }}
 
    deploy_to_dev:
       name: Deploy to dev-gcp
