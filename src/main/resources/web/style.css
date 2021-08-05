@@ -23,7 +23,7 @@ main {
    display: flex;
    flex-direction: row;
    width: 70%;
-   height: 80vh;
+   height: auto;
 }
 
 .left {
@@ -85,14 +85,16 @@ button {
 }
 
 button:disabled {
-   background: rgba(63, 123, 191, 0.2);
-   color: #235a80;
+   opacity: 0.65;
+   cursor: not-allowed;
+   color: lightgrey;
 }
 
 .buttons {
    display: flex;
    justify-content: center;
    gap: 1em;
+   margin-bottom: 20px;
 }
 
 input.apple-switch {
@@ -178,60 +180,45 @@ label > input[type="radio"]:checked + * {
 }
 
 .modal {
-   display: none;
    position: fixed;
-   z-index: 1;
    left: 0;
    top: 0;
    width: 100%;
    height: 100%;
-   background-color: rgb(0,0,0);
-   background-color: rgba(0,0,0,0.4);
-}
-
-.modal-content {
-   background-color: #fefefe;
-   margin: 10% auto;
-   padding: 20px;
-   border: 1px solid #888;
-   width: 70vh;
-   height: 70vh;
-   overflow: auto;
-}
-
-.close {
-   color: #aaa;
-   float: right;
-   font-size: 28px;
-   font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-   color: black;
-   text-decoration: none;
-   cursor: pointer;
-}
-
-.tooltip {
-   position: relative;
-   display: inline-block;
-   border-bottom: 1px dotted black;
-}
-
-.tooltip .tooltiptext {
+   background-color: rgba(0, 0, 0, 0.5);
+   opacity: 0;
    visibility: hidden;
-   width: 120px;
-   background-color: #235a80;
-   color: #fff;
-   border: 1px solid white;
-   text-align: center;
-   padding: 5px 0;
-   position: absolute;
-   z-index: 1;
+   transform: scale(1.1);
+   transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
 }
-
-.tooltip:hover .tooltiptext {
+.modal-content {
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   background-color: white;
+   padding: 1rem 1.5rem;
+   width: 45rem;
+   height: 40rem;
+   border-radius: 0.5rem;
+   overflow: scroll;
+}
+.close-button {
+   float: right;
+   width: 1.5rem;
+   line-height: 1.5rem;
+   text-align: center;
+   cursor: pointer;
+   border-radius: 0.25rem;
+   background-color: lightgray;
+}
+.close-button:hover {
+   background-color: darkgray;
+}
+.show-modal {
+   opacity: 1;
    visibility: visible;
+   transform: scale(1.0);
+   transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
 }
 

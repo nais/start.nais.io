@@ -82,11 +82,8 @@
             <input type="text" name="kafkaTopics" id="kafkaTopics" placeholder="Kafka topics (comma separated)" />
 
             <div class ="buttons">
-               <button id="btnZip" class="tooltip" disabled>
-                  Create Zip
-                  <span class="tooltiptext">NB! Zip file will contain hidden directories</span>
-               </button>
-               <button id="btnTxt" disabled>Create Text</button>
+               <button id="btnZip" disabled>Download zip</button>
+               <button id="btnTxt" disabled>Popup as Text</button>
             </div>
             <div id="errmsg"></div>
          </form>
@@ -94,13 +91,11 @@
    </section>
 </main>
 
-<div id="myModal" class="modal">
-
+<div class="modal">
    <div class="modal-content">
-      <span class="close">&times;</span>
-      <p><pre id="modaltxt">Some text in the Modal..</pre></p>
+      <span class="close-button">&times;</span>
+      <pre id="modal-yaml">Yaml goes here...</pre>
    </div>
-
 </div>
 
 <script type="application/javascript" src="script.js"></script>

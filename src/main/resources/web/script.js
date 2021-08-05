@@ -1,7 +1,7 @@
 const sendBtns = document.querySelectorAll("button")
 const form = document.forms[0]
-const modal = document.getElementById("myModal");
-const closer = document.getElementsByClassName("close")[0]
+const modal = document.querySelector(".modal")
+const modalCloser = document.getElementsByClassName("close-button")[0]
 
 sendBtns.forEach(btn => {
   btn.addEventListener("click", event => {
@@ -27,9 +27,8 @@ const post = (form, acceptedContentType) => {
          if (parsedResponse.contentType === "application/zip") {
             saveBlob(parsedResponse)
          } else {
-            document.getElementById("modaltxt").textContent =
-               await formatForDisplay(parsedResponse)
-            modal.style.display = "block"
+            document.getElementById("modal-yaml").textContent = await formatForDisplay(parsedResponse)
+            toggleModal()
          }
          setErrorMsg("")
       }).catch(err => {
@@ -92,13 +91,14 @@ const formatForDisplay = async (response) => {
 const csvToArray = (str) => str && str.trim().length !== 0 ?
    str.split(',').map((element) => element.trim())  : []
 
-closer.onclick = () => {
-   modal.style.display = "none"
+const toggleModal = () => {
+   modal.classList.toggle("show-modal");
 }
 
-window.onclick = (event) => {
+modalCloser.addEventListener("click", toggleModal);
+
+window.addEventListener("click", (event) => {
    if (event.target === modal) {
-      modal.style.display = "none";
+      toggleModal();
    }
-}
-
+});
