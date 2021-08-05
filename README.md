@@ -1,7 +1,8 @@
 # start.nais.io
 
 ![workflow](https://github.com/nais/start.nais.io/actions/workflows/main.yaml/badge.svg)
-[![Website start.nais.io](https://img.shields.io/website-up-down-green-red/https/start.nais.io.svg)](https://start.nais.io/)
+[![JetBrains Plugins](https://img.shields.io/jetbrains/plugin/v/16219-nais-starter.svg)](https://plugins.jetbrains.com/)
+![vscode marketplace](https://vsmarketplacebadge.apphb.com/version/navikt.nais-starter-vscode.svg)
 
 Lets [NAIS](https://nais.io) users generate basic YAML incantations for building and deploying their apps with minimal effort, thus eliminating the need for a lot of manual text editing.
 
