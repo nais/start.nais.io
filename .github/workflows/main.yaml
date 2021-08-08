@@ -1,4 +1,4 @@
-name: main
+name: Build and deploy main
 
 on:
    push:
@@ -14,13 +14,21 @@ jobs:
       steps:
          -  uses: actions/checkout@v2
          -  uses: gradle/wrapper-validation-action@v1
-         -  uses: actions/cache@v1
+         -  name: Cache Gradle artifacts
+            uses: actions/cache@v2
             with:
                path: ~/.gradle/caches
                key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}
                restore-keys: |
                   ${{ runner.os }}-gradle-
-         -  name: Generate Docker image tag
+         -  name: Cache Docker layers
+            uses: actions/cache@v2
+            with:
+               path: /tmp/.buildx-cache
+               key: ${{ runner.os }}-buildx-${{ github.sha }}
+               restore-keys: |
+                  ${{ runner.os }}-buildx-
+         -  name: Generate Docker image tag with short sha
             id: dockertag
             run: echo "::set-output name=docker_img::ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)"
          -  name: Generate SLSA provenance
@@ -30,7 +38,7 @@ jobs:
          -  uses: actions/setup-java@v1
             with:
                java-version: '16.x'
-         -  name: Test and build the code
+         -  name: Build and test the app
             run: ./gradlew test build
          -  name: Login to GitHub Docker Registry
             uses: docker/login-action@v1
@@ -38,10 +46,19 @@ jobs:
                registry: ghcr.io
                username: ${{ github.actor }}
                password: ${{ secrets.GITHUB_TOKEN }}
-         -  name: Build an push the Docker image
+         -  name: Build and push the Docker image
+            uses: docker/build-push-action@v2
+            with:
+               context: .
+               push: true
+               tags: ${{ steps.dockertag.outputs.docker_img }}
+               cache-from: type=local,src=/tmp/.buildx-cache
+               cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+         -  # Temp fix for https://github.com/docker/build-push-action/issues/252 and https://github.com/moby/buildkit/issues/1896
+            name: Move cache
             run: |
-               docker build --pull --tag ${{ steps.dockertag.outputs.docker_img }} .
-               docker push ${{ steps.dockertag.outputs.docker_img }}
+               rm -rf /tmp/.buildx-cache
+               mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
    deploy_to_dev:
       name: Deploy to dev-gcp
