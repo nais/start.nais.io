@@ -13,6 +13,7 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.serialization.*
+import io.ktor.util.pipeline.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerializationException
 
@@ -51,12 +52,16 @@ fun Route.app() {
       val response = serve(request)
       val requestedFormat = ContentType.parse(call.request.accept() ?: "application/json")
       when (requestedFormat) {
-         Zip -> call.respondOutputStream(Zip, OK) { response.zipToStream(this) }
+         Zip -> {
+            call.response.header("Content-Disposition", ContentDisposition.Attachment.withParameter("filename", "${request.appName}.zip").toString())
+            call.respondOutputStream(Zip, OK) { response.zipToStream(this) }
+         }
          Json -> call.respond(response.b64EncodeValues())
          else -> call.respond(UnsupportedMediaType)
       }
       Metrics.countNewDownload(request.team, request.platform, requestedFormat.toString())
    }
 }
+
 
 

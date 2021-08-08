@@ -48,10 +48,11 @@ class E2ETest {
          val call = handleRequest(method = Post, uri = "/app") {
             addHeader(ContentType, Application.Json.toString())
             addHeader(Accept, Application.Zip.toString())
-            setBody("""{"appName": "myeapp", "team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
+            setBody("""{"appName": "myapp", "team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
          }
          assertEquals(OK, call.response.status())
          assertTrue(call.response.headers["Content-Type"] == Application.Zip.toString())
+         assertTrue(call.response.headers["Content-Disposition"]?.contains("filename") ?: false)
       }
    }
 
