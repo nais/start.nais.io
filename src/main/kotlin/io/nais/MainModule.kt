@@ -60,7 +60,13 @@ fun Route.app() {
          else -> call.respond(UnsupportedMediaType)
       }
       Metrics.countNewDownload(request.team, request.platform, requestedFormat.toString())
+      Metrics.countUserAgent(parse(call.request.header("User-Agent") ?: "unknown"))
    }
+}
+
+fun parse(userAgent: String) = userAgent.lastIndexOf(' ').let { space ->
+   val fromIdx = if (space != -1) space + 1 else 0
+   userAgent.substring(fromIdx)
 }
 
 

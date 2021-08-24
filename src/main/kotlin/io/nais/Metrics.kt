@@ -14,9 +14,18 @@ object Metrics {
       .help("Nr of generated responses")
       .register(meterRegistry.prometheusRegistry)
 
+   private val userAgentCounter = Counter.build()
+      .name("useragent")
+      .labelNames("name")
+      .help("Nr of unique user agents")
+      .register(meterRegistry.prometheusRegistry)
+
    fun scrape(): String = meterRegistry.scrape()
 
    fun countNewDownload(team: String, platform: PLATFORM, format: String) =
       downloadsCounter.labels(team, platform.toString(), format).inc()
+
+   fun countUserAgent(name: String) =
+      userAgentCounter.labels(name).inc()
 
 }
