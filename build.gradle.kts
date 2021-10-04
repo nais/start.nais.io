@@ -13,7 +13,7 @@ val mainClassName = "io.nais.MainKt"
 
 plugins {
    kotlin("jvm") version "1.6.0-M1"
-   kotlin("plugin.serialization") version "1.5.21"
+   kotlin("plugin.serialization") version "1.6.0-M1"
    id("se.patrikerdes.use-latest-versions") version "0.2.17"
    id("com.github.ben-manes.versions") version "0.39.0"
 }
