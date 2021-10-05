@@ -6,6 +6,7 @@ on:
          - main
       paths-ignore:
          - "*.md"
+         - "build.provenance"
 
 jobs:
    build:
@@ -28,6 +29,12 @@ jobs:
             uses: slsa-framework/github-actions-demo@v0.1
             with:
                artifact_path: ./
+         -  name: Upload provenance
+            uses: actions/upload-artifact@v2
+            with:
+               name: slsa-provenance
+               path: build.provenance
+
          -  uses: actions/setup-java@v2
             with:
                java-version: '16'
