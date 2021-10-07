@@ -38,11 +38,6 @@ fun Application.mainModule() {
    routing {
       intercept(ApplicationCallPipeline.Monitoring) {
          if (context.request.uri.isInteresting()) {
-            println("-----------------")
-            println("-----------------")
-            println("-----------------")
-            println("-----------------")
-            println("-----------------")
             Metrics.countUserAgent(context.request.header("User-Agent") ?: "unknown")
          }
       }
