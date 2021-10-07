@@ -36,6 +36,10 @@ fun Application.mainModule() {
    }
 
    routing {
+      intercept(ApplicationCallPipeline.Monitoring) {
+         Metrics.countUserAgent(context.request.header("User-Agent") ?: "unknown")
+      }
+
       static("/") {
          resources("web")
          defaultResource("index.html", "web")
@@ -60,7 +64,6 @@ fun Route.app() {
          else -> call.respond(UnsupportedMediaType)
       }
       Metrics.countNewDownload(request.team, request.platform, requestedFormat.toString())
-      Metrics.countUserAgent(parse(call.request.header("User-Agent") ?: "unknown"))
    }
 }
 
