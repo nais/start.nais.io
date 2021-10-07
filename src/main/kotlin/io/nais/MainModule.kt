@@ -37,7 +37,14 @@ fun Application.mainModule() {
 
    routing {
       intercept(ApplicationCallPipeline.Monitoring) {
-         Metrics.countUserAgent(context.request.header("User-Agent") ?: "unknown")
+         if (context.request.uri.isInteresting()) {
+            println("-----------------")
+            println("-----------------")
+            println("-----------------")
+            println("-----------------")
+            println("-----------------")
+            Metrics.countUserAgent(context.request.header("User-Agent") ?: "unknown")
+         }
       }
 
       static("/") {
@@ -71,6 +78,8 @@ fun parse(userAgent: String) = userAgent.lastIndexOf(' ').let { space ->
    val fromIdx = if (space != -1) space + 1 else 0
    userAgent.substring(fromIdx)
 }
+
+private fun String.isInteresting() = this.contains("/internal", false)
 
 
 
