@@ -25,17 +25,22 @@ jobs:
          -  name: Generate Docker image tag with short sha
             id: dockertag
             run: echo "::set-output name=docker_img::ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)"
+         -  name: Run Snyk to check for vulns
+            uses: snyk/actions/gradle-jdk16@master
+            continue-on-error: true
+            env:
+               SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+            with:
+               args: --sarif-file-output=snyk.sarif
+         -  name: Upload Snyk result to GitHub Code Scanning
+            uses: github/codeql-action/upload-sarif@v1
+            with:
+               sarif_file: snyk.sarif
          -  name: Generate SLSA provenance
             uses: slsa-framework/github-actions-demo@v0.1
             with:
                artifact_path: ./
-         -  name: Run Snyk to check for vulnerabilities
-            uses: snyk/actions/gradle-jdk16@master
-            env:
-               SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-            with:
-               args: --severity-threshold=high
-         -  name: Upload provenance
+         -  name: Upload SLSA provenance
             uses: actions/upload-artifact@v2
             with:
                name: slsa-provenance
