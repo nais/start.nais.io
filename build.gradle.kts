@@ -12,8 +12,8 @@ val micrometerVersion = "1.7.4"
 val mainClassName = "io.nais.MainKt"
 
 plugins {
-   kotlin("jvm") version "1.6.0-M1"
-   kotlin("plugin.serialization") version "1.6.0-M1"
+   kotlin("jvm") version "1.6.0-RC"
+   kotlin("plugin.serialization") version "1.6.0-RC"
    id("se.patrikerdes.use-latest-versions") version "0.2.17"
    id("com.github.ben-manes.versions") version "0.39.0"
 }
