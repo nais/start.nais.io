@@ -29,12 +29,15 @@ jobs:
             uses: slsa-framework/github-actions-demo@v0.1
             with:
                artifact_path: ./
+         -  name: Run Snyk to check for vulnerabilities
+            uses: snyk/actions/gradle-jdk16@master
+            env:
+               SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
          -  name: Upload provenance
             uses: actions/upload-artifact@v2
             with:
                name: slsa-provenance
                path: build.provenance
-
          -  uses: actions/setup-java@v2
             with:
                java-version: '16'
