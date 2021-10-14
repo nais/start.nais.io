@@ -13,7 +13,7 @@ data class Request (
    val kafkaTopics: List<String> = emptyList()
 ) {
    fun containsGcpSpecificThings(): Boolean =
-      extras.intersect(gcpOnlyFeatures).isNotEmpty()
+      extras.any { gcpOnlyFeatures.contains(it) }
 }
 
 enum class PLATFORM {
