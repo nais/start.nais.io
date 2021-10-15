@@ -38,6 +38,7 @@ jobs:
             with:
                java-version: '16'
                distribution: 'adopt'
+               cache: 'gradle'
          -  uses: gradle/wrapper-validation-action@v1
          -  name: Build and test the app
             run: ./gradlew test build
