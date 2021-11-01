@@ -40,8 +40,8 @@ jobs:
                distribution: 'adopt'
                cache: 'gradle'
          -  uses: gradle/wrapper-validation-action@v1
-         -  name: Set permissions on Gradle dir
-            run: sudo chmod -R 755 $GITHUB_WORKSPACE/.gradle/
+         -  name: Delete stale Gradle lock file(s)
+            run: sudo find $GITHUB_WORKSPACE/.gradle/ -name 'fileHashes.lock' -delete
          -  name: Build and test the app
             run: ./gradlew build
          -  name: Login to GitHub Docker Registry
