@@ -7,14 +7,14 @@ val logstashEncoderVersion = "6.6"
 val junitJupiterVersion = "5.8.1"
 val kotlinSerializationVersion = "1.3.0"
 val kamlVersion = "0.36.0"
-val micrometerVersion = "1.7.4"
+val micrometerVersion = "1.7.5"
 
 val mainClassName = "io.nais.MainKt"
 
 plugins {
    kotlin("jvm") version "1.6.0-RC"
    kotlin("plugin.serialization") version "1.6.0-RC"
-   id("se.patrikerdes.use-latest-versions") version "0.2.17"
+   id("se.patrikerdes.use-latest-versions") version "0.2.18"
    id("com.github.ben-manes.versions") version "0.39.0"
 }
 
