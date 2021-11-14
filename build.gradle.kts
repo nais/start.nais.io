@@ -1,26 +1,27 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import se.patrikerdes.UseLatestVersionsTask
 
-val ktorVersion = "1.6.4"
+val ktorVersion = "1.6.5"
 val logbackVersion = "1.3.0-alpha10"
-val logstashEncoderVersion = "6.6"
+val logstashEncoderVersion = "7.0"
 val junitJupiterVersion = "5.8.1"
-val kotlinSerializationVersion = "1.3.0"
-val kamlVersion = "0.36.0"
-val micrometerVersion = "1.7.5"
+val kotlinSerializationVersion = "1.3.1"
+val kamlVersion = "0.37.0"
+val micrometerVersion = "1.8.0"
 
 val mainClassName = "io.nais.MainKt"
 
 plugins {
-   kotlin("jvm") version "1.6.0-RC"
-   kotlin("plugin.serialization") version "1.6.0-RC"
+   kotlin("jvm") version "1.6.0-RC2"
+   kotlin("plugin.serialization") version "1.6.0-RC2"
+   id("com.github.johnrengelman.shadow") version "7.1.0"
    id("se.patrikerdes.use-latest-versions") version "0.2.18"
    id("com.github.ben-manes.versions") version "0.39.0"
 }
 
 java {
-   sourceCompatibility = JavaVersion.VERSION_16
-   targetCompatibility = JavaVersion.VERSION_16
+   sourceCompatibility = JavaVersion.VERSION_11
+   targetCompatibility = JavaVersion.VERSION_11
 }
 
 repositories {
@@ -66,7 +67,7 @@ tasks {
 
    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
       kotlinOptions {
-         jvmTarget = "16"
+         jvmTarget = "11"
       }
    }
 
