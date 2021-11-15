@@ -12,8 +12,8 @@ val micrometerVersion = "1.8.0"
 val mainClassName = "io.nais.MainKt"
 
 plugins {
-   kotlin("jvm") version "1.6.0-RC2"
-   kotlin("plugin.serialization") version "1.6.0-RC2"
+   kotlin("jvm") version "1.6.0"
+   kotlin("plugin.serialization") version "1.6.0"
    id("com.github.johnrengelman.shadow") version "7.1.0"
    id("se.patrikerdes.use-latest-versions") version "0.2.18"
    id("com.github.ben-manes.versions") version "0.39.0"
@@ -80,7 +80,7 @@ tasks {
    }
 
    withType<Wrapper> {
-      gradleVersion = "7.2"
+      gradleVersion = "7.3"
    }
 
    named("useLatestVersions", UseLatestVersionsTask::class.java).configure {
