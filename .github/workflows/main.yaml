@@ -48,6 +48,9 @@ jobs:
                registry: ghcr.io
                username: ${{ github.actor }}
                password: ${{ secrets.GITHUB_TOKEN }}
+         -  name: Generate Docker image tag with short sha
+            id: dockertag
+            run: echo "::set-output name=docker_img::ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)"
          -  name: Build and push the Docker image
             uses: docker/build-push-action@v2
             with:
