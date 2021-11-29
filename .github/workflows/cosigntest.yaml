@@ -1,0 +1,21 @@
+name: Signing stuff with cosign
+
+on: workflow_dispatch
+
+jobs:
+   build:
+      name: Sign stuff without managing keys
+      runs-on: ubuntu-20.04
+      steps:
+         -  uses: actions/checkout@v2
+         -  name: Generate SLSA provenance
+            uses: slsa-framework/github-actions-demo@v0.1
+            with:
+               artifact_path: ./
+         -  name: Install cosign
+            uses: sigstore/cosign-installer@main
+            with:
+               cosign-release: 'v1.3.1'
+         -  name: Sign SLSA provenance
+            run: cosign sign-blob --oidc-issuer=https://token.actions.githubusercontent.com --output=signedprov build.provenance
+
