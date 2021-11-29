@@ -18,4 +18,7 @@ jobs:
                cosign-release: 'v1.3.1'
          -  name: Sign SLSA provenance
             run: cosign sign-blob --oidc-issuer=https://token.actions.githubusercontent.com --output=signedprov build.provenance
+            env:
+               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+               COSIGN_EXPERIMENTAL: 1
 
