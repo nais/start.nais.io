@@ -1,6 +1,6 @@
 FROM gcr.io/distroless/java17
 
-COPY build/libs/*.jar /app/
+COPY build/libs/app-all.jar /app/app-all.jar
 
 WORKDIR /app
 
