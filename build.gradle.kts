@@ -77,6 +77,7 @@ tasks {
       testLogging {
          events(FAILED)
          showExceptions = true
+         showStandardStreams = true
          exceptionFormat = FULL
       }
    }
