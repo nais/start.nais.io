@@ -1,4 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import se.patrikerdes.UseLatestVersionsTask
 
 val ktorVersion = "1.6.5"
@@ -74,7 +75,8 @@ tasks {
    withType<Test> {
       useJUnitPlatform()
       testLogging {
-         events("passed", "skipped", "failed")
+         events(FAILED)
+         showExceptions = true
          exceptionFormat = FULL
       }
    }
