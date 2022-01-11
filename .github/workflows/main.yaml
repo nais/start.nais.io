@@ -43,6 +43,12 @@ jobs:
          -  uses: gradle/wrapper-validation-action@v1
          -  name: Build and test the app
             run: sudo ./gradlew clean test shadowJar
+         - name: Archive Test Results
+           if: always()
+           uses: actions/upload-artifact@v1
+           with:
+              name: test-results
+              path: build/reports/tests/test
          -  name: Install cosign
             uses: sigstore/cosign-installer@main
             with:
