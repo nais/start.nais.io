@@ -7,7 +7,7 @@ on:
       paths-ignore:
          - "*.md"
          - "build.provenance"
-         - "**/cosigntest.yaml"
+         - "**/slsa.yaml"
 
 jobs:
    build:
@@ -26,15 +26,6 @@ jobs:
             uses: github/codeql-action/upload-sarif@v1
             with:
                sarif_file: snyk.sarif
-         -  name: Generate SLSA provenance
-            uses: slsa-framework/github-actions-demo@v0.1
-            with:
-               artifact_path: ./
-         -  name: Upload SLSA provenance
-            uses: actions/upload-artifact@v2
-            with:
-               name: slsa-provenance
-               path: build.provenance
          -  uses: actions/setup-java@v2
             with:
                java-version: '17'
