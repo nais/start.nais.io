@@ -1,6 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
-import se.patrikerdes.UseLatestVersionsTask
 
 val ktorVersion = "1.6.5"
 val logbackVersion = "1.3.0-alpha12"
@@ -16,8 +15,6 @@ plugins {
    kotlin("jvm") version "1.6.10"
    kotlin("plugin.serialization") version "1.6.10"
    id("com.github.johnrengelman.shadow") version "7.1.2"
-   id("se.patrikerdes.use-latest-versions") version "0.2.18"
-   id("com.github.ben-manes.versions") version "0.21.0"
 }
 
 java {
@@ -86,14 +83,4 @@ tasks {
       gradleVersion = "7.3"
    }
 
-   named("useLatestVersions", UseLatestVersionsTask::class.java).configure {
-      updateBlacklist = emptyList()
-   }
-
-}
-
-fun isNonStable(version: String): Boolean {
-   val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.toUpperCase().contains(it) }
-   val regex = "^[0-9,.v-]+(-r)?$".toRegex()
-   return (stableKeyword || regex.matches(version)).not()
 }
