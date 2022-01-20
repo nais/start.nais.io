@@ -1,11 +1,10 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 
-val ktorVersion = "1.6.5"
+val ktorVersion = "2.0.0-eap-256"
 val logbackVersion = "1.3.0-alpha12"
 val logstashEncoderVersion = "7.0.1"
 val junitJupiterVersion = "5.8.2"
-val kotlinSerializationVersion = "1.3.2"
 val kamlVersion = "0.38.0"
 val micrometerVersion = "1.8.1"
 
@@ -24,19 +23,24 @@ java {
 
 repositories {
    mavenCentral()
+   maven {
+      url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
+      name = "ktor-eap"
+   }
 }
 
 dependencies {
    implementation(kotlin("stdlib"))
-   implementation("io.ktor:ktor-server-core:$ktorVersion")
-   implementation("io.ktor:ktor-server-netty:$ktorVersion")
-   implementation("io.ktor:ktor-serialization:$ktorVersion")
    implementation("ch.qos.logback:logback-classic:$logbackVersion")
    implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
-   implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$kotlinSerializationVersion")
    implementation("com.charleskorn.kaml:kaml:$kamlVersion")
-   implementation("io.ktor:ktor-metrics-micrometer:$ktorVersion")
    implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
+   implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
+   implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+   implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
+   implementation("io.ktor:ktor-server-core:$ktorVersion")
+   implementation("io.ktor:ktor-server-netty:$ktorVersion")
+   implementation("io.ktor:ktor-metrics-micrometer:$ktorVersion")
 
    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")

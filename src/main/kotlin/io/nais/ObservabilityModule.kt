@@ -1,10 +1,10 @@
 package io.nais
 
-import io.ktor.application.*
+import io.ktor.server.application.*
 import io.ktor.http.HttpStatusCode.Companion.OK
-import io.ktor.metrics.micrometer.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.server.metrics.micrometer.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics
