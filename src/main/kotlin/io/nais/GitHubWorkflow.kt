@@ -75,7 +75,7 @@ val gradleJvmBuildSteps = listOf(
          "key" to "\${{ runner.os }}-gradle-\${{ hashFiles('**/*.gradle.kts') }}",
          "restore-keys" to "\${{ runner.os }}-gradle-",
       )),
-   BuildStep(uses = "actions/setup-java@v1", with = mapOf("java-version" to "16")),
+   BuildStep(uses = "actions/setup-java@v1", with = mapOf("java-version" to "17")),
    BuildStep(name = "compile and run tests", run = "./gradlew build"),
    dockerLoginStep,
    dockerBuildAndPushStep
@@ -89,7 +89,7 @@ val mavenJvmBuildSteps = listOf(
          "key" to "\${{ runner.os }}-maven-\${{ hashFiles('**/pom.xml') }}",
          "restore-keys" to "\${{ runner.os }}-maven-",
       )),
-   BuildStep(uses = "actions/setup-java@v1", with = mapOf("java-version" to "16")),
+   BuildStep(uses = "actions/setup-java@v1", with = mapOf("java-version" to "17")),
    BuildStep(name = "compile and run tests", run = "mvn install"),
    dockerLoginStep,
    dockerBuildAndPushStep
