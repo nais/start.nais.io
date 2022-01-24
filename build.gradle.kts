@@ -1,6 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
-
 val ktorVersion = "2.0.0-eap-256"
 val logbackVersion = "1.3.0-alpha12"
 val logstashEncoderVersion = "7.0.1"
@@ -76,10 +73,7 @@ tasks {
    withType<Test> {
       useJUnitPlatform()
       testLogging {
-         events(FAILED)
          showExceptions = true
-         showStandardStreams = true
-         exceptionFormat = FULL
       }
    }
 
