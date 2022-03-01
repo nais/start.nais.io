@@ -75,10 +75,10 @@ class RequestResponseMappingTest {
    }
 
    @Test
-   fun `elastic is added upon request`() {
-      val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS, extras = listOf("elastic"))
+   fun `openSearch is added upon request`() {
+      val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS, extras = listOf("openSearch"))
       val naisApp = naisApplicationFrom(request)
-      assertNotNull(naisApp.spec.elastic)
+      assertNotNull(naisApp.spec.openSearch)
    }
 
    @Test

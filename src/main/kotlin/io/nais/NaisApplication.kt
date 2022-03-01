@@ -43,7 +43,7 @@ data class AppSpec(
    val ingresses: String,
    var azure: Azure? = null,
    var idPorten: IdPorten? = null,
-   var elastic: Elastic? = null,
+   var openSearch: OpenSearch? = null,
    var gcp: GCP? = null
 )
 
@@ -86,7 +86,7 @@ data class IdPorten(
 )
 
 @Serializable
-data class Elastic(
+data class OpenSearch(
    val instance: String
 )
 
