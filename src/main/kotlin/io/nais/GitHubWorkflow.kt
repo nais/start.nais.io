@@ -16,10 +16,12 @@ data class GitHubWorkflow(
 
 fun GitHubWorkflow.serialize() = Yaml(configuration = YamlConfiguration(encodeDefaults = false))
    .encodeToString(GitHubWorkflow.serializer(), this)
-   .replace(""""##REPLACE_INGRESS##"""", """
+   .replace(
+      """"##REPLACE_INGRESS##"""", """
     {{#each ingresses as |url|}}
       - {{url}}
-    {{/each}}""")
+    {{/each}}"""
+   )
    .replace(""""##REPLACE_IMAGE##"""", "{{image}}")
 
 @Serializable
@@ -74,7 +76,8 @@ val gradleJvmBuildSteps = listOf(
          "path" to "~/.gradle/caches",
          "key" to "\${{ runner.os }}-gradle-\${{ hashFiles('**/*.gradle.kts') }}",
          "restore-keys" to "\${{ runner.os }}-gradle-",
-      )),
+      )
+   ),
    BuildStep(uses = "actions/setup-java@v1", with = mapOf("java-version" to "17")),
    BuildStep(name = "compile and run tests", run = "./gradlew build"),
    dockerLoginStep,
@@ -88,7 +91,8 @@ val mavenJvmBuildSteps = listOf(
          "path" to "~/.m2/repository",
          "key" to "\${{ runner.os }}-maven-\${{ hashFiles('**/pom.xml') }}",
          "restore-keys" to "\${{ runner.os }}-maven-",
-      )),
+      )
+   ),
    BuildStep(uses = "actions/setup-java@v1", with = mapOf("java-version" to "17")),
    BuildStep(name = "compile and run tests", run = "mvn install"),
    dockerLoginStep,
@@ -99,6 +103,23 @@ val nodejsBuildSteps = listOf(
    BuildStep(uses = "actions/setup-node@v1"),
    BuildStep(name = "install dependencies", run = "npm ci"),
    BuildStep(name = "run tests", run = "npm test"),
+   dockerLoginStep,
+   dockerBuildAndPushStep
+)
+
+val pythonPoetryBuildSteps = listOf(
+   BuildStep(name = "setup python", uses = "actions/setup-python@v2", with = mapOf("python-version" to "3.x")),
+   BuildStep(name = "install poetry", uses = "abatilo/actions-poetry@v2.1.3"),
+   BuildStep(name = "install dependencies", run = "poetry install"),
+   BuildStep(name = "run tests", run = "poetry run pytest"),
+   dockerLoginStep,
+   dockerBuildAndPushStep
+)
+
+val pythonPipBuildSteps = listOf(
+   BuildStep(name = "setup python", uses = "actions/setup-python@v2", with = mapOf("python-version" to "3.x")),
+   BuildStep(name = "install dependencies", run = "pip install -r requirements"),
+   BuildStep(name = "run tests", run = "pytest"),
    dockerLoginStep,
    dockerBuildAndPushStep
 )
@@ -117,10 +138,10 @@ fun appDeployStep(environment: Environment) =
       name = "Deploy to $environment",
       uses = "nais/deploy/actions/deploy@v1",
       env = mapOf(
-      "APIKEY" to "\${{ secrets.NAIS_DEPLOY_APIKEY }}",
-      "CLUSTER" to "${if (environment == PROD) "prod" else "dev"}-gcp",
-      "RESOURCE" to ".nais/nais.yaml",
-      "VARS" to ".nais/${if (environment == PROD) "prod" else "dev"}.yaml"
+         "APIKEY" to "\${{ secrets.NAIS_DEPLOY_APIKEY }}",
+         "CLUSTER" to "${if (environment == PROD) "prod" else "dev"}-gcp",
+         "RESOURCE" to ".nais/nais.yaml",
+         "VARS" to ".nais/${if (environment == PROD) "prod" else "dev"}.yaml"
       )
    )
 

@@ -60,6 +60,22 @@ class RequestResponseMappingTest {
    }
 
    @Test
+   fun `workflow for python with poetry app`() {
+      val request = Request(team = "myteam", appName = "mycoolapp", platform = PYTHON_POETRY)
+      val workflow = gitHubWorkflowFrom(request)
+      val poetryBuildStep = workflow.jobs["build"]?.steps?.firstOrNull { it.run?.contains("poetry") ?: false }
+      assertNotNull(poetryBuildStep)
+   }
+
+   @Test
+   fun `workflow for python with pip app`() {
+      val request = Request(team = "myteam", appName = "mycoolapp", platform = PYTHON_PIP)
+      val workflow = gitHubWorkflowFrom(request)
+      val pipBuildStep = workflow.jobs["build"]?.steps?.firstOrNull { it.run?.contains("pip") ?: false }
+      assertNotNull(pipBuildStep)
+   }
+
+   @Test
    fun `workflow for nodejs app`() {
       val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS)
       val workflow = gitHubWorkflowFrom(request)
