@@ -193,6 +193,8 @@ private fun buildStepsFor(platform: PLATFORM) =
       JVM_MAVEN -> mavenJvmBuildSteps
       NODEJS -> nodejsBuildSteps
       GO_MAKE -> goMakeBuildSteps
+      PYTHON_POETRY -> pythonPoetryBuildSteps
+      PYTHON_PIP -> pythonPipBuildSteps
    }
 
 private fun String.base64Encode() = Base64.getEncoder().encodeToString(this.encodeToByteArray())
