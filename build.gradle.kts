@@ -1,4 +1,4 @@
-val ktorVersion = "2.0.0-eap-256"
+val ktorVersion = "2.0.0"
 val logbackVersion = "1.3.0-alpha14"
 val logstashEncoderVersion = "7.0.1"
 val junitJupiterVersion = "5.8.2"
@@ -37,7 +37,7 @@ dependencies {
    implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
    implementation("io.ktor:ktor-server-core:$ktorVersion")
    implementation("io.ktor:ktor-server-netty:$ktorVersion")
-   implementation("io.ktor:ktor-metrics-micrometer:$ktorVersion")
+   implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
 
    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")

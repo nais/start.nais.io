@@ -10,6 +10,8 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
 import io.ktor.server.http.content.*
 import io.ktor.server.plugins.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -25,11 +27,11 @@ fun Application.mainModule() {
    }
 
    install(StatusPages) {
-      exception<SerializationException> { cause ->
+      exception<SerializationException> { call, cause ->
          call.respond(BadRequest, "Unable to parse JSON: ${cause.message}")
       }
 
-      exception<BadContentTypeFormatException> { cause ->
+      exception<BadContentTypeFormatException> { call, cause ->
          call.respond(UnsupportedMediaType, cause.message ?: "Don't know how to serve this weird Content-Type")
       }
    }

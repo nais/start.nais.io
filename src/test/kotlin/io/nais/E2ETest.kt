@@ -1,11 +1,13 @@
 package io.nais
 
 import com.charleskorn.kaml.Yaml
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.client.utils.EmptyContent.status
 import io.ktor.http.ContentType.*
 import io.ktor.http.HttpHeaders.Accept
 import io.ktor.http.HttpHeaders.ContentType
 import io.ktor.http.HttpMethod.Companion.Get
-import io.ktor.http.HttpMethod.Companion.Post
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.HttpStatusCode.Companion.UnsupportedMediaType
@@ -22,50 +24,53 @@ class E2ETest {
 
    @Test
    fun `root serves index html file`() {
-      withTestApplication({ mainModule() }) {
-         val call = handleRequest(method = Get, uri = "/")
-         assertEquals(OK, call.response.status())
-         assertTrue(call.response.content?.contains("<html") ?: false)
+      testApplication() {
+         val response = client.get("/")
+         assertEquals(OK, response.status)
+         assertTrue(response.bodyAsText().contains("<html"))
       }
    }
 
    @Test
    fun `static files are served`() {
-      withTestApplication({ mainModule() }) {
+      testApplication() {
          listOf(
-            handleRequest(method = Get, uri = "/index.html"),
-            handleRequest(method = Get, uri = "/style.css"),
-            handleRequest(method = Get, uri = "/script.js")
-         ).forEach {
-            assertEquals(OK, it.response.status())
+            client.get("/index.html"),
+            client.get("/style.css"),
+            client.get("/script.js")
+         ).forEach { response ->
+            println("-----------")
+            println(response)
+            println("-----------")
+            assertEquals(OK, response.status)
          }
       }
    }
 
    @Test
    fun `asking for zip yields a zipped response`() {
-      withTestApplication({ mainModule() }) {
-         val call = handleRequest(method = Post, uri = "/app") {
-            addHeader(ContentType, Application.Json.toString())
-            addHeader(Accept, Application.Zip.toString())
+      testApplication() {
+         val response = client.post("/app") {
+            header(ContentType, Application.Json.toString())
+            header(Accept, Application.Zip.toString())
             setBody("""{"appName": "myapp", "team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
          }
-         assertEquals(OK, call.response.status())
-         assertTrue(call.response.headers["Content-Type"] == Application.Zip.toString())
-         assertTrue(call.response.headers["Content-Disposition"]?.contains("filename") ?: false)
+         assertEquals(OK, response.status)
+         assertTrue(response.headers["Content-Type"] == Application.Zip.toString())
+         assertTrue(response.headers["Content-Disposition"]?.contains("filename") ?: false)
       }
    }
 
    @Test
    fun `asking for json yields a json response`() {
-      withTestApplication({ mainModule() }) {
-         val call = handleRequest(method = Post, uri = "/app") {
-            addHeader(ContentType, Application.Json.toString())
-            addHeader(Accept, Application.Json.toString())
+      testApplication() {
+         val response = client.post("/app") {
+            header(ContentType, Application.Json.toString())
+            header(Accept, Application.Json.toString())
             setBody("""{"appName": "myapp", "team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
          }
-         assertEquals(OK, call.response.status())
-         assertTrue(call.response.headers["Content-Type"]?.contains(
+         assertEquals(OK, response.status)
+         assertTrue(response.headers["Content-Type"]?.contains(
             Application.Json.toString()) ?: false
          )
       }
@@ -73,24 +78,24 @@ class E2ETest {
 
    @Test
    fun `asking for other content types yields a 415`() {
-      withTestApplication({ mainModule() }) {
-         val call = handleRequest(method = Post, uri = "/app") {
-            addHeader(ContentType, "image/png")
+      testApplication() {
+         val response = client.post("/app") {
+            header(ContentType, "image/png")
             setBody("""{"appName": "myapp", "team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
          }
-         assertEquals(UnsupportedMediaType, call.response.status())
+         assertEquals(UnsupportedMediaType, response.status)
       }
    }
 
    @Test
    fun `json values contain yaml and are b64 encoded to avoid messed up chars`() {
-      withTestApplication({ mainModule() }) {
-         val call = handleRequest(method = Post, uri = "/app") {
-            addHeader(ContentType, Application.Json.toString())
-            addHeader(Accept, Application.Json.toString())
+      testApplication() {
+         val response = client.post("/app") {
+            header(ContentType, Application.Json.toString())
+            header(Accept, Application.Json.toString())
             setBody("""{"appName": "myapp", "team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
          }
-         val responseJson = Json.decodeFromString(JsonObject.serializer(), call.response.content ?: "")
+         val responseJson = Json.decodeFromString(JsonObject.serializer(), response.bodyAsText())
          val ghWorkflow = decode(responseJson[".github/workflows/main.yaml"].toString())
          val yaml = Yaml.default.decodeFromString(GitHubWorkflow.serializer(), ghWorkflow)
          assertNotNull(yaml)
@@ -99,27 +104,25 @@ class E2ETest {
 
    @Test
    fun `posting an invalid request yields a 400 with an explanation`() {
-      withTestApplication({ mainModule() }) {
-         val call = handleRequest(method = Post, uri = "/app") {
-            addHeader(ContentType, "application/json")
+      testApplication() {
+         val response = client.post("/app") {
+            header(ContentType, "application/json")
             setBody("""{"team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
          }
-         assertEquals(BadRequest, call.response.status())
-         assertTrue(call.response.content?.contains("'appName' is required") ?: false)
+         assertEquals(BadRequest, response.status)
+         assertTrue(response.bodyAsText().contains("'appName' is required"))
       }
    }
 
    @Test
    fun `observability module responds to nais endpoints`() {
-      withTestApplication({
-         observabilityModule()
-      }) {
+      testApplication() {
          listOf(
-            handleRequest(method = Get, uri = "/internal/isalive"),
-            handleRequest(method = Get, uri = "/internal/isready"),
-            handleRequest(method = Get, uri = "/internal/metrics")
-         ).forEach { call ->
-            assertEquals(OK, call.response.status())
+            client.get("/internal/isalive"),
+            client.get("/internal/isready"),
+            client.get("/internal/metrics")
+         ).forEach { response ->
+            assertEquals(OK, response.status)
          }
       }
    }
