@@ -1,4 +1,4 @@
-val ktorVersion = "2.0.0"
+val ktorVersion = "2.0.1"
 val logbackVersion = "1.3.0-alpha14"
 val logstashEncoderVersion = "7.0.1"
 val junitJupiterVersion = "5.8.2"
