@@ -1,9 +1,9 @@
 val ktorVersion = "2.0.1"
 val logbackVersion = "1.3.0-alpha14"
-val logstashEncoderVersion = "7.0.1"
+val logstashEncoderVersion = "7.1.1"
 val junitJupiterVersion = "5.8.2"
 val kamlVersion = "0.43.0"
-val micrometerVersion = "1.8.4"
+val micrometerVersion = "1.8.5"
 
 val mainClassName = "io.nais.MainKt"
 
@@ -20,10 +20,6 @@ java {
 
 repositories {
    mavenCentral()
-   maven {
-      url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
-      name = "ktor-eap"
-   }
 }
 
 dependencies {
