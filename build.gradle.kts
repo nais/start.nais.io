@@ -1,14 +1,14 @@
-val ktorVersion = "2.0.1"
-val logbackVersion = "1.3.0-alpha14"
-val logstashEncoderVersion = "7.1.1"
-val junitJupiterVersion = "5.8.2"
-val kamlVersion = "0.43.0"
-val micrometerVersion = "1.8.5"
+val ktorVersion = "2.0.2"
+val logbackVersion = "1.3.0-alpha16"
+val logstashEncoderVersion = "7.2"
+val junitJupiterVersion = "5.9.0-M1"
+val kamlVersion = "0.45.0"
+val micrometerVersion = "1.9.0"
 
 val mainClassName = "io.nais.MainKt"
 
 plugins {
-   kotlin("jvm") version "1.6.10"
+   kotlin("jvm") version "1.6.20"
    kotlin("plugin.serialization") version "1.6.20"
    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
