@@ -66,7 +66,7 @@ internal fun naisApplicationFrom(req: Request) = NaisApplication(
       prometheus = Prometheus(enabled = true, path = "/metrics"),
       resources = Resources(
          limits = ResourceMetrics(cpu = "200m", memory = "256Mi"),
-         requests = ResourceMetrics(cpu = "200", memory = "256Mi"),
+         requests = ResourceMetrics(cpu = "200m", memory = "256Mi"),
       ),
       ingresses = "##REPLACE_INGRESS##"
    ).apply {
