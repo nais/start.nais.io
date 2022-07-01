@@ -91,15 +91,15 @@ internal fun appVarsFrom(req: Request, env: Environment) = Vars(
 internal fun gitHubWorkflowFrom(req: Request) = GitHubWorkflow(
    name = "Build and deploy ${req.appName}",
    jobs = mapOf(
-      "build" to Job(name = "build", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep) + buildStepsFor(req.platform)),
-      "deployAppToDev" to Job(name = "Deploy app to dev", needs = "build", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep, appDeployStep(DEV))),
-      "deployAppToProd" to Job(name = "Deploy app to prod", needs = "deployAppToDev", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep, appDeployStep(PROD))),
-      "deployAlertsToDev" to Job(name = "Deploy alerts to dev", needs = "build", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep, alertDeployStep(DEV))),
-      "deployAlertsToProd" to Job(name = "Deploy alerts to prod", needs = "build", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep, alertDeployStep(PROD)))
+      "build" to Job(name = "build", runsOn = "ubuntu-20.04", steps = listOf(checkoutStep) + buildStepsFor(req.platform)),
+      "deployAppToDev" to Job(name = "Deploy app to dev", needs = "build", runsOn = "ubuntu-20.04", steps = listOf(checkoutStep, appDeployStep(DEV))),
+      "deployAppToProd" to Job(name = "Deploy app to prod", needs = "deployAppToDev", runsOn = "ubuntu-20.04", steps = listOf(checkoutStep, appDeployStep(PROD))),
+      "deployAlertsToDev" to Job(name = "Deploy alerts to dev", needs = "build", runsOn = "ubuntu-20.04", steps = listOf(checkoutStep, alertDeployStep(DEV))),
+      "deployAlertsToProd" to Job(name = "Deploy alerts to prod", needs = "build", runsOn = "ubuntu-20.04", steps = listOf(checkoutStep, alertDeployStep(PROD)))
    ) + req.kafkaTopics.flatMap { topicName ->
       listOf(
-         "deployTopic${topicName.replaceFirstChar { it.titlecase() }}Dev" to Job(name = "Deploy Kafka topic $topicName to dev", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep, topicDeployStep(topicName, DEV))),
-         "deployTopic${topicName.replaceFirstChar { it.titlecase() }}Prod" to Job(name = "Deploy Kafka topic $topicName to prod", runsOn = "ubuntu-18.04", steps = listOf(checkoutStep, topicDeployStep(topicName, PROD)))
+         "deployTopic${topicName.replaceFirstChar { it.titlecase() }}Dev" to Job(name = "Deploy Kafka topic $topicName to dev", runsOn = "ubuntu-20.04", steps = listOf(checkoutStep, topicDeployStep(topicName, DEV))),
+         "deployTopic${topicName.replaceFirstChar { it.titlecase() }}Prod" to Job(name = "Deploy Kafka topic $topicName to prod", runsOn = "ubuntu-20.04", steps = listOf(checkoutStep, topicDeployStep(topicName, PROD)))
       )
    },
    on = PushBuildTrigger(
