@@ -187,12 +187,14 @@ private fun gcpStuffFrom(req: Request): GCP {
    return GCP(sqlInstances, bigQueryDatasets)
 }
 
-internal fun dockerfileFrom(req: Request) = when (req.platform) {
-   JVM_GRADLE, JVM_MAVEN -> jvmDockerfileTemplate
-   NODEJS -> nodejsDockerfileTemplate
-   GO_MAKE -> golangDockerfileTemplate
-   PYTHON_PIP, PYTHON_POETRY -> pythonDockerfileTemplate
-}
+internal fun dockerfileFrom(req: Request) =
+   when (req.platform) {
+      JVM_GRADLE, JVM_MAVEN -> jvmDockerfileTemplate
+      NODEJS -> nodejsDockerfileTemplate
+      GO_MAKE -> golangDockerfileTemplate
+      PYTHON_PIP, PYTHON_POETRY -> pythonDockerfileTemplate
+      STATIC_WEB -> staticWebDockerfileTemplate
+   }
 
 private fun buildStepsFor(platform: PLATFORM) =
    when (platform) {
@@ -202,6 +204,7 @@ private fun buildStepsFor(platform: PLATFORM) =
       GO_MAKE -> goMakeBuildSteps
       PYTHON_POETRY -> pythonPoetryBuildSteps
       PYTHON_PIP -> pythonPipBuildSteps
+      STATIC_WEB -> staticWebBuildSteps
    }
 
 private fun String.base64Encode() = Base64.getEncoder().encodeToString(this.encodeToByteArray())

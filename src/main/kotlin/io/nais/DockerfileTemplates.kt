@@ -39,3 +39,16 @@ val pythonDockerfileTemplate = """
    CMD ["mystuff.py"]
 
 """.trimIndent()
+
+val staticWebDockerfileTemplate = """
+   FROM nginxinc/nginx-unprivileged:1.22-alpine
+
+   USER nginx
+   WORKDIR /app
+
+   # TODO change to match the path to your stuff
+   COPY my-html-stuff/ ./
+
+   EXPOSE 8080
+
+""".trimIndent()

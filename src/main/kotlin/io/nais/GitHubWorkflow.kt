@@ -131,6 +131,12 @@ val goMakeBuildSteps = listOf(
    dockerBuildAndPushStep
 )
 
+val staticWebBuildSteps = listOf(
+   BuildStep(name = "perform build", run = """echo "replace me with whatever you do to produce html/css/js files""""),
+   dockerLoginStep,
+   dockerBuildAndPushStep
+)
+
 val checkoutStep = BuildStep(uses = "actions/checkout@v2")
 
 fun appDeployStep(environment: Environment) =
