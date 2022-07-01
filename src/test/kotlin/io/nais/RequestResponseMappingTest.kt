@@ -158,4 +158,12 @@ class RequestResponseMappingTest {
       assertTrue(workflow.jobs.containsKey("deployAlertsToProd"))
    }
 
+   @Test
+   fun `dockerfile for the requested platform is added`() {
+      val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS)
+      val workflow = gitHubWorkflowFrom(request)
+      assertTrue(workflow.jobs.containsKey("deployAlertsToDev"))
+      assertTrue(workflow.jobs.containsKey("deployAlertsToProd"))
+   }
+
 }

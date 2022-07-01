@@ -22,7 +22,8 @@ val serve: RequestHandler = { request ->
       ".nais/prod.yaml" to appVarsFrom(request, PROD).serialize(),
       ".nais/alerts-dev.yaml" to alertsFrom(request, DEV).serialize(),
       ".nais/alerts-prod.yaml" to alertsFrom(request, PROD).serialize(),
-      ".github/workflows/main.yaml" to gitHubWorkflowFrom(request).serialize()
+      ".github/workflows/main.yaml" to gitHubWorkflowFrom(request).serialize(),
+      "Dockerfile" to dockerfileFrom(request)
    ) + kafkaTopicsFrom(request).map { topic ->
       ".nais/topic-${topic.metadata.name}.yaml" to topic.serialize()
    }
@@ -186,6 +187,12 @@ private fun gcpStuffFrom(req: Request): GCP {
    return GCP(sqlInstances, bigQueryDatasets)
 }
 
+internal fun dockerfileFrom(req: Request) = when (req.platform) {
+   JVM_GRADLE, JVM_MAVEN -> jvmDockerfileTemplate
+   NODEJS -> nodejsDockerfileTemplate
+   GO_MAKE -> golangDockerfileTemplate
+   PYTHON_PIP, PYTHON_POETRY -> pythonDockerfileTemplate
+}
 
 private fun buildStepsFor(platform: PLATFORM) =
    when (platform) {

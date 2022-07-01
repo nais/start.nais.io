@@ -3,11 +3,9 @@ package io.nais
 import com.charleskorn.kaml.Yaml
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import io.ktor.client.utils.EmptyContent.status
 import io.ktor.http.ContentType.*
 import io.ktor.http.HttpHeaders.Accept
 import io.ktor.http.HttpHeaders.ContentType
-import io.ktor.http.HttpMethod.Companion.Get
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.HttpStatusCode.Companion.UnsupportedMediaType
@@ -18,6 +16,7 @@ import kotlinx.serialization.json.JsonObject
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.util.*
+import kotlinx.serialization.json.jsonObject
 
 @ExperimentalSerializationApi
 class E2ETest {
@@ -39,9 +38,6 @@ class E2ETest {
             client.get("/style.css"),
             client.get("/script.js")
          ).forEach { response ->
-            println("-----------")
-            println(response)
-            println("-----------")
             assertEquals(OK, response.status)
          }
       }
@@ -124,6 +120,19 @@ class E2ETest {
          ).forEach { response ->
             assertEquals(OK, response.status)
          }
+      }
+   }
+
+   @Test
+   fun `dockerfile is added`() {
+      testApplication() {
+         val response = client.post("/app") {
+            header(ContentType, Application.Json)
+            header(Accept, Application.Json)
+            setBody("""{"appName": "myapp", "team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
+         }
+         val body = Json.parseToJsonElement(response.bodyAsText()).jsonObject
+         assertNotNull(body["Dockerfile"])
       }
    }
 
