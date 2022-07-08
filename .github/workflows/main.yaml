@@ -12,6 +12,7 @@ jobs:
     name: Build all the things
     runs-on: ubuntu-20.04
     steps:
+      - uses: docker/setup-buildx-action@dc7b9719a96d48369863986a06765841d7ea23f6 # ratchet:docker/setup-buildx-action@v2
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # ratchet:actions/checkout@v3
       - uses: actions/setup-java@16cca5479d7c6b6843f6a6515640ba33c6501543 # ratchet:actions/setup-java@v3
         with:
