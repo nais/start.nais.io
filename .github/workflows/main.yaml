@@ -12,8 +12,8 @@ jobs:
     name: Build all the things
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@7884fcad6b5d53d10323aee724dc68d8b9096a2e # ratchet:actions/checkout@v2
-      - uses: actions/setup-java@f0bb91606209742fe3ea40199be2f3ef195ecabf # ratchet:actions/setup-java@v2
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # ratchet:actions/checkout@v3
+      - uses: actions/setup-java@16cca5479d7c6b6843f6a6515640ba33c6501543 # ratchet:actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'adopt'
@@ -22,13 +22,13 @@ jobs:
       - name: Build and test the app
         run: sudo ./gradlew clean test shadowJar
       - name: Install cosign
-        uses: sigstore/cosign-installer@3d3d32a83e307c72740f6095be918624b57e65fa # ratchet:sigstore/cosign-installer@main
+        uses: sigstore/cosign-installer@48866aa521d8bf870604709cd43ec2f602d03ff2 # ratchet:sigstore/cosign-installer@main
         with:
-          cosign-release: 'v1.8.0'
+          cosign-release: 'v1.9.0'
       - name: Verify distroless base image
         run: cosign verify --key distroless.pub gcr.io/distroless/java17
       - name: Login to GitHub Docker Registry
-        uses: docker/login-action@dd4fa0671be5250ee6f50aedf4cb05514abda2c7 # ratchet:docker/login-action@v1
+        uses: docker/login-action@49ed152c8eca782a232dede0303416e8f356c37b # ratchet:docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -37,7 +37,7 @@ jobs:
         id: dockertag
         run: echo "::set-output name=docker_img::ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)"
       - name: Build and push the Docker image
-        uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a # ratchet:docker/build-push-action@v2
+        uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8 # ratchet:docker/build-push-action@v3
         with:
           context: .
           push: true
@@ -49,11 +49,11 @@ jobs:
     needs: build
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@7884fcad6b5d53d10323aee724dc68d8b9096a2e # ratchet:actions/checkout@v2
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # ratchet:actions/checkout@v3
       - name: Generate Docker image tag
         id: dockertag
         run: echo "::set-output name=docker_img::ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)"
-      - uses: nais/deploy@727f0adc1e2ba8ef9286f42230ade61a70d2da05 # ratchet:nais/deploy/actions/deploy@v1
+      - uses: nais/deploy@357990b08f857f576a548d31cc69d40820978589 # ratchet:nais/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
@@ -66,11 +66,11 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@7884fcad6b5d53d10323aee724dc68d8b9096a2e # ratchet:actions/checkout@v2
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # ratchet:actions/checkout@v3
       - name: Generate Docker image tag
         id: dockertag
         run: echo "::set-output name=docker_img::ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)"
-      - uses: nais/deploy@727f0adc1e2ba8ef9286f42230ade61a70d2da05 # ratchet:nais/deploy/actions/deploy@v1
+      - uses: nais/deploy@357990b08f857f576a548d31cc69d40820978589 # ratchet:nais/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
