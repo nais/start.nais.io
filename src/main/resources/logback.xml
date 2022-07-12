@@ -1,12 +1,20 @@
-<configuration>
-   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration debug="true">
+   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
       <encoder>
-         <pattern>%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+         <pattern>%green(%d{HH:mm:ss}){faint} %cyan([%15t]){faint} %highlight(%0.-5p) %yellow(%-40.40logger{39}){cyan}: [%mdc] %m%n</pattern>
       </encoder>
    </appender>
 
-   <root level="info">
-      <appender-ref ref="STDOUT"/>
-   </root>
+   <appender name="STDOUT_JSON" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
+   </appender>
 
+   <logger name="io.nais" level="INFO"/>
+   <logger name="ktor.application" level="WARN"/>
+   <logger name="io.ktor" level="WARN"/>
+
+   <root level="INFO">
+      <appender-ref ref="STDOUT_JSON"/>
+   </root>
 </configuration>
