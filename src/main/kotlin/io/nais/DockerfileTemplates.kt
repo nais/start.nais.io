@@ -23,7 +23,7 @@ val nodejsDockerfileTemplate = """
 
 """.trimIndent()
 
-val golangDockerfileTemplate = """
+val goDockerfileTemplate = """
    FROM gcr.io/distroless/static-debian11
    # TODO change to match the path to your stuff
    COPY ./bin/hello /

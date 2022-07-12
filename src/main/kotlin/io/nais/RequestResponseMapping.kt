@@ -191,7 +191,7 @@ internal fun dockerfileFrom(req: Request) =
    when (req.platform) {
       JVM_GRADLE, JVM_MAVEN -> jvmDockerfileTemplate
       NODEJS -> nodejsDockerfileTemplate
-      GO_MAKE -> golangDockerfileTemplate
+      GO_MAKE -> goDockerfileTemplate
       PYTHON_PIP, PYTHON_POETRY -> pythonDockerfileTemplate
       STATIC_WEB -> staticWebDockerfileTemplate
    }
