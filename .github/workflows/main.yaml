@@ -43,8 +43,6 @@ jobs:
           context: .
           push: true
           tags: ${{ steps.dockertag.outputs.docker_img }}
-          cache-from: type=gha
-          cache-to: type=gha
   deploy_to_dev:
     name: Deploy to dev-gcp
     needs: build
