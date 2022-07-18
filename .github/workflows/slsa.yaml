@@ -1,4 +1,4 @@
-name: Create
+name: SLSA
 on: workflow_dispatch
 jobs:
   slsafy:
