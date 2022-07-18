@@ -1,51 +1,42 @@
 name: SLSA
-on: workflow_dispatch
+on:
+   push:
+      branches:
+         - main
 jobs:
-  slsafy:
-    name: Do provenance things
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@7884fcad6b5d53d10323aee724dc68d8b9096a2e # ratchet:actions/checkout@v2
-      - uses: actions/setup-java@2c7a4878f5d120bd643426d54ae1209b29cc01a3 # ratchet:actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 8
-          cache: gradle
-      - uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b # ratchet:gradle/wrapper-validation-action@v1
+   slsafy:
+      needs: build
+      name: Generate and upload SLSA provenance
+      runs-on: ubuntu-20.04
+      steps:
+         - uses: actions/checkout@7884fcad6b5d53d10323aee724dc68d8b9096a2e # ratchet:actions/checkout@v2
+         - uses: actions/setup-java@2c7a4878f5d120bd643426d54ae1209b29cc01a3 # ratchet:actions/setup-java@v3
+           with:
+              distribution: temurin
+              java-version: 8
+              cache: gradle
 
-      - name: Build the app
-        run: ./gradlew shadowJar
+         - name: Generate Docker image tag
+           id: dockertag
+           run: echo "::set-output name=docker_img::ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)"
 
-      - name: Generate Docker image tag
-        id: dockertag
-        run: echo "::set-output name=docker_img::ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)"
+         - name: Login to GitHub Docker Registry
+           uses: docker/login-action@49ed152c8eca782a232dede0303416e8f356c37b # ratchet:docker/login-action@v2
+           with:
+              registry: ghcr.io
+              username: ${{ github.actor }}
+              password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Login to GitHub Docker Registry
-        uses: docker/login-action@49ed152c8eca782a232dede0303416e8f356c37b # ratchet:docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+         - name: Authenticate to Google Cloud
+           uses: google-github-actions/auth@ceee102ec2387dd9e844e01b530ccd4ec87ce955 # ratchet:google-github-actions/auth@v0
+           with:
+              credentials_json: ${{ secrets.SALSA_CREDENTIALS }}
 
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@ceee102ec2387dd9e844e01b530ccd4ec87ce955 # ratchet:google-github-actions/auth@v0
-        with:
-          credentials_json: ${{ secrets.SALSA_CREDENTIALS }}
+         - name: Run nais SLSA action
+           uses: nais/salsa@f352d0850fa9241316fa1ebab28c485067d3c27a # ratchet:nais/salsa@v0.1
+           env:
+              IMAGE: ${{ steps.dockertag.outputs.docker_img }}
+           with:
+              key: ${{ secrets.SALSA_KMS_KEY }}
+              docker_pwd: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Generate SLSA provenance
-        uses: nais/salsa@f352d0850fa9241316fa1ebab28c485067d3c27a # ratchet:nais/salsa@v0.1
-        env:
-          IMAGE: ${{ steps.dockertag.outputs.docker_img }}
-        with:
-          key: ${{ secrets.SALSA_KMS_KEY }}
-          docker_pwd: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload provenance to repo
-        uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # ratchet:actions/upload-artifact@v2
-        env:
-          IMAGE: ${{ steps.dockertag.outputs.docker_img }}
-        with:
-          path: |
-            ./start.nais.io.provenance
-            ./start.nais.io.raw.txt
-            ./start.nais.io.att
