@@ -156,7 +156,7 @@ internal fun alertsFrom(req: Request, environment: Environment) = Alerts(
          Alert(
             alert = "${req.appName} er nede",
             description = "App {{ ${dollar}labels.app }} er nede i namespace {{ ${dollar}labels.kubernetes_namespace }}",
-            expr = """kube_deployment_status_replicas_available{deployment="${req.appName}"} > 0""",
+            expr = """kube_deployment_status_replicas_unavailable{deployment="${req.appName}"} > 0""",
             forHowLong = "2m",
             action = "kubectl describe pod {{ ${dollar}labels.kubernetes_pod_name }} -n {{ ${dollar}labels.kubernetes_namespace }}` for events, og `kubectl logs {{ ${dollar}labels.kubernetes_pod_name }} -n {{ ${dollar}labels.kubernetes_namespace }}` for logger",
             documentation = "https://github.com/navikt/${req.team}/somedoc",
