@@ -27,7 +27,7 @@ fun Application.mainModule() {
    }
 
    install(StatusPages) {
-      exception<SerializationException> { call, cause ->
+      exception<BadRequestException> { call, cause ->
          call.respond(BadRequest, "Unable to parse JSON: ${cause.message}")
       }
 

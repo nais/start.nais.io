@@ -1,9 +1,9 @@
-val ktorVersion = "2.0.3"
-val logbackVersion = "1.3.0-alpha16"
+val ktorVersion = "2.1.0"
+val logbackVersion = "1.3.0-beta0"
 val logstashEncoderVersion = "7.2"
 val junitJupiterVersion = "5.9.0"
 val kamlVersion = "0.46.0"
-val micrometerVersion = "1.9.2"
+val micrometerVersion = "1.9.3"
 
 val mainClassName = "io.nais.MainKt"
 
@@ -75,7 +75,7 @@ tasks {
    }
 
    withType<Wrapper> {
-      gradleVersion = "7.5"
+      gradleVersion = "7.5.1"
    }
 
 }

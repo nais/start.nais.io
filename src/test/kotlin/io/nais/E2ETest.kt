@@ -99,14 +99,14 @@ class E2ETest {
    }
 
    @Test
-   fun `posting an invalid request yields a 400 with an explanation`() {
+   fun `posting an invalid request yields a 400`() {
       testApplication() {
          val response = client.post("/app") {
             header(ContentType, "application/json")
             setBody("""{"team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
          }
          assertEquals(BadRequest, response.status)
-         assertTrue(response.bodyAsText().contains("'appName' is required"))
+         assertTrue(response.bodyAsText().contains("Unable to parse JSON"))
       }
    }
 
