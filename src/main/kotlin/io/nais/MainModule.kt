@@ -4,6 +4,7 @@ import io.ktor.http.*
 import io.ktor.http.ContentType.Application.Json
 import io.ktor.http.ContentType.Application.Zip
 import io.ktor.http.HttpStatusCode.Companion.BadRequest
+import io.ktor.http.HttpStatusCode.Companion.InternalServerError
 import io.ktor.http.HttpStatusCode.Companion.OK
 import io.ktor.http.HttpStatusCode.Companion.UnsupportedMediaType
 import io.ktor.serialization.kotlinx.json.*
@@ -27,12 +28,21 @@ fun Application.mainModule() {
    }
 
    install(StatusPages) {
+      exception<NullPointerException> { call, cause ->
+         // Most likely because the body is empty
+         call.respond(BadRequest, "Unable to parse request body: ${cause.message ?: "unknown or missing data"}")
+      }
+
       exception<BadRequestException> { call, cause ->
-         call.respond(BadRequest, "Unable to parse JSON: ${cause.message}")
+         call.respond(BadRequest, "Unable to handle request: ${cause.message}")
       }
 
       exception<BadContentTypeFormatException> { call, cause ->
-         call.respond(UnsupportedMediaType, cause.message ?: "Don't know how to serve this weird Content-Type")
+         call.respond(UnsupportedMediaType, cause.message ?: "Don't know how to serve ${call.request.contentType()}")
+      }
+
+      exception<Throwable> { call, cause ->
+         call.respond(InternalServerError, cause.message ?: "Our bad, we screwed something up")
       }
    }
 
