@@ -106,7 +106,6 @@ class E2ETest {
             setBody("""{"team": "myteam", "platform": "JVM_GRADLE", "extras": []}""")
          }
          assertEquals(BadRequest, response.status)
-         assertTrue(response.bodyAsText().contains("Unable to parse JSON"))
       }
    }
 
