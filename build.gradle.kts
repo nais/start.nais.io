@@ -1,15 +1,15 @@
-val ktorVersion = "2.1.1"
-val logbackVersion = "1.4.1"
+val ktorVersion = "2.1.2"
+val logbackVersion = "1.4.3"
 val logstashEncoderVersion = "7.2"
-val junitJupiterVersion = "5.9.0"
+val junitJupiterVersion = "5.9.1"
 val kamlVersion = "0.48.0"
 val micrometerVersion = "1.9.4"
 
 val mainClassName = "io.nais.MainKt"
 
 plugins {
-   kotlin("jvm") version "1.7.10"
-   kotlin("plugin.serialization") version "1.7.10"
+   kotlin("jvm") version "1.7.20"
+   kotlin("plugin.serialization") version "1.7.20"
    id("com.github.johnrengelman.shadow") version "7.1.2"
    id("com.github.ben-manes.versions") version "0.42.0"
 }
@@ -25,8 +25,8 @@ repositories {
 
 dependencies {
    implementation(kotlin("stdlib"))
-   implementation("ch.qos.logback:logback-classic:$logbackVersion")
    implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
+   implementation("ch.qos.logback:logback-classic:$logbackVersion")
    implementation("com.charleskorn.kaml:kaml:$kamlVersion")
    implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
