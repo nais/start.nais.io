@@ -33,7 +33,7 @@ jobs:
               password: ${{ secrets.GITHUB_TOKEN }}
          - name: Generate Docker image tag with short sha
            id: dockertag
-           run: echo "::set-output name=docker_img::ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)"
+           run: echo "docker_img=ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)" >> ${GITHUB_OUTPUT}
          - name: Build and push the Docker image
            uses: docker/build-push-action@e551b19e49efd4e98792db7592c17c09b89db8d8 # ratchet:docker/build-push-action@v3
            with:
@@ -55,7 +55,7 @@ jobs:
 
          -  name: Generate Docker image tag
             id: dockertag
-            run: echo "::set-output name=docker_img::ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)"
+            run: echo "docker_img=ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)" >> ${GITHUB_OUTPUT}
 
          -  name: Login to GitHub Docker Registry
             uses: docker/login-action@49ed152c8eca782a232dede0303416e8f356c37b # ratchet:docker/login-action@v2
@@ -85,7 +85,7 @@ jobs:
          - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # ratchet:actions/checkout@v3
          - name: Generate Docker image tag
            id: dockertag
-           run: echo "::set-output name=docker_img::ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)"
+           run: echo "docker_img=ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)" >> ${GITHUB_OUTPUT}
          - uses: nais/deploy/actions/deploy@357990b08f857f576a548d31cc69d40820978589 # ratchet:nais/deploy/actions/deploy@v1
            env:
               APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
@@ -103,7 +103,7 @@ jobs:
          - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # ratchet:actions/checkout@v3
          - name: Generate Docker image tag
            id: dockertag
-           run: echo "::set-output name=docker_img::ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)"
+           run: echo "docker_img=ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)" >> ${GITHUB_OUTPUT}
          - uses: nais/deploy/actions/deploy@357990b08f857f576a548d31cc69d40820978589 # ratchet:nais/deploy/actions/deploy@v1
            env:
               APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
