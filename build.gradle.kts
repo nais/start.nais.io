@@ -1,15 +1,15 @@
 val ktorVersion = "2.1.3"
-val logbackVersion = "1.4.4"
+val logbackVersion = "1.4.5"
 val logstashEncoderVersion = "7.2"
 val junitJupiterVersion = "5.9.1"
 val kamlVersion = "0.49.0"
-val micrometerVersion = "1.9.5"
+val micrometerVersion = "1.10.2"
 
 val mainClassName = "io.nais.MainKt"
 
 plugins {
-   kotlin("jvm") version "1.7.20"
-   kotlin("plugin.serialization") version "1.7.20"
+   kotlin("jvm") version "1.7.21"
+   kotlin("plugin.serialization") version "1.7.21"
    id("com.github.johnrengelman.shadow") version "7.1.2"
    id("com.github.ben-manes.versions") version "0.42.0"
 }
@@ -75,7 +75,7 @@ tasks {
    }
 
    withType<Wrapper> {
-      gradleVersion = "7.5.1"
+      gradleVersion = "7.6"
    }
 
 }
