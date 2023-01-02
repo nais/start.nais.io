@@ -8,8 +8,8 @@ val micrometerVersion = "1.10.2"
 val mainClassName = "io.nais.MainKt"
 
 plugins {
-   kotlin("jvm") version "1.7.21"
-   kotlin("plugin.serialization") version "1.7.21"
+   kotlin("jvm") version "1.8.0"
+   kotlin("plugin.serialization") version "1.8.0"
    id("com.github.johnrengelman.shadow") version "7.1.2"
    id("com.github.ben-manes.versions") version "0.42.0"
 }
@@ -63,7 +63,7 @@ tasks {
 
    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
       kotlinOptions {
-         jvmTarget = "11"
+         jvmTarget = "17"
       }
    }
 
