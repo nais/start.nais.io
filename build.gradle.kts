@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 val ktorVersion = "2.2.2"
 val logbackVersion = "1.4.5"
 val logstashEncoderVersion = "7.2"
@@ -61,7 +64,7 @@ tasks {
       }
    }
 
-   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+   withType<KotlinCompile> {
       kotlinOptions {
          jvmTarget = "17"
       }
@@ -71,6 +74,9 @@ tasks {
       useJUnitPlatform()
       testLogging {
          showExceptions = true
+      }
+      testLogging {
+         exceptionFormat = FULL
       }
    }
 
