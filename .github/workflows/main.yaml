@@ -81,7 +81,7 @@ jobs:
          - name: Generate Docker image tag
            id: dockertag
            run: echo "docker_img=ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)" >> ${GITHUB_OUTPUT}
-         - uses: nais/deploy/actions/deploy@357990b08f857f576a548d31cc69d40820978589 # ratchet:nais/deploy/actions/deploy@v1
+         - uses: nais/deploy/actions/deploy@752ccb6c36a69e2ea574b95febc88e0c38b03995 # ratchet:nais/deploy/actions/deploy@v1
            env:
               APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
               CLUSTER: prod-gcp
