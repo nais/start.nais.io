@@ -28,7 +28,7 @@ jobs:
             with:
                cosign-release: "v1.13.1"
          -  name: Verify distroless base image
-            run: COSIGN_EXPERIMENTAL=1 cosign verify ${{ BASEIMAGE }}
+            run: COSIGN_EXPERIMENTAL=1 cosign verify ${{BASEIMAGE}}
          -  name: Login to GitHub Docker Registry
             uses: docker/login-action@49ed152c8eca782a232dede0303416e8f356c37b # ratchet:docker/login-action@v2
             with:
