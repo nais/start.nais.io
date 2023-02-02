@@ -1,9 +1,5 @@
-FROM gcr.io/distroless/java17
+FROM cgr.dev/chainguard/jre:openjdk-jre-17
 
-COPY build/libs/app-all.jar /app/app-all.jar
+COPY build/libs/app-all.jar /app/
 
-WORKDIR /app
-
-USER nonroot
-
-CMD ["app-all.jar"]
+CMD ["-jar", "/app/app-all.jar"]
