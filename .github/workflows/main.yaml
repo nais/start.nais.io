@@ -73,7 +73,7 @@ jobs:
               docker_pwd: ${{ secrets.GITHUB_TOKEN }}
    deploy_to_prod:
       name: Deploy to prod-gcp
-      needs: deploy_to_dev
+      needs: build
       if: github.ref == 'refs/heads/main'
       runs-on: ubuntu-20.04
       steps:
