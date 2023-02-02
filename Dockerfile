@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/jre:openjdk-jre-17
+FROM ${BASEIMAGE}
 
 COPY build/libs/app-all.jar /app/
 
