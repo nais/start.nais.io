@@ -43,7 +43,7 @@ jobs:
           push: true
           tags: ${{ steps.dockertag.outputs.docker_img }}
           build-args: |
-            BASEIMAGE=cgr.dev/chainguard/jre:openjdk-jre-17
+            "BASEIMAGE=${{ env.BASEIMAGE }}"
   slsafy:
     needs: build
     name: Generate and upload SLSA provenance
