@@ -6,7 +6,7 @@ on:
     paths-ignore:
       - "*.md"
 env:
-  BASEIMAGE: cgr.dev/chainguard/jre:openjdk-jre-17
+  BASEIMAGE: "cgr.dev/chainguard/jre:openjdk-jre-17"
 jobs:
   build:
     name: Build all the things
