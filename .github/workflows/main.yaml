@@ -43,7 +43,7 @@ jobs:
           push: true
           tags: ${{ steps.dockertag.outputs.docker_img }}
           build-args: |
-            "BASEIMAGE=${{ env.BASEIMAGE }}"
+            BASEIMAGE=${{ env.BASEIMAGE }}
   slsafy:
     needs: build
     name: Generate and upload SLSA provenance
