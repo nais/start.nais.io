@@ -1,12 +1,12 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val ktorVersion = "2.2.2"
+val ktorVersion = "2.2.3"
 val logbackVersion = "1.4.5"
 val logstashEncoderVersion = "7.2"
-val junitJupiterVersion = "5.9.1"
-val kamlVersion = "0.49.0"
-val micrometerVersion = "1.10.2"
+val junitJupiterVersion = "5.9.2"
+val kamlVersion = "0.51.0"
+val micrometerVersion = "1.10.3"
 
 val mainClassName = "io.nais.MainKt"
 
