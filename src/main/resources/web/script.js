@@ -4,11 +4,11 @@ const modal = document.querySelector(".modal")
 const modalCloser = document.getElementsByClassName("close-button")[0]
 
 sendBtns.forEach(btn => {
-  btn.addEventListener("click", event => {
-     event.preventDefault()
-     const acceptedContentType = event.target.id === "btnZip" ? "application/zip" : "application/json"
-     post(form, acceptedContentType)
-  })
+   btn.addEventListener("click", event => {
+      event.preventDefault()
+      const acceptedContentType = event.target.id === "btnZip" ? "application/zip" : "application/json"
+      post(form, acceptedContentType)
+   })
 })
 
 document.querySelectorAll('input[type=text]').forEach(txtField => {
@@ -19,6 +19,18 @@ document.querySelectorAll('input[type=text]').forEach(txtField => {
    })
 })
 
+function computeHighlightLang(filename) {
+   return filename.split('.').pop().toLowerCase();
+}
+
+function addCodeBlock(block) {
+   const extension = computeHighlightLang(block.key)
+   const element = document.createElement('div')
+   element.classList.add('code-block')
+   element.innerHTML = `<h3>${block.key}</h3><pre><code class="language-${extension}">${block.value}</code></pre>`
+   return element
+}
+
 const post = (form, acceptedContentType) => {
    const formAsJson = convertToJson(form)
    makeRequest(formAsJson, acceptedContentType)
@@ -27,13 +39,20 @@ const post = (form, acceptedContentType) => {
          if (parsedResponse.contentType === "application/zip") {
             saveBlob(parsedResponse)
          } else {
-            document.getElementById("modal-yaml").textContent = await formatForDisplay(parsedResponse)
+
+            const codeBlocks = document.getElementById('code-blocks')
+            codeBlocks.innerHTML = ""
+            const blocks = await formatForDisplay(parsedResponse)
+
+            blocks.map(addCodeBlock).forEach(element => codeBlocks.appendChild(element))
+
+            hljs.highlightAll();
             toggleModal()
          }
          setErrorMsg("")
       }).catch(err => {
-      setErrorMsg(`oh noes: ${err}`)
-   })
+         setErrorMsg(`oh noes: ${err}`)
+      })
 }
 
 const convertToJson = (form) => ({
@@ -74,7 +93,7 @@ const saveBlob = (parsedResponse) => {
    document.body.removeChild(anchor)
 };
 
-const filenameFrom  = contentDispositionHeader => contentDispositionHeader.split("=")[1]
+const filenameFrom = contentDispositionHeader => contentDispositionHeader.split("=")[1]
 
 const setErrorMsg = txt => {
    const element = document.getElementById("errmsg")
@@ -84,12 +103,14 @@ const setErrorMsg = txt => {
 
 const formatForDisplay = async (response) => {
    const json = JSON.parse(await response.blob.text())
-   return Object.keys(json).map((key) =>
-      `${key}:\n-------------------------\n${atob(json[key])}`).join("\n\n")
+
+   return Object.keys(json).map((key) => {
+      return ({ key, value: atob(json[key]) })
+   })
 }
 
 const csvToArray = (str) => str && str.trim().length !== 0 ?
-   str.split(',').map((element) => element.trim())  : []
+   str.split(',').map((element) => element.trim()) : []
 
 const toggleModal = () => {
    modal.classList.toggle("show-modal");

@@ -4,6 +4,7 @@
    <meta charset="UTF-8" />
    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
    <title>nais app starter</title>
+   <link rel="stylesheet" href="vendor/highlight-theme.css" />
    <link rel="stylesheet" href="style.css" />
    <link
       rel="icon"
@@ -117,10 +118,13 @@
 <div class="modal">
    <div class="modal-content">
       <span class="close-button">&times;</span>
-      <pre id="modal-yaml">Yaml goes here...</pre>
+      <div id="code-blocks">
+      </div>
    </div>
 </div>
 
+<script type="application/javascript" src="vendor/highlight.min.js"></script>
+<script type="application/javascript" src="vendor/highlight.docker.min.js"></script>
 <script type="application/javascript" src="script.js"></script>
 
 </body>
