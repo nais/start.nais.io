@@ -41,6 +41,7 @@ const post = (form, acceptedContentType) => {
          } else {
 
             const codeBlocks = document.getElementById('code-blocks')
+            codeBlocks.innerHTML = ""
             const blocks = await formatForDisplay(parsedResponse)
 
             blocks.map(addCodeBlock).forEach(element => codeBlocks.appendChild(element))
