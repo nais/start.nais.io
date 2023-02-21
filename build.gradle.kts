@@ -17,11 +17,6 @@ plugins {
    id("com.github.ben-manes.versions") version "0.42.0"
 }
 
-java {
-   sourceCompatibility = JavaVersion.VERSION_17
-   targetCompatibility = JavaVersion.VERSION_17
-}
-
 repositories {
    mavenCentral()
 }
@@ -44,6 +39,10 @@ dependencies {
    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
 }
 
+kotlin {
+   jvmToolchain(17)
+}
+
 tasks {
    withType<Jar> {
       archiveBaseName.set("app")
@@ -64,12 +63,6 @@ tasks {
       }
    }
 
-   withType<KotlinCompile> {
-      kotlinOptions {
-         jvmTarget = "11"
-      }
-   }
-
    withType<Test> {
       useJUnitPlatform()
       testLogging {
@@ -81,7 +74,7 @@ tasks {
    }
 
    withType<Wrapper> {
-      gradleVersion = "7.6"
+      gradleVersion = "8.0"
    }
 
 }
