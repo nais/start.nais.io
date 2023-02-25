@@ -11,6 +11,9 @@ val micrometerVersion = "1.10.3"
 
 val mainClassName = "io.nais.MainKt"
 
+group = "io.nais"
+version = "generatedlater"
+
 plugins {
    kotlin("jvm") version "1.8.0"
    kotlin("plugin.serialization") version "1.8.0"
@@ -81,6 +84,7 @@ tasks {
 
    withType<CycloneDxTask> {
       setOutputFormat("json")
+      setIncludeLicenseText(false)
    }
 
 }
