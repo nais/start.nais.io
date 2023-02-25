@@ -1,3 +1,4 @@
+import org.cyclonedx.gradle.CycloneDxTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -15,6 +16,7 @@ plugins {
    kotlin("plugin.serialization") version "1.8.0"
    id("com.github.johnrengelman.shadow") version "7.1.2"
    id("com.github.ben-manes.versions") version "0.42.0"
+   id("org.cyclonedx.bom") version "1.7.4"
 }
 
 repositories {
@@ -77,4 +79,9 @@ tasks {
       gradleVersion = "8.0"
    }
 
+   withType<CycloneDxTask> {
+      setOutputFormat("json")
+   }
+
 }
+
