@@ -7,6 +7,8 @@ on:
       - "*.md"
 env:
   BASEIMAGE: "cgr.dev/chainguard/jre:openjdk-jre-17"
+  IMAGE_BASENAME: ghcr.io/${{ github.repository }}
+
 jobs:
   build:
     name: Build all the things
@@ -20,13 +22,13 @@ jobs:
           cache: "gradle"
       - uses: gradle/wrapper-validation-action@55e685c48d84285a5b0418cd094606e199cca3b6 # ratchet:gradle/wrapper-validation-action@v1
       - name: Build and test the app
-        run: sudo ./gradlew clean test shadowJar
+        run: ./gradlew clean test shadowJar
       - name: Install cosign
         uses: sigstore/cosign-installer@4079ad3567a89f68395480299c77e40170430341 # ratchet:sigstore/cosign-installer@main
         with:
-          cosign-release: "v1.13.1"
+          cosign-release: "v2.0.0"
       - name: Verify distroless base image
-        run: COSIGN_EXPERIMENTAL=1 cosign verify $BASEIMAGE
+        run: cosign verify --certificate-identity "https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main"  --certificate-oidc-issuer "https://token.actions.githubusercontent.com" $BASEIMAGE
       - name: Login to GitHub Docker Registry
         uses: docker/login-action@49ed152c8eca782a232dede0303416e8f356c37b # ratchet:docker/login-action@v2
         with:
@@ -35,60 +37,69 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate Docker image tag with short sha
         id: dockertag
-        run: echo "docker_img=ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)" >> ${GITHUB_OUTPUT}
-      - name: Build and push the Docker image
-        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671 # ratchet:docker/build-push-action@v4
+        run: echo "img_tag=$(git rev-parse --short HEAD)" >> ${GITHUB_OUTPUT}
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build and push
+        id: build-push
+        uses: docker/build-push-action@v4
         with:
-          context: .
-          push: true
-          tags: ${{ steps.dockertag.outputs.docker_img }}
-          build-args: |
-            BASEIMAGE=${{ env.BASEIMAGE }}
-  slsafy:
-    needs: build
-    name: Generate and upload SLSA provenance
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@7884fcad6b5d53d10323aee724dc68d8b9096a2e # ratchet:actions/checkout@v2
-      - uses: actions/setup-java@2c7a4878f5d120bd643426d54ae1209b29cc01a3 # ratchet:actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 17
-          cache: gradle
-      - name: Generate Docker image tag
-        id: dockertag
-        run: echo "docker_img=ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)" >> ${GITHUB_OUTPUT}
-      - name: Login to GitHub Docker Registry
-        uses: docker/login-action@49ed152c8eca782a232dede0303416e8f356c37b # ratchet:docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@ceee102ec2387dd9e844e01b530ccd4ec87ce955 # ratchet:google-github-actions/auth@v0
-        with:
-          credentials_json: ${{ secrets.SALSA_CREDENTIALS }}
-      - name: Run nais SLSA action
-        uses: nais/salsa@f352d0850fa9241316fa1ebab28c485067d3c27a # ratchet:nais/salsa@v0.1
-        env:
-          IMAGE: ${{ steps.dockertag.outputs.docker_img }}
-        with:
-          key: ${{ secrets.SALSA_KMS_KEY }}
-          docker_pwd: ${{ secrets.GITHUB_TOKEN }}
+           context: .
+           file: Dockerfile
+           platforms: linux/amd64,linux/arm64
+           pull: true
+           push: true
+           tags: ${{ env.IMAGE_BASENAME }}:${{ steps.dockertag.outputs.img_tag }}
+           cache-from: type=gha
+           cache-to: type=gha,mode=max
+    outputs:
+       tag: "${{ steps.dockertag.outputs.img_tag }}"
+       digest: "${{ steps.build-push.outputs.digest }}"
+
   deploy_to_prod:
     name: Deploy to prod-gcp
     needs: build
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # ratchet:actions/checkout@v3
-      - name: Generate Docker image tag
-        id: dockertag
-        run: echo "docker_img=ghcr.io/${{ github.repository }}:$(git rev-parse --short HEAD)" >> ${GITHUB_OUTPUT}
       - uses: nais/deploy/actions/deploy@752ccb6c36a69e2ea574b95febc88e0c38b03995 # ratchet:nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: prod-gcp
           RESOURCE: .nais/nais.yaml,.nais/alerts.yaml
           VARS: .nais/prod.yaml
-          IMAGE: ${{ steps.dockertag.outputs.docker_img }}
+          IMAGE: ${{ env.IMAGE_BASENAME }}:${{ needs.build.outputs.tag }}
+
+  slsafy:
+     name: Sign and attest the image
+     if: github.ref == 'refs/heads/main'
+     needs: build
+     runs-on: ubuntu-latest
+     permissions:
+        contents: read
+        packages: write
+        id-token: write
+     steps:
+        -  uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # ratchet:actions/checkout@v3
+        -  uses: actions/setup-java@16cca5479d7c6b6843f6a6515640ba33c6501543 # ratchet:actions/setup-java@v3
+        -  name: Install cosign
+           uses: sigstore/cosign-installer@c3667d99424e7e6047999fb6246c0da843953c65 # ratchet:sigstore/cosign-installer@main
+           with:
+              cosign-release: 'v2.0.0'
+        -  name: Login to GitHub Packages Docker Registry
+           uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # ratchet:docker/login-action@v2
+           with:
+              registry: ghcr.io
+              username: ${{ github.actor }}
+              password: ${{ secrets.GITHUB_TOKEN }}
+        -  name: Create SBOM
+           run: ./gradlew cyclonedxBom
+        -  name: Sign the container image
+           run: echo "y" | cosign sign ${{ env.IMAGE_BASENAME }}@${{ env.IMAGE_DIGEST }}
+           env:
+              IMAGE_DIGEST: ${{ needs.build.outputs.digest }}
+        -  name: Attest image
+           run: echo "y" | cosign attest --predicate build/reports/bom.json --type cyclonedx ${{ env.IMAGE_BASENAME }}@${{ env.IMAGE_DIGEST }}
+           env:
+              IMAGE_DIGEST: ${{ needs.build.outputs.digest }}
