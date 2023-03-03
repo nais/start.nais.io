@@ -51,8 +51,6 @@ jobs:
            pull: true
            push: true
            tags: ${{ env.IMAGE_BASENAME }}:${{ steps.dockertag.outputs.img_tag }}
-           cache-from: type=gha
-           cache-to: type=gha,mode=max
     outputs:
        tag: "${{ steps.dockertag.outputs.img_tag }}"
        digest: "${{ steps.build-push.outputs.digest }}"
