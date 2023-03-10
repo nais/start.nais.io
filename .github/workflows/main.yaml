@@ -13,34 +13,35 @@ jobs:
     name: Build all the things
     runs-on: ubuntu-20.04
     permissions:
-      contents: read
-      packages: write
-      id-token: write
+       contents: read
+       packages: write
+       id-token: write
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # ratchet:actions/checkout@v3
-      - name: Generate Docker image tag with short sha
-        id: dockertag
-        run: echo "img_tag=$(git rev-parse --short HEAD)" >> ${GITHUB_OUTPUT}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@e81a89b1732b9c48d79cd809d8d81d79c4647a18 # ratchet:docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@4b4e9c3e2d4531116a6f8ba8e71fc6e2cb6e6c8c # ratchet:docker/setup-buildx-action@v2
+      - uses: actions/setup-java@3f07048e3d294f56e9b90ac5ea2c6f74e9ad0f98 # ratchet:actions/setup-java@v3
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: "gradle"
+      - uses: gradle/wrapper-validation-action@55e685c48d84285a5b0418cd094606e199cca3b6 # ratchet:gradle/wrapper-validation-action@v1
+      - name: Build and test the app
+        run: ./gradlew test shadowJar
+      - name: Verify distroless base image
+        run: cosign verify --certificate-identity "https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main"  --certificate-oidc-issuer "https://token.actions.githubusercontent.com" $BASEIMAGE
       - name: Login to GitHub Docker Registry
         uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # ratchet:docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      -  name: Install cosign
-         uses: sigstore/cosign-installer@bd2d1189b064bcddc3903176a807dcdba72d7fd0 # ratchet:sigstore/cosign-installer@main
-         with:
-            cosign-release: 'v2.0.0'
-      - name: Verify distroless base image
-        run: |
-          cosign verify \
-          --certificate-identity "https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main"  \
-          --certificate-oidc-issuer \
-          "https://token.actions.githubusercontent.com" $BASEIMAGE
+      - name: Generate Docker image tag with short sha
+        id: dockertag
+        run: echo "img_tag=$(git rev-parse --short HEAD)" >> ${GITHUB_OUTPUT}
+      -  name: Set up QEMU
+         uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@f03ac48505955848960e80bbb68046aa35c7b9e7 # ratchet:docker/setup-buildx-action@v2
       - name: Build and push Docker image
         id: build-push
         uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671 # ratchet:docker/build-push-action@v4
@@ -53,16 +54,19 @@ jobs:
           tags: ${{ env.IMAGE_BASENAME }}:${{ steps.dockertag.outputs.img_tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - name: Sign the container image
-        run: cosign sign --yes ${{ env.IMAGE_BASENAME }}@${{ steps.build-push.outputs.digest }}
-      - name: Create SBOM
-        run: ./gradlew cyclonedxBom
-      - name: Sign the container image
-        run: cosign sign --yes ${{ env.IMAGE_BASENAME }}@${{ steps.build-push.outputs.digest }}
-      - name: Attest image
-        run: cosign attest --yes --predicate build/reports/bom.json --type cyclonedx ${{ env.IMAGE_BASENAME }}@${{ steps.build-push.outputs.digest }}
+      -  name: Install cosign
+         uses: sigstore/cosign-installer@c3667d99424e7e6047999fb6246c0da843953c65 # ratchet:sigstore/cosign-installer@main
+         with:
+            cosign-release: 'v2.0.0'
+      -  name: Sign the container image
+         run: cosign sign --yes ${{ env.IMAGE_BASENAME }}@${{ steps.build-push.outputs.digest }}
+      -  name: Create SBOM
+         run: ./gradlew cyclonedxBom
+      -  name: Attest image
+         run: cosign attest --yes --predicate build/reports/bom.json --type cyclonedx ${{ env.IMAGE_BASENAME }}@${{ steps.build-push.outputs.digest }}
     outputs:
       tag: "${{ steps.dockertag.outputs.img_tag }}"
+
   deploy_to_prod:
     name: Deploy to prod-gcp
     needs: build
@@ -76,3 +80,5 @@ jobs:
           RESOURCE: .nais/nais.yaml,.nais/alerts.yaml
           VARS: .nais/prod.yaml
           IMAGE: ${{ env.IMAGE_BASENAME }}:${{ needs.build.outputs.tag }}
+
+

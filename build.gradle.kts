@@ -1,4 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.cyclonedx.gradle.CycloneDxTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -67,10 +66,6 @@ tasks {
                it.copyTo(file)
          }
       }
-   }
-
-   withType<ShadowJar> {
-      archiveFileName.set("app-all.jar")
    }
 
    withType<Test> {
