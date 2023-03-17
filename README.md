@@ -26,4 +26,24 @@ Questions and/or feature requests? Please create an [issue](https://github.com/n
 
 If you work in [@navikt](https://github.com/navikt) you can reach us at the Slack channel [#nais](https://nav-it.slack.com/archives/C5KUST8N6).
 
+## Verifying the start.nais.io image and its contents
+
+The image is signed "keylessly" using [Sigstore cosign](https://github.com/sigstore/cosign).
+To verify its authenticity run
+```
+cosign verify \
+--certificate-identity "https://github.com/nais/start.nais.io/.github/workflows/main.yaml@refs/heads/main" \
+--certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+ghcr.io/nais/start.nais.io@sha256:<shasum>
+```
+
+The images are also attested with SBOMs in the [CycloneDX](https://cyclonedx.org/) format.
+You can verify these by running
+```
+cosign verify-attestation --type cyclonedx \
+--certificate-identity "https://github.com/nais/start.nais.io/.github/workflows/main.yaml@refs/heads/main" \
+--certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+ghcr.io/nais/start.nais.io@sha256:<shasum>
+```
+
 
