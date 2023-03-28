@@ -1,20 +1,23 @@
 name: Build and deploy main
+
 on:
   push:
     branches:
       - main
     paths-ignore:
       - "*.md"
+
 env:
   BASEIMAGE: "cgr.dev/chainguard/jre:openjdk-jre-17"
-  IMAGE_BASENAME: ghcr.io/${{ github.repository }}
+  IMAGE_BASENAME: "europe-north1-docker.pkg.dev/nais-io/nais/images/start.nais.io"
+  REGISTRY: "europe-north1-docker.pkg.dev/nais-io/nais/images"
+
 jobs:
   build:
     name: Build all the things
     runs-on: ubuntu-20.04
     permissions:
       contents: read
-      packages: write
       id-token: write
     outputs:
       tag: "${{ steps.dockertag.outputs.img_tag }}"
@@ -28,12 +31,19 @@ jobs:
       - uses: gradle/wrapper-validation-action@55e685c48d84285a5b0418cd094606e199cca3b6 # ratchet:gradle/wrapper-validation-action@v1
       - name: Build and test the app
         run: ./gradlew test shadowJar
+      - id: "gauth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@ef5d53e30bbcd8d0836f4288f5e50ff3e086997d" # ratchet:google-github-actions/auth@v1.0.0
+        with:
+          workload_identity_provider: ${{ secrets.NAIS_IO_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: "gh-start-nais-io@nais-io.iam.gserviceaccount.com"
+          token_format: "access_token"
       - name: Login to GitHub Docker Registry
         uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # ratchet:docker/login-action@v2
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ env.REGISTRY }}
+          username: oauth2accesstoken
+          password: "${{ steps.gauth.outputs.access_token }}"
       - name: Generate Docker image tag with short sha
         id: dockertag
         run: echo "img_tag=$(git rev-parse --short HEAD)" >> ${GITHUB_OUTPUT}
@@ -73,11 +83,11 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-20.04
     steps:
-       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # ratchet:actions/checkout@v3
-       - uses: nais/deploy/actions/deploy@fdd2da585ae15831342aad18847dbcc4213f72fb # ratchet:nais/deploy/actions/deploy@v1
-         env:
-            APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
-            CLUSTER: prod-gcp
-            RESOURCE: .nais/nais.yaml,.nais/alerts.yaml
-            VARS: .nais/prod.yaml
-            IMAGE: ${{ env.IMAGE_BASENAME }}:${{ needs.build.outputs.tag }}
+      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # ratchet:actions/checkout@v3
+      - uses: nais/deploy/actions/deploy@fdd2da585ae15831342aad18847dbcc4213f72fb # ratchet:nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: prod-gcp
+          RESOURCE: .nais/nais.yaml,.nais/alerts.yaml
+          VARS: .nais/prod.yaml
+          IMAGE: ${{ env.IMAGE_BASENAME }}:${{ needs.build.outputs.tag }}
