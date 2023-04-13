@@ -1,7 +1,7 @@
 package io.nais
 
 val jvmDockerfileTemplate = """
-   FROM gcr.io/distroless/java17
+   FROM gcr.io/distroless/java17-debian11:nonroot
 
    # TODO change to match the path to your "fat jar"
    COPY build/libs/app-all.jar /app/app-all.jar
@@ -15,7 +15,7 @@ val jvmDockerfileTemplate = """
 """.trimIndent()
 
 val nodejsDockerfileTemplate = """
-   FROM gcr.io/distroless/nodejs:18
+   FROM gcr.io/distroless/nodejs18-debian11:nonroot
    # TODO change to match the path to your code
    COPY ./mystuff.js /app/
    WORKDIR /app
@@ -24,7 +24,7 @@ val nodejsDockerfileTemplate = """
 """.trimIndent()
 
 val goDockerfileTemplate = """
-   FROM gcr.io/distroless/static-debian11
+   FROM gcr.io/distroless/static-debian11:nonroot
    # TODO change to match the path to your stuff
    COPY ./bin/hello /
    CMD ["/hello"]
@@ -32,7 +32,7 @@ val goDockerfileTemplate = """
 """.trimIndent()
 
 val pythonDockerfileTemplate = """
-   FROM gcr.io/distroless/python3
+   FROM python3-debian11:nonroot
    # TODO change to match the path to your code
    COPY ./mystuff.py /app/
    WORKDIR /app
