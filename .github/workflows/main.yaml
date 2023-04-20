@@ -31,6 +31,12 @@ jobs:
       - uses: gradle/wrapper-validation-action@55e685c48d84285a5b0418cd094606e199cca3b6 # ratchet:gradle/wrapper-validation-action@v1
       - name: Build and test the app
         run: ./gradlew test shadowJar
+      -  name: Install cosign
+         uses: sigstore/cosign-installer@c3667d99424e7e6047999fb6246c0da843953c65 # ratchet:sigstore/cosign-installer@main
+         with:
+            cosign-release: 'v2.0.0'
+      -  name: Verify distroless base image
+         run: cosign verify --certificate-identity "https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main"  --certificate-oidc-issuer "https://token.actions.githubusercontent.com" $BASEIMAGE
       - id: "gauth"
         name: "Authenticate to Google Cloud"
         uses: "google-github-actions/auth@ef5d53e30bbcd8d0836f4288f5e50ff3e086997d" # ratchet:google-github-actions/auth@v1.0.0
@@ -64,12 +70,6 @@ jobs:
           tags: ${{ env.IMAGE_BASENAME }}:${{ steps.dockertag.outputs.img_tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - name: Install cosign
-        uses: sigstore/cosign-installer@c3667d99424e7e6047999fb6246c0da843953c65 # ratchet:sigstore/cosign-installer@main
-        with:
-          cosign-release: 'v2.0.0'
-      - name: Verify distroless base image
-        run: cosign verify --certificate-identity "https://github.com/chainguard-images/images/.github/workflows/release.yaml@refs/heads/main"  --certificate-oidc-issuer "https://token.actions.githubusercontent.com" $BASEIMAGE
       - name: Sign the container image
         run: cosign sign --yes ${{ env.IMAGE_BASENAME }}@${{ steps.build-push.outputs.digest }}
       - name: Create SBOM
