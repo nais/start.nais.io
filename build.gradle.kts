@@ -1,14 +1,13 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.cyclonedx.gradle.CycloneDxTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val ktorVersion = "2.2.3"
-val logbackVersion = "1.4.5"
-val logstashEncoderVersion = "7.2"
+val ktorVersion = "2.3.0"
+val logbackVersion = "1.4.7"
+val logstashEncoderVersion = "7.3"
 val junitJupiterVersion = "5.9.2"
-val kamlVersion = "0.51.0"
-val micrometerVersion = "1.10.3"
+val kamlVersion = "0.53.0"
+val micrometerVersion = "1.10.5"
 
 val mainClassName = "io.nais.MainKt"
 
@@ -16,9 +15,9 @@ group = "io.nais"
 version = "generatedlater"
 
 plugins {
-   kotlin("jvm") version "1.8.0"
-   kotlin("plugin.serialization") version "1.8.0"
-   id("com.github.johnrengelman.shadow") version "7.1.2"
+   kotlin("jvm") version "1.8.20"
+   kotlin("plugin.serialization") version "1.8.20"
+   id("com.github.johnrengelman.shadow") version "8.1.1"
    id("com.github.ben-manes.versions") version "0.42.0"
    id("org.cyclonedx.bom") version "1.7.4"
 }
@@ -84,7 +83,7 @@ tasks {
    }
 
    withType<Wrapper> {
-      gradleVersion = "8.0.1"
+      gradleVersion = "8.1"
    }
 
    withType<CycloneDxTask> {
