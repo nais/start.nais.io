@@ -7,51 +7,44 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Alerts(
+data class PrometheusRule(
    val apiVersion: String,
    val kind: String,
-   val metadata: AlertMetadata,
-   val spec: AlertSpec
+   val metadata: PrometheusRuleMetadata,
+   val spec: PrometheusRuleSpec
 )
 
 @ExperimentalSerializationApi
-fun Alerts.serialize() =
+fun PrometheusRule.serialize() =
    Yaml(configuration = YamlConfiguration(encodeDefaults = false))
-      .encodeToString(Alerts.serializer(), this)
+      .encodeToString(PrometheusRule.serializer(), this)
 
 @Serializable
-data class AlertMetadata(
+data class PrometheusRuleMetadata(
    val name: String,
    val namespace: String,
    val labels: Map<String, String>
 )
 
 @Serializable
-data class AlertSpec(
-   val receivers: AlertReceivers,
-   val alerts: List<Alert>
+data class PrometheusRuleSpec(
+   val groups: List<RuleGroup>
 )
 
 @Serializable
-data class AlertReceivers(
-   val slack: Slack
+data class RuleGroup(
+   val name: String,
+   val rules: List<Rule>
 )
 
 @Serializable
-data class Slack(
-   val channel: String,
-   val prependText: String
-)
-
-@Serializable
-data class Alert(
+data class Rule(
    val alert: String,
    val description: String? = null,
    val expr: String,
    @SerialName("for")
    val forHowLong: String,
    val action: String,
-   val documentation: String? = null,
-   val sla: String,
-   val severity: String
+   val labels: Map<String, String> = emptyMap(),
+   val annotations: Map<String, String> = emptyMap()
 )

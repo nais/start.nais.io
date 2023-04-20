@@ -17,7 +17,6 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.SerializationException
 
 @ExperimentalSerializationApi
 @Suppress("unused") // referenced in application.conf
@@ -53,10 +52,7 @@ fun Application.mainModule() {
          }
       }
 
-      static("/") {
-         resources("web")
-         defaultResource("index.html", "web")
-      }
+      staticResources("/", "web")
 
       app()
    }

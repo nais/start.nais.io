@@ -21,12 +21,10 @@ class RequestResponseMappingTest {
    @Test
    fun `alerts are generated from request`() {
       val request = Request(team = "myteam", appName = "mycoolapp", platform = JVM_MAVEN)
-      Environment.values().forEach { env ->
-         val alerts = alertsFrom(request, env)
-         assertEquals(request.appName, alerts.metadata.name)
-         assertEquals(request.team, alerts.metadata.namespace)
-         assertTrue(alerts.spec.receivers.slack.channel.contains(env.toString().lowercase()))
-      }
+      val alerts = alertsFrom(request)
+      assertEquals(request.appName, alerts.metadata.name)
+      assertEquals(request.team, alerts.metadata.labels["team"])
+      assertEquals("Fiks den!", alerts.spec.groups[0].rules[0].annotations["action"])
    }
 
    @Test

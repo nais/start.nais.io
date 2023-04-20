@@ -20,8 +20,8 @@ val serve: RequestHandler = { request ->
       ".nais/nais.yaml" to naisApplicationFrom(request).serialize(),
       ".nais/dev.yaml" to appVarsFrom(request, DEV).serialize(),
       ".nais/prod.yaml" to appVarsFrom(request, PROD).serialize(),
-      ".nais/alerts-dev.yaml" to alertsFrom(request, DEV).serialize(),
-      ".nais/alerts-prod.yaml" to alertsFrom(request, PROD).serialize(),
+      ".nais/alerts-dev.yaml" to alertsFrom(request).serialize(),
+      ".nais/alerts-prod.yaml" to alertsFrom(request).serialize(),
       ".github/workflows/main.yaml" to gitHubWorkflowFrom(request).serialize(),
       "Dockerfile" to dockerfileFrom(request)
    ) + kafkaTopicsFrom(request).map { topic ->
@@ -137,40 +137,45 @@ internal fun kafkaTopicsFrom(req: Request) = req.kafkaTopics.map { topicName ->
    )
 }
 
-internal fun alertsFrom(req: Request, environment: Environment) = Alerts(
-   apiVersion = "nais.io/v1",
-   kind = "Alert",
-   metadata = AlertMetadata(
+internal fun alertsFrom(req: Request) = PrometheusRule(
+   apiVersion = "monitoring.coreos.com/v1",
+   kind = "PrometheusRule",
+   metadata = PrometheusRuleMetadata(
       name = req.appName,
       namespace = req.team,
       labels = mapOf("team" to req.team) + generationLabels
    ),
-   spec = AlertSpec(
-      receivers = AlertReceivers(
-         slack = Slack(
-            channel = "${req.team}-alerts-${if (environment == PROD) "prod" else "dev"}",
-            prependText = "<!here> | "
-         )
-      ),
-      alerts = listOf(
-         Alert(
-            alert = "${req.appName} er nede",
-            description = "App {{ ${dollar}labels.app }} er nede i namespace {{ ${dollar}labels.kubernetes_namespace }}",
-            expr = """kube_deployment_status_replicas_unavailable{deployment="${req.appName}"} > 0""",
-            forHowLong = "2m",
-            action = "kubectl describe pod {{ ${dollar}labels.kubernetes_pod_name }} -n {{ ${dollar}labels.kubernetes_namespace }}` for events, og `kubectl logs {{ ${dollar}labels.kubernetes_pod_name }} -n {{ ${dollar}labels.kubernetes_namespace }}` for logger",
-            documentation = "https://github.com/navikt/${req.team}/somedoc",
-            sla = "Responder innen 1 time i kontortid",
-            severity = "danger"
-         ),
-         Alert(
-            alert = "Mye feil i loggene",
-            expr = """(100 * sum by (log_app, log_namespace) (rate(logd_messages_total{log_app="${req.appName}",log_level=~"Warning|Error"}[3m])) / sum by (log_app, log_namespace) (rate(logd_messages_total{log_app="${req.appName}"}[3m]))) > 10""",
-            forHowLong = "3m",
-            action = "Sjekk loggene til app {{ ${dollar}labels.log_app }} i namespace {{ ${dollar}labels.log_namespace }} for å se hvorfor det er så mye feil",
-            sla = "Responder innen 1 time i kontortid",
-            severity = "warning"
-         )
+   spec = PrometheusRuleSpec(
+      groups = listOf(
+         RuleGroup("${req.appName}-alerts", listOf(
+            Rule(
+               alert = "${req.appName} er nede",
+               description = "App {{ ${dollar}labels.app }} er nede i namespace {{ ${dollar}labels.kubernetes_namespace }}",
+               expr = """kube_deployment_status_replicas_unavailable{deployment="${req.appName}"} > 0""",
+               forHowLong = "2m",
+               action = "kubectl describe pod {{ ${dollar}labels.kubernetes_pod_name }} -n {{ ${dollar}labels.kubernetes_namespace }}` for events, og `kubectl logs {{ ${dollar}labels.kubernetes_pod_name }} -n {{ ${dollar}labels.kubernetes_namespace }}` for logger",
+               labels = mapOf("severity" to "warning"),
+               annotations = mapOf(
+                  "consequence" to "${req.appName} gjør ikke det den skal",
+                  "action" to "Fiks den!",
+                  "sla" to "Innen 3 timer i kontortid",
+                  "documentation" to "https://github.com/navikt/${req.team}/somedoc",
+               )
+            ),
+            Rule(
+               alert = "Mye feil i loggene",
+               expr = """(100 * sum by (log_app, log_namespace) (rate(logd_messages_total{log_app="${req.appName}",log_level=~"Warning|Error"}[3m])) / sum by (log_app, log_namespace) (rate(logd_messages_total{log_app="${req.appName}"}[3m]))) > 10""",
+               forHowLong = "3m",
+               action = "Sjekk loggene til app {{ ${dollar}labels.log_app }} i namespace {{ ${dollar}labels.log_namespace }} for å se hvorfor det er så mye feil",
+               labels = mapOf("severity" to "critical"),
+               annotations = mapOf(
+                  "consequence" to "${req.appName} gjør ikke det den skal",
+                  "action" to "Fiks den!",
+                  "sla" to "Innen 3 timer i kontortid",
+                  "documentation" to "https://github.com/navikt/${req.team}/somedoc",
+               ),
+            )
+         ))
       )
    )
 )
