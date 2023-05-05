@@ -6,6 +6,7 @@ import io.nais.PLATFORM.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import java.net.URL
 
 @ExperimentalSerializationApi
 class RequestResponseMappingTest {
@@ -138,6 +139,15 @@ class RequestResponseMappingTest {
       val prodVars = appVarsFrom(request, PROD)
       assertEquals("nais-dev", devVars.kafkaPool)
       assertEquals("nais-prod", prodVars.kafkaPool)
+   }
+
+   @Test
+   fun `ingresses are built distinctly based on environment`() {
+      val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS, kafkaTopics = listOf("mytopic"))
+      val devVars = appVarsFrom(request, DEV)
+      val prodVars = appVarsFrom(request, PROD)
+      assertEquals(URL("https://mycoolapp.intern.dev.nav.no"), devVars.ingresses.first())
+      assertEquals(URL("https://mycoolapp.intern.nav.no"), prodVars.ingresses.first())
    }
 
    @Test
