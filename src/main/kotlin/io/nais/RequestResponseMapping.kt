@@ -84,7 +84,7 @@ internal fun naisApplicationFrom(req: Request) = NaisApplication(
 
 @ExperimentalSerializationApi
 internal fun appVarsFrom(req: Request, env: Environment) = Vars(
-   ingresses = listOf(URL("https://${req.appName}${if (env == DEV) ".dev" else ""}.intern.nav.no")),
+   ingresses = listOf(URL("https://${req.appName}.intern${if (env == DEV) ".dev" else ""}.nav.no")),
    kafkaPool = if (req.kafkaTopics.isNotEmpty()) "nais-${env.name.lowercase()}" else null
 )
 
