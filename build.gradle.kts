@@ -2,7 +2,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.cyclonedx.gradle.CycloneDxTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 
-val ktorVersion = "2.3.0"
+val ktorVersion = "2.3.1"
 val logbackVersion = "1.4.7"
 val logstashEncoderVersion = "7.3"
 val junitJupiterVersion = "5.9.3"
