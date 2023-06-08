@@ -58,7 +58,7 @@ internal fun naisApplicationFrom(req: Request) = NaisApplication(
       name = req.appName,
       namespace = req.team,
       labels = mapOf("team" to req.team),
-      annotations = generationLabels
+      annotations = generationAnnotations
    ),
    spec = AppSpec(
       image = "##REPLACE_IMAGE##",
@@ -118,7 +118,8 @@ internal fun kafkaTopicsFrom(req: Request) = req.kafkaTopics.map { topicName ->
       metadata = KafkaMetadata(
          name = topicName,
          namespace = req.team,
-         labels = mapOf("team" to req.team) + generationLabels
+         labels = mapOf("team" to req.team),
+         annotations = generationAnnotations
       ),
       spec = KafkaSpec(
          pool = "${dollar}{{kafkaPool}}",
@@ -144,7 +145,8 @@ internal fun alertsFrom(req: Request) = PrometheusRule(
    metadata = PrometheusRuleMetadata(
       name = req.appName,
       namespace = req.team,
-      labels = mapOf("team" to req.team) + generationLabels
+      labels = mapOf("team" to req.team),
+      annotations = generateAnnotations
    ),
    spec = PrometheusRuleSpec(
       groups = listOf(
