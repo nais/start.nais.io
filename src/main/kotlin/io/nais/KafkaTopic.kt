@@ -19,7 +19,8 @@ fun KafkaTopic.serialize() = Yaml(configuration = YamlConfiguration(encodeDefaul
 data class KafkaMetadata(
    val name: String,
    val namespace: String,
-   val labels: Map<String, String>
+   val labels: Map<String, String>,
+   val annotations: Map<String, String>
 )
 
 @Serializable

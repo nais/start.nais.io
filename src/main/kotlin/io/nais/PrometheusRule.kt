@@ -23,7 +23,8 @@ fun PrometheusRule.serialize() =
 data class PrometheusRuleMetadata(
    val name: String,
    val namespace: String,
-   val labels: Map<String, String>
+   val labels: Map<String, String>,
+   val annotations: Map<String, String>
 )
 
 @Serializable

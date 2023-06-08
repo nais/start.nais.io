@@ -146,7 +146,7 @@ internal fun alertsFrom(req: Request) = PrometheusRule(
       name = req.appName,
       namespace = req.team,
       labels = mapOf("team" to req.team),
-      annotations = generateAnnotations
+      annotations = generationAnnotations
    ),
    spec = PrometheusRuleSpec(
       groups = listOf(
