@@ -43,7 +43,7 @@ fun Map<String, String>.b64EncodeValues() = mapValues { it.value.base64Encode() 
 operator fun <K, V> Map<out K, V>.plus(map: Map<out K, V>): Map<K, V> =
    LinkedHashMap(this).apply { putAll(map) }
 
-private val generationLabels = mapOf(
+private val generationAnnotations = mapOf(
    "start.nais.io/created-by" to "me",
 
    // TODO(x10an14): Ideally replace with git commit sha:
@@ -57,7 +57,8 @@ internal fun naisApplicationFrom(req: Request) = NaisApplication(
    metadata = AppMetadata(
       name = req.appName,
       namespace = req.team,
-      labels = mapOf("team" to req.team) + generationLabels
+      labels = mapOf("team" to req.team),
+      annotations = generationAnnotations
    ),
    spec = AppSpec(
       image = "##REPLACE_IMAGE##",
@@ -117,7 +118,8 @@ internal fun kafkaTopicsFrom(req: Request) = req.kafkaTopics.map { topicName ->
       metadata = KafkaMetadata(
          name = topicName,
          namespace = req.team,
-         labels = mapOf("team" to req.team) + generationLabels
+         labels = mapOf("team" to req.team),
+         annotations = generationAnnotations
       ),
       spec = KafkaSpec(
          pool = "${dollar}{{kafkaPool}}",
@@ -143,7 +145,8 @@ internal fun alertsFrom(req: Request) = PrometheusRule(
    metadata = PrometheusRuleMetadata(
       name = req.appName,
       namespace = req.team,
-      labels = mapOf("team" to req.team) + generationLabels
+      labels = mapOf("team" to req.team),
+      annotations = generateAnnotations
    ),
    spec = PrometheusRuleSpec(
       groups = listOf(
