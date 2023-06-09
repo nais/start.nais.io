@@ -62,8 +62,9 @@ internal fun naisApplicationFrom(req: Request) = NaisApplication(
    ),
    spec = AppSpec(
       image = "##REPLACE_IMAGE##",
-      liveness = StatusEndpoint(path = "/isalive", port = 8080, initialDelay = 20, timeout = 60),
-      readiness = StatusEndpoint(path = "/isready", port = 8080, initialDelay = 20, timeout = 60),
+      port = req.appListenPort,
+      liveness = StatusEndpoint(path = "/isalive", port = req.observabilityPort, initialDelay = 20, timeout = 60),
+      readiness = StatusEndpoint(path = "/isready", port = req.observabilityPort, initialDelay = 20, timeout = 60),
       replicas = Replicas(min = 2, max = 2, cpuThresholdPercentage = 50),
       prometheus = Prometheus(enabled = true, path = "/metrics"),
       resources = Resources(

@@ -38,6 +38,7 @@ data class AppSpec(
    val image: String,
    val liveness: StatusEndpoint,
    val readiness: StatusEndpoint,
+   val port: Int = 8080,
    val replicas: Replicas,
    val prometheus: Prometheus,
    val resources: Resources,
@@ -51,7 +52,7 @@ data class AppSpec(
 @Serializable
 data class StatusEndpoint(
    val path: String,
-   val port: Int,
+   val port: Int = 8080,
    val initialDelay: Int,
    val timeout: Int
 )

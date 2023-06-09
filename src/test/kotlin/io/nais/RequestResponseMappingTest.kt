@@ -174,4 +174,18 @@ class RequestResponseMappingTest {
       assertTrue(workflow.jobs.containsKey("deployAlertsToProd"))
    }
 
+   @Test
+   fun `port can be optionally specified`() {
+      val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS, appListenPort = 1337)
+      val naisApp = naisApplicationFrom(request)
+      assertEquals(1337, naisApp.spec.port)
+   }
+
+   @Test
+   fun `default port is 8080`() {
+      val request = Request(team = "myteam", appName = "mycoolapp", platform = NODEJS)
+      val naisApp = naisApplicationFrom(request)
+      assertEquals(8080, naisApp.spec.port)
+   }
+
 }

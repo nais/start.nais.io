@@ -9,6 +9,8 @@ data class Request (
    val team: String,
    val appName: String,
    val platform: PLATFORM,
+   val appListenPort: Int = 8080,
+   val observabilityPort: Int = 8080,
    val extras: List<String> = emptyList(),
    val kafkaTopics: List<String> = emptyList()
 ) {
