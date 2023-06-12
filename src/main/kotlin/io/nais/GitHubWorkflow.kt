@@ -55,7 +55,7 @@ data class BuildStep(
 
 private val dockerLoginStep = BuildStep(
    name = "Login to GitHub Docker Registry",
-   uses = "docker/login-action@v1",
+   uses = "docker/login-action@v2",
    with = mapOf(
       "registry" to "ghcr.io",
       "username" to "\${{ github.actor }}",
@@ -71,14 +71,14 @@ private val dockerBuildAndPushStep = BuildStep(
 val gradleJvmBuildSteps = listOf(
    BuildStep(uses = "gradle/wrapper-validation-action@v1"),
    BuildStep(
-      uses = "actions/cache@v2",
+      uses = "actions/cache@v3",
       with = mapOf(
          "path" to "~/.gradle/caches",
          "key" to "\${{ runner.os }}-gradle-\${{ hashFiles('**/*.gradle.kts') }}",
          "restore-keys" to "\${{ runner.os }}-gradle-",
       )
    ),
-   BuildStep(uses = "actions/setup-java@v1", with = mapOf("java-version" to "17")),
+   BuildStep(uses = "actions/setup-java@v3", with = mapOf("java-version" to "17")),
    BuildStep(name = "compile and run tests", run = "./gradlew build"),
    dockerLoginStep,
    dockerBuildAndPushStep
@@ -86,21 +86,21 @@ val gradleJvmBuildSteps = listOf(
 
 val mavenJvmBuildSteps = listOf(
    BuildStep(
-      uses = "actions/cache@v2",
+      uses = "actions/cache@v3",
       with = mapOf(
          "path" to "~/.m2/repository",
          "key" to "\${{ runner.os }}-maven-\${{ hashFiles('**/pom.xml') }}",
          "restore-keys" to "\${{ runner.os }}-maven-",
       )
    ),
-   BuildStep(uses = "actions/setup-java@v1", with = mapOf("java-version" to "17")),
+   BuildStep(uses = "actions/setup-java@v3", with = mapOf("java-version" to "17")),
    BuildStep(name = "compile and run tests", run = "mvn install"),
    dockerLoginStep,
    dockerBuildAndPushStep
 )
 
 val nodejsBuildSteps = listOf(
-   BuildStep(uses = "actions/setup-node@v1"),
+   BuildStep(uses = "actions/setup-node@v3"),
    BuildStep(name = "install dependencies", run = "npm ci"),
    BuildStep(name = "run tests", run = "npm test"),
    dockerLoginStep,
@@ -108,7 +108,7 @@ val nodejsBuildSteps = listOf(
 )
 
 val pythonPoetryBuildSteps = listOf(
-   BuildStep(name = "setup python", uses = "actions/setup-python@v2", with = mapOf("python-version" to "3.x")),
+   BuildStep(name = "setup python", uses = "actions/setup-python@v4", with = mapOf("python-version" to "3.x")),
    BuildStep(name = "install poetry", uses = "abatilo/actions-poetry@v2.1.3"),
    BuildStep(name = "install dependencies", run = "poetry install"),
    BuildStep(name = "run tests", run = "poetry run pytest"),
@@ -117,7 +117,7 @@ val pythonPoetryBuildSteps = listOf(
 )
 
 val pythonPipBuildSteps = listOf(
-   BuildStep(name = "setup python", uses = "actions/setup-python@v2", with = mapOf("python-version" to "3.x")),
+   BuildStep(name = "setup python", uses = "actions/setup-python@v4", with = mapOf("python-version" to "3.x")),
    BuildStep(name = "install dependencies", run = "pip install -r requirements"),
    BuildStep(name = "run tests", run = "pytest"),
    dockerLoginStep,
@@ -125,7 +125,7 @@ val pythonPipBuildSteps = listOf(
 )
 
 val goMakeBuildSteps = listOf(
-   BuildStep(uses = "actions/setup-go@v2", with = mapOf("go-version" to "1.16")),
+   BuildStep(uses = "actions/setup-go@v4", with = mapOf("go-version" to "1.16")),
    BuildStep(name = "perform build", run = "make mytarget"),
    dockerLoginStep,
    dockerBuildAndPushStep
@@ -137,7 +137,7 @@ val staticWebBuildSteps = listOf(
    dockerBuildAndPushStep
 )
 
-val checkoutStep = BuildStep(uses = "actions/checkout@v2")
+val checkoutStep = BuildStep(uses = "actions/checkout@v3")
 
 fun appDeployStep(environment: Environment) =
    BuildStep(
