@@ -5,20 +5,23 @@ metadata:
    namespace: aura
 spec:
    groups:
-      -  name: start-nais-io
-         rules:
-            -  alert: Antall restarts
-               expr: sum(increase(kube_pod_container_status_restarts_total{container=~"start-nais-io"}[30m])) by (container) > 2
-               for: 5m
-               action: Se `kubectl describe pod start-nais-io` for events, og `kubectl logs -l app=start-nais-io` for logger
-               description: "start-nais-io har restartet flere ganger siste halvtimen!"
-               severity: danger
-            -  alert: Ingen tilgjengelig podder
-               expr: kube_deployment_status_replicas_available{deployment="start-nais-io"} == 0
-               for: 2m
-               description: "App start-nais-io er nede i namespace aura. Ingen tilgjengelige podder."
-               action: Se `kubectl get  pod -l app=start-nais-io` for status på podder, og `kubectl logs -l app=start-nais-io` for logger.
-            -  alert: høy feilrate i logger
-               expr: (100 * sum by (log_app, log_namespace) (rate(logd_messages_total{log_app="start-nais-io",log_level=~"Error"}[3m])) / sum by (log_app, log_namespace) (rate(logd_messages_total{log_app="start-nais-io"}[3m]))) > 10
-               for: 3m
-               action: "Sjekk loggene til app start-nais-io i namespace aura"
+   - name: start-nais-io
+     rules:
+     - alert: Antall restarts
+       expr: sum(increase(kube_pod_container_status_restarts_total{container=~"start-nais-io"}[30m])) by (container) > 2
+       for: 5m
+       annotations:
+         action: Se `kubectl describe pod start-nais-io` for events, og `kubectl logs -l app=start-nais-io` for logger
+         description: "start-nais-io har restartet flere ganger siste halvtimen!"
+         severity: danger
+     - alert: Ingen tilgjengelig podder
+       expr: kube_deployment_status_replicas_available{deployment="start-nais-io"} == 0
+       for: 2m
+       annotations:
+         description: "App start-nais-io er nede i namespace aura. Ingen tilgjengelige podder."
+         action: Se `kubectl get  pod -l app=start-nais-io` for status på podder, og `kubectl logs -l app=start-nais-io` for logger.
+     - alert: høy feilrate i logger
+       expr: (100 * sum by (log_app, log_namespace) (rate(logd_messages_total{log_app="start-nais-io",log_level=~"Error"}[3m])) / sum by (log_app, log_namespace) (rate(logd_messages_total{log_app="start-nais-io"}[3m]))) > 10
+       for: 3m
+       annotations:
+         action: "Sjekk loggene til app start-nais-io i namespace aura"
