@@ -1,5 +1,5 @@
-FROM cgr.dev/chainguard/jre:openjdk-jre-17
+FROM gcr.io/distroless/java17-debian11:nonroot
 
-COPY build/libs/app-all.jar /app/
+COPY build/libs/app-all.jar /app/app-all.jar
 
-CMD ["-jar", "/app/app-all.jar"]
+CMD ["/app/app-all.jar"]
