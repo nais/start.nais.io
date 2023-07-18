@@ -63,4 +63,4 @@ jobs:
           CLUSTER: prod-gcp
           RESOURCE: .nais/nais.yaml,.nais/alerts.yaml
           VARS: .nais/prod.yaml
-          IMAGE: ${{ env.IMAGE_BASENAME }}:${{ needs.build.outputs.tag }}
+          IMAGE: ${{ needs.build.outputs.tag }}
