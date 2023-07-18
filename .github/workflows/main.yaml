@@ -45,7 +45,7 @@ jobs:
         id: build-push-sign
         with:
           name: start.nais.io
-          google_service_account: gh-start-nais.io
+          google_service_account: gh-start-nais-io
           workload_identity_provider: ${{ secrets.NAIS_IO_WORKLOAD_IDENTITY_PROVIDER }}
           sbom: build/reports/bom.json
           multi-platform: true
