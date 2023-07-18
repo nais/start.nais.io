@@ -19,7 +19,6 @@ jobs:
     outputs:
       tag: "${{ steps.build-push-sign.outputs.tag }}"
     steps:
-      - uses: GitHubSecurityLab/actions-permissions/monitor@e83639073897b68de235d81a783b2221cc13def7 # ratchet:GitHubSecurityLab/actions-permissions/monitor@v1
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # ratchet:actions/checkout@v3
       - uses: actions/setup-java@5ffc13f4174014e2d4d4572b3d74c3fa61aeb2c2 # ratchet:actions/setup-java@v3
         with:
