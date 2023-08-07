@@ -6,7 +6,7 @@ val ktorVersion = "2.3.2"
 val logbackVersion = "1.4.8"
 val logstashEncoderVersion = "7.4"
 val junitJupiterVersion = "5.10.0"
-val kamlVersion = "0.54.0"
+val kamlVersion = "0.55.0"
 val micrometerVersion = "1.11.2"
 
 val mainClassName = "io.nais.MainKt"
