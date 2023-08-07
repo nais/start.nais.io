@@ -1,46 +1,64 @@
 package io.nais
 
 val jvmDockerfileTemplate = """
-   FROM cgr.dev/chainguard/jre/openjdk-17
+   FROM gcr.io/distroless/java17-debian11:nonroot
 
    WORKDIR /app
 
    # TODO change to match the path to your "fat jar"
    COPY build/libs/app-all.jar .
 
-   CMD ["-jar", "app-all.jar"]
+   CMD ["/app/app-all.jar"]
 
 """.trimIndent()
 
 val nodejsDockerfileTemplate = """
-   FROM cgr.dev/chainguard/node:20
-   # TODO change to match the path to your code
+   FROM node:20 as builder
+   COPY . /app
    WORKDIR /app
-   COPY --chown=node:node ./mystuff.js .
+
+   # TODO change to match the path to your stuff
+   FROM gcr.io/distroless/nodejs20-debian11
+   COPY --from=builder /app /app
    WORKDIR /app
    CMD ["mystuff.js"]
 
 """.trimIndent()
 
 val goDockerfileTemplate = """
-   FROM cgr.dev/chainguard/static:latest
+   FROM golang:1.20 as build
+
+   WORKDIR /go/app
+   COPY . .
+
    # TODO change to match the path to your stuff
-   COPY ./bin/hello /
-   ENTRYPOINT ["/hello"]
+
+   RUN go mod download
+   RUN CGO_ENABLED=0 make
+   RUN CGO_ENABLED=0 make test
+
+   FROM gcr.io/distroless/static-debian11
+   COPY --from=build /go/bin/app /
+   CMD ["/app"]
 
 """.trimIndent()
 
 val pythonDockerfileTemplate = """
-   FROM cgr.dev/chainguard/python:3.11
-   # TODO change to match the path to your code
-   COPY ./mystuff.py /app/
+   FROM python:3-slim AS builder
+   COPY . /app
    WORKDIR /app
-   ENTRYPOINT ["python", "mystuff.py"]
+
+   # TODO change to match the path to your stuff
+
+   FROM gcr.io/distroless/python3
+   COPY --from=builder /app /app
+   WORKDIR /app
+   CMD ["mystuff.py", "/etc"]
 
 """.trimIndent()
 
 val staticWebDockerfileTemplate = """
-   FROM cgr.dev/chainguard/nginx:latest
+   FROM docker pull nginxinc/nginx-unprivileged:1.24
 
    WORKDIR /var/lib/nginx/html/
 
