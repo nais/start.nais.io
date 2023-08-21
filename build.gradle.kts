@@ -3,11 +3,11 @@ import org.cyclonedx.gradle.CycloneDxTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 
 val ktorVersion = "2.3.3"
-val logbackVersion = "1.4.9"
+val logbackVersion = "1.4.11"
 val logstashEncoderVersion = "7.4"
 val junitJupiterVersion = "5.10.0"
 val kamlVersion = "0.55.0"
-val micrometerVersion = "1.11.2"
+val micrometerVersion = "1.11.3"
 
 val mainClassName = "io.nais.MainKt"
 
