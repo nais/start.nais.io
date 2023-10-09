@@ -2,7 +2,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.cyclonedx.gradle.CycloneDxTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 
-val ktorVersion = "2.3.4"
+val ktorVersion = "2.3.5"
 val logbackVersion = "1.4.11"
 val logstashEncoderVersion = "7.4"
 val junitJupiterVersion = "5.10.0"
@@ -18,7 +18,7 @@ plugins {
    kotlin("jvm") version "1.9.10"
    kotlin("plugin.serialization") version "1.9.10"
    id("com.github.johnrengelman.shadow") version "8.1.1"
-   id("com.github.ben-manes.versions") version "0.48.0"
+   id("com.github.ben-manes.versions") version "0.49.0"
    id("org.cyclonedx.bom") version "1.7.4"
 }
 
