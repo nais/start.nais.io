@@ -5,7 +5,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 val ktorVersion = "2.3.5"
 val logbackVersion = "1.4.11"
 val logstashEncoderVersion = "7.4"
-val junitJupiterVersion = "5.10.0"
+val junitJupiterVersion = "5.10.1"
 val kamlVersion = "0.55.0"
 val micrometerVersion = "1.11.5"
 
@@ -15,8 +15,8 @@ group = "io.nais"
 version = "generatedlater"
 
 plugins {
-   kotlin("jvm") version "1.9.10"
-   kotlin("plugin.serialization") version "1.9.10"
+   kotlin("jvm") version "1.9.20"
+   kotlin("plugin.serialization") version "1.9.20"
    id("com.github.johnrengelman.shadow") version "8.1.1"
    id("com.github.ben-manes.versions") version "0.49.0"
    id("org.cyclonedx.bom") version "1.8.0"
