@@ -18,7 +18,7 @@ spec:
       cpuThresholdPercentage: 75
    resources:
       limits:
-         cpu: 500m
+         cpu: 200m
          memory: 2048Mi
       requests:
          cpu: 100m
