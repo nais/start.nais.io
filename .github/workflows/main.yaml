@@ -50,6 +50,16 @@ jobs:
           workload_identity_provider: ${{ secrets.NAIS_IO_WORKLOAD_IDENTITY_PROVIDER }}
           sbom: build/reports/bom.json
           multi-platform: true
+      -  name: Run Trivy vulnerability scanner
+         uses: aquasecurity/trivy-action@2b6a709cf9c4025c5438138008beaddbb02086f0 # ratchet:aquasecurity/trivy-action@master
+         with:
+            image-ref: "${{ steps.build-push-sign.outputs.tag }}"
+            format: "sarif"
+            output: "trivy-results.sarif"
+      -  name: Upload Trivy scan results to GitHub Security tab
+         uses: github/codeql-action/upload-sarif@407ffafae6a767df3e0230c3df91b6443ae8df75 # ratchet:github/codeql-action/upload-sarif@v2
+         with:
+            sarif_file: 'trivy-results.sarif'
 
   deploy_to_prod:
     name: Deploy to prod-gcp
