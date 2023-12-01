@@ -17,6 +17,7 @@ jobs:
     permissions:
       id-token: write
       contents: write
+      security-events: write
     outputs:
       tag: "${{ steps.build-push-sign.outputs.tag }}"
     steps:
