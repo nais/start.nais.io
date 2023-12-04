@@ -3,7 +3,7 @@ import org.cyclonedx.gradle.CycloneDxTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 
 val ktorVersion = "2.3.6"
-val logbackVersion = "1.4.12"
+val logbackVersion = "1.4.14"
 val logstashEncoderVersion = "7.4"
 val junitJupiterVersion = "5.10.1"
 val kamlVersion = "0.55.0"
