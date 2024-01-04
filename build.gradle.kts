@@ -7,7 +7,7 @@ val logbackVersion = "1.4.14"
 val logstashEncoderVersion = "7.4"
 val junitJupiterVersion = "5.10.1"
 val kamlVersion = "0.56.0"
-val micrometerVersion = "1.12.0"
+val micrometerVersion = "1.12.1"
 
 val mainClassName = "io.nais.MainKt"
 
@@ -15,8 +15,8 @@ group = "io.nais"
 version = "generatedlater"
 
 plugins {
-   kotlin("jvm") version "1.9.21"
-   kotlin("plugin.serialization") version "1.9.21"
+   kotlin("jvm") version "1.9.22"
+   kotlin("plugin.serialization") version "1.9.22"
    id("com.github.johnrengelman.shadow") version "8.1.1"
    id("com.github.ben-manes.versions") version "0.50.0"
    id("org.cyclonedx.bom") version "1.8.1"
