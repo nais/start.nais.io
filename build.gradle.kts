@@ -19,7 +19,7 @@ plugins {
    kotlin("plugin.serialization") version "1.9.22"
    id("com.github.johnrengelman.shadow") version "8.1.1"
    id("com.github.ben-manes.versions") version "0.50.0"
-   id("org.cyclonedx.bom") version "1.8.1"
+   id("org.cyclonedx.bom") version "1.8.2"
 }
 
 repositories {
